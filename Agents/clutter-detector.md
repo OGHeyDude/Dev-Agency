@@ -1,12 +1,12 @@
 ---
 title: Clutter Detection Agent
-description: Specialized agent for identifying code duplication, redundancy, and organizational issues. Enforces DRY principle and maintains clean, efficient codebases
+description: Specialized agent for identifying code and documentation duplication, enforcing DRY principle, ADR compliance, and Memory Tool optimization
 type: agent
 category: quality
-tags: [code-quality, duplication-detection, dry-principle, dead-code, refactoring]
+tags: [code-quality, duplication-detection, dry-principle, dead-code, refactoring, documentation, ADR, frontmatter]
 created: 2025-08-09
 updated: 2025-08-09
-version: 1.0
+version: 1.5
 status: stable
 ---
 
@@ -30,6 +30,10 @@ This agent is the guardian of code cleanliness, preventing technical debt accumu
 - Complexity assessment
 - Consolidation opportunity identification
 - Anti-pattern detection
+- **Documentation clutter detection**
+- **Frontmatter validation**
+- **ADR gap identification**
+- **Memory Tool optimization checks**
 
 ## When to Use
 - Before committing new features
@@ -38,6 +42,10 @@ This agent is the guardian of code cleanliness, preventing technical debt accumu
 - When codebase feels "messy"
 - Before refactoring efforts
 - During technical debt assessment
+- **Documentation audits (`/doc-audit`)**
+- **Sprint planning documentation review**
+- **ADR enforcement checks**
+- **Memory Tool optimization**
 
 ## Context Requirements
 
@@ -87,10 +95,48 @@ This agent is the guardian of code cleanliness, preventing technical debt accumu
 - Dead Code: X files/functions
 - Average Function Length: X lines
 - Complexity Score: X/10
+- Documentation Duplication: X%
+- Missing Frontmatter: X files
+- ADR Coverage: X%
 
 ### 📋 Action Items
 1. [ ] [Specific action with file:line]
 2. [ ] [Specific action with file:line]
+```
+
+### For Documentation Audit
+```markdown
+## Documentation Clutter Report
+
+### 📚 Documentation Issues
+
+#### Duplicate Documentation
+1. **File:** `docs/auth.md` duplicates `docs/authentication.md`
+   - Action: Consolidate into single file
+   - Recommendation: Keep authentication.md, archive auth.md
+
+#### Missing Frontmatter
+1. **Files without frontmatter:**
+   - `docs/guide.md`
+   - `docs/api.md`
+   - Action: Add YAML frontmatter with required fields
+
+#### ADR Gaps
+1. **Infrastructure changes without ADRs:**
+   - `terraform/vpc.tf` modified on 2025-08-01
+   - `k8s/deployment.yaml` modified on 2025-08-05
+   - Action: Create ADR-XXXX for each change
+
+#### Large Documents (>1000 words)
+1. **Files needing splitting:**
+   - `docs/complete-guide.md` (2,500 words)
+   - Recommendation: Split into 3 parts
+
+#### Memory Tool Optimization
+1. **Documents not optimized:**
+   - Missing semantic structure
+   - No parent-child relationships
+   - Action: Add navigation frontmatter
 ```
 
 ## Example Prompt Template

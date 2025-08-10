@@ -32,14 +32,47 @@
 * **`New Dependencies:`** `(Are any new libraries or services required?)`  
 * **`Database Changes:`** `(Any new tables, columns, or data migrations?)`
 
-## **`4. Research & References`**
+## **`4. Feature Boundaries & Impact`**
+
+`(CRITICAL: Define what this ticket owns vs what it shares to prevent cross-feature contamination)`
+
+### **`Owned Resources`** `(Safe to Modify)`
+* `[ ] src/features/[feature-name]/* (all feature-specific files)`
+* `[ ] components/[FeatureName]Component.tsx`
+* `[ ] styles/[feature-name].module.css`
+* `[ ] tests/[feature-name]/*`
+
+### **`Shared Dependencies`** `(Constraints Apply)`
+* `[ ] utils/validation.ts (READ-ONLY - do not modify)`
+* `[ ] styles/global.css (READ-ONLY - use feature-specific styles instead)`
+* `[ ] api/client.ts (EXTEND-ONLY - add new methods, don't modify existing)`
+* `[ ] components/SharedButton.tsx (EXTEND via composition, don't modify)`
+
+### **`Impact Radius`**
+* **`Direct impacts:`** `[List features that will definitely be affected]`
+* **`Indirect impacts:`** `[List features that might be affected]`
+* **`Required regression tests:`** `[Specific test suites to run]`
+
+### **`Safe Modification Strategy`**
+* `[ ] Use CSS modules for all styling (no global styles)`
+* `[ ] Clone shared components instead of modifying`
+* `[ ] Use feature flags for risky changes`
+* `[ ] Create feature-specific utilities instead of modifying shared ones`
+* `[ ] Use design tokens: var(--color-primary) not #007bff`
+
+### **`Technical Enforcement`**
+* **`Pre-commit hooks:`** `boundary-check, design-token-validation`
+* **`CI/CD checks:`** `feature-isolation, regression-suite`
+* **`File permissions:`** `Run set-feature-boundaries.sh before starting`
+
+## **`5. Research & References`**
 
 `(A collection of links and notes from the research phase.)`
 
 * `Link to relevant documentation`  
 * `(Notes on existing code that can be reused or refactored.)`
 
-## **`5. Open Questions & Notes`**
+## **`6. Open Questions & Notes`**
 
 `(A space for collaboration. Use this section to list any unresolved questions or to jot down notes during development.)`
 

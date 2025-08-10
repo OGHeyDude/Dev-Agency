@@ -1,12 +1,12 @@
 ---
 title: QA/Test Agent
-description: Comprehensive testing, debugging, and quality assurance including test writing, execution, and root cause analysis
+description: Comprehensive testing with quality gates, parallel execution, and sprint-specific validation
 type: agent
 category: testing
-tags: [testing, qa, debugging, tdd, unit-tests, integration-tests]
+tags: [testing, qa, debugging, tdd, unit-tests, integration-tests, quality-gates, parallel-testing]
 created: 2025-08-09
 updated: 2025-08-09
-version: 1.0
+version: 1.5
 status: stable
 ---
 
@@ -25,6 +25,10 @@ Comprehensive testing, debugging, and quality assurance including test writing, 
 - Test coverage analysis
 - Performance testing
 - Regression testing
+- **Quality gate enforcement**
+- **Parallel testing strategies**
+- **Sprint-specific test suites**
+- **Performance benchmarking**
 
 ## When to Use
 - Writing tests for new features
@@ -57,6 +61,10 @@ Comprehensive testing, debugging, and quality assurance including test writing, 
 - Mock external dependencies
 - Tests actually fail when code is broken
 - Root cause identified for failures
+- **Quality gates passed**
+- **Parallel tests optimized**
+- **Performance benchmarks met**
+- **Sprint acceptance criteria validated**
 
 ## Output Format
 ```javascript
@@ -245,6 +253,88 @@ func TestCalculate(t *testing.T) {
 - Incorrect error handling
 - Type mismatches
 
+## Quality Gates Integration
+
+### Sprint Quality Gates
+```markdown
+## Quality Gates for [TICKET-ID]
+
+### Code Quality
+- [ ] Linting passes (0 errors)
+- [ ] Type checking passes
+- [ ] Code review complete
+- [ ] No code smells detected
+
+### Testing Coverage
+- [ ] Unit tests: >80% coverage
+- [ ] Integration tests: Critical paths covered
+- [ ] Edge cases: All identified cases tested
+- [ ] Performance: Benchmarks within limits
+
+### Security
+- [ ] Security scan passed
+- [ ] No vulnerabilities introduced
+- [ ] Input validation tested
+- [ ] Authentication/authorization tested
+
+### Sprint Acceptance
+- [ ] All acceptance criteria validated
+- [ ] No regression in existing features
+- [ ] Performance benchmarks maintained
+- [ ] Documentation updated
+```
+
+## Parallel Testing Strategies
+
+### Test Suite Organization for Parallelization
+```javascript
+// Group 1: Independent unit tests (can run in parallel)
+describe.concurrent('Unit Tests', () => {
+  test.concurrent('test 1', async () => { /* ... */ });
+  test.concurrent('test 2', async () => { /* ... */ });
+  test.concurrent('test 3', async () => { /* ... */ });
+});
+
+// Group 2: Database tests (sequential within group)
+describe('Database Tests', () => {
+  beforeAll(async () => { await setupTestDB(); });
+  afterAll(async () => { await cleanupTestDB(); });
+  
+  test('db test 1', async () => { /* ... */ });
+  test('db test 2', async () => { /* ... */ });
+});
+
+// Group 3: API tests (can run parallel with different ports)
+describe.concurrent('API Tests', () => {
+  test.concurrent('endpoint 1', async () => { 
+    const app = createApp(3001);
+    /* ... */
+  });
+  test.concurrent('endpoint 2', async () => {
+    const app = createApp(3002);
+    /* ... */
+  });
+});
+```
+
+### Performance Benchmarking
+```javascript
+// Sprint-specific performance benchmarks
+describe('Performance Benchmarks', () => {
+  test('API response time < 200ms', async () => {
+    const start = Date.now();
+    await apiCall();
+    const duration = Date.now() - start;
+    expect(duration).toBeLessThan(200);
+  });
+  
+  test('Memory usage < 100MB', () => {
+    const usage = process.memoryUsage().heapUsed / 1024 / 1024;
+    expect(usage).toBeLessThan(100);
+  });
+});
+```
+
 ## Anti-Patterns to Avoid
 - Tests that depend on execution order
 - Testing implementation details
@@ -253,6 +343,10 @@ func TestCalculate(t *testing.T) {
 - Missing edge cases
 - Flaky tests
 - Testing multiple things in one test
+- **Skipping quality gates**
+- **Sequential testing when parallel is possible**
+- **Missing performance benchmarks**
+- **Ignoring sprint acceptance criteria**
 
 ## Quality Checklist
 - [ ] All requirements covered
@@ -264,12 +358,16 @@ func TestCalculate(t *testing.T) {
 - [ ] Mocks properly configured
 - [ ] No hardcoded test data
 - [ ] Tests actually fail when code breaks
+- [ ] **Quality gates passed**
+- [ ] **Parallel tests optimized**
+- [ ] **Performance benchmarks met**
 
 ## Test Coverage Goals
 - Unit Tests: 80%+ coverage
 - Integration Tests: Critical paths
 - E2E Tests: User journeys
 - Performance Tests: As needed
+- **Sprint Tests: All acceptance criteria**
 
 ## Related Agents
 - `/agent:coder` - Implementation fixes

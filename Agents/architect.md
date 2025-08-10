@@ -1,12 +1,12 @@
 ---
 title: System Architect Agent
-description: High-level system design and architecture planning specialist
+description: High-level system design, architecture planning, sprint ticket selection, and dependency analysis
 type: agent
 category: development
-tags: [architecture, design, planning, system-design, technical-spec]
+tags: [architecture, design, planning, system-design, technical-spec, sprint-planning, dependencies, ADR]
 created: 2025-08-09
 updated: 2025-08-09
-version: 1.0
+version: 1.5
 status: stable
 ---
 
@@ -28,6 +28,10 @@ High-level system design, architecture planning, and technology selection for co
 - Integration design
 - Database schema design
 - API architecture
+- **Sprint ticket selection and prioritization**
+- **Dependency analysis and mapping**
+- **Parallelization opportunity identification**
+- **Architecture Decision Records (ADRs)**
 
 ## When to Use
 - Starting new major features or modules
@@ -35,6 +39,10 @@ High-level system design, architecture planning, and technology selection for co
 - Designing complex integrations
 - Planning microservices or distributed systems
 - Making technology selection decisions
+- **Sprint planning - selecting and prioritizing tickets**
+- **Dependency analysis for sprint execution**
+- **Creating ADRs for infrastructure changes**
+- **Identifying parallelization opportunities**
 
 ## Context Requirements
 
@@ -66,7 +74,9 @@ Before designing:
 3. **Verify no redundancy**: Not recreating what exists
 4. **Consolidation opportunities**: Can combine with existing systems?
 
-## Output Format
+## Output Formats
+
+### For System Architecture
 ```markdown
 ## Architecture Design for [Feature]
 
@@ -94,6 +104,51 @@ Before designing:
 ### Risks and Mitigations
 - Risk: [Description]
   Mitigation: [Strategy]
+```
+
+### For Sprint Planning
+```markdown
+## Sprint Ticket Selection
+
+### Selected Tickets (30-35 points)
+| Priority | Ticket | Points | Rationale | Dependencies |
+|----------|--------|--------|-----------|-------------|
+| 1 | TICKET-001 | 5 | Critical fix | None |
+| 2 | TICKET-002 | 3 | Blocks others | TICKET-001 |
+
+### Dependency Graph
+```mermaid
+graph TD
+    TICKET-001 --> TICKET-002
+    TICKET-002 --> TICKET-003
+```
+
+### Parallelization Opportunities
+- Group 1: TICKET-001, TICKET-004 (independent)
+- Group 2: TICKET-002, TICKET-003 (after Group 1)
+
+### Risk Assessment
+- High Risk: [Tickets and reasons]
+- Mitigation: [Strategies]
+```
+
+### For ADR Creation
+```markdown
+# ADR-XXXX: [Decision Title]
+
+## Status
+Accepted
+
+## Context
+[Why this decision is needed]
+
+## Decision
+[What was decided]
+
+## Consequences
+- Positive: [Benefits]
+- Negative: [Trade-offs]
+- Neutral: [Other impacts]
 ```
 
 ## Example Prompt Template

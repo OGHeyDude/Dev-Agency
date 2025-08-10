@@ -1,0 +1,24 @@
+{
+  "key": "e7d564fa16d1ad9805cb84dfb8783165",
+  "content": "class UserManager:\n  def __init__(self, db_connection):\n  def create_user(self, username, email, password):\n    \n\n[... content truncated ...]",
+  "metadata": {
+    "original_tokens": 171,
+    "optimized_tokens": 35,
+    "reduction_percentage": 79.53216374269006,
+    "operations": [
+      "compressed_whitespace_71_chars",
+      "smart_truncate_for_architect"
+    ],
+    "quality_score": 1.0,
+    "warnings": [],
+    "prioritization_result": null,
+    "original_size": 141,
+    "compressed": false,
+    "compression_ratio": 1.0
+  },
+  "created_at": 1754818671.600286,
+  "accessed_at": 1754818671.6002865,
+  "access_count": 1,
+  "size_bytes": 141,
+  "compression_ratio": 1.0
+}

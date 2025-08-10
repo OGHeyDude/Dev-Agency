@@ -29,11 +29,20 @@
 
 ## Quick Commands
 
+ /sprint-execute --max-agents 4 follow this recipe: `/home/hd/Desktop/LAB/Dev-Agency/recipes/sprint_execution_recipe.md`
+
+/sprint-plan follow this recipe: `/home/hd/Desktop/LAB/Dev-Agency/recipes/sprint_planning_recipe.md`
+
+/doc-audit follow this recipe:  `/home/hd/Desktop/LAB/Dev-Agency/recipes/documentation_standardization_recipe.md`
+
 ### Standard Workflow
 **Workflow:** `/cmd` → select ticket → `/research` → `/plan` → `/build` → `/test` → `/document` → `/done`
 
 ### Agent-Enhanced Workflow
 **With Agents:** `/cmd` → `/research` → `/plan` + `/agent:architect` → `/build` + `/agent:coder` → `/test` + `/agent:tester` → `/document` + `/agent:documenter` → `/done`
+
+### Additional Commends
+If you encounter a slash commend you are not familiar with follow: `/home/hd/Desktop/LAB/Dev-Agency/prompts/slash_commands.md`
 
 ### Agent Invocation Commands
 ```bash

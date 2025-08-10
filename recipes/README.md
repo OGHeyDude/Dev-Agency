@@ -39,12 +39,15 @@ Only create a new recipe when:
 | `clean_code_enforcement.md` | Anti-clutter workflow | Medium | 4-5 agents |
 | `complex_refactoring_workflow.md` | Large-scale code reorganization | High | 4-5 agents |
 | `database_migration_workflow.md` | Zero-downtime schema changes | High | 4-5 agents |
+| `documentation_standardization_recipe.md` | Documentation audit & optimization | High | 3-4 agents |
 | `full_stack_feature_recipe.md` | Complete feature development | High | 5-6 agents |
 | `mcp_server_recipe.md` | MCP implementation | High | 5-6 agents |
 | `memory_sync_recipe.md` | Knowledge graph syncing | Low | 2-3 agents |
 | `performance_optimization_recipe.md` | Performance bottleneck resolution | High | 4-5 agents |
 | `quality_first_recipe.md` | Quality-focused workflow | High | 5-6 agents |
 | `security_audit_recipe.md` | Security review | High | 4-5 agents |
+| `sprint_execution_recipe.md` | Sprint implementation orchestration | High | 5-6 agents |
+| `sprint_planning_recipe.md` | Automated sprint planning & spec generation | High | 2-3 agents |
 | `tdd_development_cycle_recipe.md` | Test-driven development | Medium | 4-5 agents |
 
 ## File Naming Convention

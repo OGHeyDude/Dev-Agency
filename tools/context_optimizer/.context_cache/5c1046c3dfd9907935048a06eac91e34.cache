@@ -1,0 +1,25 @@
+{
+  "key": "5c1046c3dfd9907935048a06eac91e34",
+  "content": "def process_data(input_data):\n  # Debug print\n  print(f\"Processing complete. {len(results)} items processed.\")\n  return results",
+  "metadata": {
+    "original_tokens": 202,
+    "optimized_tokens": 31,
+    "reduction_percentage": 84.65346534653465,
+    "operations": [
+      "compressed_whitespace_97_chars",
+      "removed_all_empty_lines",
+      "smart_truncate_for_coder"
+    ],
+    "quality_score": 0.8641935483870968,
+    "warnings": [],
+    "prioritization_result": null,
+    "original_size": 127,
+    "compressed": false,
+    "compression_ratio": 1.0
+  },
+  "created_at": 1754818671.6067855,
+  "accessed_at": 1754818671.6067858,
+  "access_count": 1,
+  "size_bytes": 127,
+  "compression_ratio": 1.0
+}

@@ -1,0 +1,27 @@
+{
+  "key": "51605abd482867f9eb56c8e0b5b940a9",
+  "content": "import hashlib\nimport os\nfrom typing import Optional\n    self.secret_key = os.getenv('SECRET_KEY', 'default_secr\n\n[... content truncated ...]",
+  "metadata": {
+    "original_tokens": 350,
+    "optimized_tokens": 35,
+    "reduction_percentage": 90.0,
+    "operations": [
+      "compressed_whitespace_144_chars",
+      "removed_all_empty_lines",
+      "aggressive_line_truncation",
+      "removed_non_content_lines",
+      "smart_truncate_for_security"
+    ],
+    "quality_score": 0.4139999999999999,
+    "warnings": [],
+    "prioritization_result": null,
+    "original_size": 141,
+    "compressed": false,
+    "compression_ratio": 1.0
+  },
+  "created_at": 1754818671.6044867,
+  "accessed_at": 1754818671.604487,
+  "access_count": 1,
+  "size_bytes": 141,
+  "compression_ratio": 1.0
+}

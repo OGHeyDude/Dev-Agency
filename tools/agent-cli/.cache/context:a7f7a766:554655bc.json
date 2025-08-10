@@ -1,0 +1,15 @@
+{
+  "key": "context:a7f7a766:554655bc",
+  "value": {
+    "content": "No files loaded.",
+    "fileCount": 0,
+    "totalSize": 0,
+    "fileHashes": {
+      "/home/hd/Desktop/LAB/Dev-Agency/tools/agent-cli/.test-temp/context-test": "554655bc83c1b0f9f35ffb5911cb551f"
+    },
+    "contextPath": "/home/hd/Desktop/LAB/Dev-Agency/tools/agent-cli/.test-temp/context-test"
+  },
+  "timestamp": 1754820823888,
+  "size": 270,
+  "hash": "0881b5a039d63806ad12a504864b4fdd"
+}

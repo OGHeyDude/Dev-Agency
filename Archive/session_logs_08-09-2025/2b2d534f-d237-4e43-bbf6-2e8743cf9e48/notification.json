@@ -1,0 +1,90 @@
+[
+  {
+    "session_id": "2b2d534f-d237-4e43-bbf6-2e8743cf9e48",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/2b2d534f-d237-4e43-bbf6-2e8743cf9e48.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use List",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use List",
+    "agent_type": "Claude"
+  },
+  {
+    "session_id": "2b2d534f-d237-4e43-bbf6-2e8743cf9e48",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/2b2d534f-d237-4e43-bbf6-2e8743cf9e48.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Read",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use Read",
+    "agent_type": "Claude"
+  },
+  {
+    "session_id": "2b2d534f-d237-4e43-bbf6-2e8743cf9e48",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/2b2d534f-d237-4e43-bbf6-2e8743cf9e48.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use ",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use ",
+    "agent_type": "Claude"
+  },
+  {
+    "session_id": "2b2d534f-d237-4e43-bbf6-2e8743cf9e48",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/2b2d534f-d237-4e43-bbf6-2e8743cf9e48.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use Bash",
+    "agent_type": "Claude"
+  },
+  {
+    "session_id": "2b2d534f-d237-4e43-bbf6-2e8743cf9e48",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/2b2d534f-d237-4e43-bbf6-2e8743cf9e48.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use Bash",
+    "agent_type": "Claude"
+  },
+  {
+    "session_id": "2b2d534f-d237-4e43-bbf6-2e8743cf9e48",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/2b2d534f-d237-4e43-bbf6-2e8743cf9e48.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use Bash",
+    "agent_type": "Claude"
+  },
+  {
+    "session_id": "2b2d534f-d237-4e43-bbf6-2e8743cf9e48",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/2b2d534f-d237-4e43-bbf6-2e8743cf9e48.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use Bash",
+    "agent_type": "Claude"
+  },
+  {
+    "session_id": "2b2d534f-d237-4e43-bbf6-2e8743cf9e48",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/2b2d534f-d237-4e43-bbf6-2e8743cf9e48.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use Bash",
+    "agent_type": "Claude"
+  }
+]

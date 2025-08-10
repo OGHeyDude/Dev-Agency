@@ -1,0 +1,25 @@
+{
+  "key": "e63bc7b4b989f07e82190af220280791",
+  "content": "import os\nimport sys\nfrom pathlib import Path\ndef process_data(data):\n  '''\n  This function processes data and returns results.\n  Args:\n    data\n[... truncated ...]",
+  "metadata": {
+    "original_tokens": 238,
+    "optimized_tokens": 41,
+    "reduction_percentage": 82.77310924369748,
+    "operations": [
+      "compressed_whitespace_95_chars",
+      "removed_all_empty_lines",
+      "simple_truncation_fallback"
+    ],
+    "quality_score": 0.8704651162790699,
+    "warnings": [],
+    "prioritization_result": null,
+    "original_size": 164,
+    "compressed": false,
+    "compression_ratio": 1.0
+  },
+  "created_at": 1754818583.5414145,
+  "accessed_at": 1754818583.5414147,
+  "access_count": 1,
+  "size_bytes": 164,
+  "compression_ratio": 1.0
+}

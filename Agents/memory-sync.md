@@ -1,12 +1,12 @@
 ---
 title: Memory Sync Agent
-description: Specialized agent for syncing code changes to MCP memory knowledge graph with intelligent parsing and relationship extraction
+description: Specialized agent for syncing code changes to MCP memory knowledge graph with sprint completion workflows and batch processing
 type: agent
 category: development
-tags: [memory, mcp, knowledge-graph, code-parsing, relationships, chunking]
+tags: [memory, mcp, knowledge-graph, code-parsing, relationships, chunking, sprint-sync, batch-processing]
 created: 2025-08-09
 updated: 2025-08-09
-version: 1.0
+version: 1.5
 status: stable
 ---
 
@@ -37,6 +37,10 @@ Specialized agent for automatically syncing code changes to the MCP memory knowl
 - When adding new integrations or dependencies
 - During documentation updates
 - For periodic knowledge graph maintenance
+- **Sprint completion - sync all sprint changes**
+- **After each ticket reaches DONE**
+- **Batch sync at sprint end**
+- **Integration with Definition of DONE**
 
 ## Context Requirements
 
@@ -64,6 +68,9 @@ Specialized agent for automatically syncing code changes to the MCP memory knowl
 - **NO duplicate entities created**
 - **Consistent entity naming across syncs**
 - **Meaningful relationship extraction**
+- **Sprint changes fully captured**
+- **Definition of DONE validated**
+- **Batch processing efficient**
 
 ## Anti-Clutter Checks (MANDATORY)
 Before creating entities:
@@ -336,6 +343,84 @@ The memory sync results can inform:
 - `module:auth` --contains--> `UserService`
 ```
 
+## Sprint Completion Workflow
+
+### Sprint-End Batch Sync
+```markdown
+## Sprint [N] Memory Sync
+
+### Tickets Completed
+- TICKET-001: [Changes synced]
+- TICKET-002: [Changes synced]
+- TICKET-003: [Changes synced]
+
+### Batch Processing Strategy
+1. Group related changes by module
+2. Create entities for new components
+3. Update existing entities with changes
+4. Extract cross-ticket relationships
+5. Document patterns discovered
+
+### Entities Created
+- Total: X entities
+- Classes: Y
+- Functions: Z
+- Patterns: N
+
+### Relationships Mapped
+- Dependencies: X
+- Implementations: Y
+- Uses: Z
+```
+
+### Definition of DONE Integration
+```javascript
+// After ticket completion
+const syncForDONE = async (ticketId) => {
+  const changes = getTicketChanges(ticketId);
+  
+  // Sync criteria for DONE
+  const syncResult = await syncToMemory({
+    entities: extractEntities(changes),
+    relationships: extractRelationships(changes),
+    observations: [
+      `Implements ${ticketId}`,
+      `Acceptance criteria met`,
+      `Tests passing`,
+      `Documentation updated`
+    ]
+  });
+  
+  return syncResult.success;
+};
+```
+
+### Batch Processing for Multiple Tickets
+```javascript
+// Efficient batch sync for sprint
+async function syncSprintCompletion(sprintTickets) {
+  const batchSize = 5; // Process 5 tickets at once
+  const results = [];
+  
+  for (let i = 0; i < sprintTickets.length; i += batchSize) {
+    const batch = sprintTickets.slice(i, i + batchSize);
+    const batchResults = await Promise.all(
+      batch.map(ticket => syncTicketToMemory(ticket))
+    );
+    results.push(...batchResults);
+  }
+  
+  // Create sprint-level relationships
+  await createSprintRelationships(results);
+  
+  return {
+    totalSynced: results.length,
+    entities: results.flatMap(r => r.entities),
+    relationships: results.flatMap(r => r.relationships)
+  };
+}
+```
+
 ## Anti-Patterns to Avoid
 - Creating entities for every single function
 - Overly generic entity descriptions
@@ -345,6 +430,10 @@ The memory sync results can inform:
 - Creating duplicate entities
 - Over-chunking simple utility files
 - Under-chunking complex modules
+- **Forgetting sprint-end sync**
+- **Not batching related changes**
+- **Missing Definition of DONE validation**
+- **Ignoring cross-ticket relationships**
 
 ## Quality Checklist
 - [ ] Entities follow language-specific naming conventions

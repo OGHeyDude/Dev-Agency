@@ -1,12 +1,12 @@
 ---
 title: Development Agent (Coder)
-description: General-purpose code implementation following specifications, standards, and best practices
+description: General-purpose code implementation with Definition of DONE integration and commit preparation
 type: agent
 category: development
-tags: [coding, implementation, refactoring, clean-code, dry-principle]
+tags: [coding, implementation, refactoring, clean-code, dry-principle, definition-of-done, commits]
 created: 2025-08-09
 updated: 2025-08-09
-version: 1.0
+version: 1.5
 status: stable
 ---
 
@@ -58,8 +58,11 @@ General-purpose code implementation following specifications, standards, and bes
 - **NO duplicate code created**
 - **Maximum reuse of existing code**
 - **DRY principle strictly followed**
+- **Meets Definition of DONE**
+- **Ready for memory sync**
+- **Commit message prepared**
 
-## Anti-Clutter Checks (MANDATORY)
+## Anti-Clutter & Boundary Checks (MANDATORY)
 Before writing ANY code:
 1. **Search for existing implementations**: `Grep "function_name" --type [ext]`
 2. **Check for similar patterns**: Can extend/reuse existing code?
@@ -67,12 +70,23 @@ Before writing ANY code:
 4. **Consolidation check**: Should this be added to existing file?
 5. **Simplicity check**: Is this the SIMPLEST solution?
 
+## Feature Isolation Checks (CRITICAL)
+Before modifying ANY file:
+1. **Check ownership**: Is this file in your spec's "Owned Resources"?
+2. **If shared file**: Is it marked READ-ONLY or EXTEND-ONLY?
+3. **Run boundary check**: `./tools/boundary-enforcement/validate-boundaries.sh`
+4. **For UI components**: `grep -r "ComponentName"` to find all usages
+5. **For global styles**: Create feature-specific CSS module instead
+6. **Use design tokens**: Never hardcode colors/spacing
+
 During implementation:
 - If you copy-paste: STOP and extract to function
 - If you repeat logic: STOP and create utility
 - If file gets large: STOP and split logically
 
-## Output Format
+## Output Formats
+
+### For Code Implementation
 ```[language]
 // Implementation with:
 // - Clear function/class structure
@@ -120,6 +134,8 @@ Example of similar implementation:
 2. Implements code following standards
 3. Output goes to tester agent
 4. May receive feedback for fixes
+5. **Prepares for memory sync**
+6. **Creates commit message**
 
 ### Handoff to Next Agent
 The coder's output becomes input for:
@@ -189,10 +205,72 @@ export const UserProfile: React.FC<Props> = ({ userId }) => {
 - Follow Go idioms
 - Proper goroutine management
 
+## Definition of DONE Integration
+
+### Development Checklist
+```markdown
+## Definition of DONE - [TICKET-ID]
+
+### Code Quality
+- [ ] Code compiles without errors
+- [ ] Follows coding standards
+- [ ] No TODOs or debug code
+- [ ] DRY principle followed
+- [ ] Error handling implemented
+
+### Testing
+- [ ] Unit tests written
+- [ ] Tests passing
+- [ ] Edge cases covered
+
+### Documentation
+- [ ] Code comments added (complex logic only)
+- [ ] README updated if needed
+- [ ] API docs current
+
+### Integration
+- [ ] No conflicts with main
+- [ ] Build passing
+- [ ] Linting passes
+
+### Ready for Commit
+- [ ] Changes staged
+- [ ] Commit message prepared
+- [ ] Ticket ID included
+```
+
+## Commit Message Convention
+```
+feat(TICKET-ID): Brief description
+
+- Detailed change 1
+- Detailed change 2
+- Fixes issue X
+
+Closes #TICKET-ID
+```
+
+## Memory Sync Preparation
+After completion:
+1. Identify new/modified components
+2. Extract key patterns used
+3. Document architectural decisions
+4. Prepare for `/sync-memory` command
+
 ## Anti-Patterns to Avoid
 - Commented-out code
 - Unnecessary comments
 - Deep nesting
+- **Copy-paste programming**
+- **Over-engineering simple solutions**
+- **Ignoring existing patterns**
+- **Creating unnecessary abstractions**
+- **Premature optimization**
+- **Leaving debug code**
+- **Skipping error handling**
+- **Forgetting Definition of DONE**
+- **Missing commit preparation**
+- **Skipping memory sync**
 - Long functions
 - Magic numbers
 - Tight coupling

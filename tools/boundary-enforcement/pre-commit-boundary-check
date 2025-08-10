@@ -1,0 +1,17 @@
+#!/bin/bash
+# Pre-commit hook for boundary validation
+# Install in .git/hooks/pre-commit or use with Husky
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Run the boundary validation
+if [ -f "$SCRIPT_DIR/validate-boundaries.sh" ]; then
+    bash "$SCRIPT_DIR/validate-boundaries.sh"
+else
+    # If running from .git/hooks, adjust path
+    bash tools/boundary-enforcement/validate-boundaries.sh
+fi
+
+# Exit with the validation result
+exit $?
