@@ -389,4 +389,43 @@ export class ConfigManager {
       errors
     };
   }
+
+  /**
+   * Initialize project configuration
+   */
+  async initializeProject(projectPath: string, options?: { type?: string; name?: string }): Promise<void> {
+    try {
+      // Create project-specific config
+      const projectConfig: Partial<AgentCliConfig> = {
+        project_type: (options?.type as any) || 'web-app',
+        output_directory: path.join(projectPath, 'outputs')
+      };
+      
+      // Merge with default config
+      this.config = { ...this.config, ...projectConfig };
+      
+      // Save config file in project
+      const projectConfigPath = path.join(projectPath, '.agent-cli.json');
+      await this.saveConfigFile(projectConfigPath, projectConfig);
+      
+      this.logger.info(`Initialized project configuration at ${projectConfigPath}`);
+    } catch (error) {
+      this.logger.error('Failed to initialize project:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Alias for setConfig - set configuration value
+   */
+  async set(key: string, value: string): Promise<void> {
+    return this.setConfig(key, value);
+  }
+
+  /**
+   * Alias for getConfig - get configuration value
+   */
+  async get(key: string): Promise<any> {
+    return this.getConfig(key);
+  }
 }

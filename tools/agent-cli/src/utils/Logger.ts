@@ -26,6 +26,19 @@ export class Logger {
   private enableConsole = true;
   private enableFile = false;
 
+  /**
+   * Create a new Logger instance with the specified options
+   */
+  static create(options?: {
+    level?: LogLevel;
+    logFile?: string;
+    enableConsole?: boolean;
+    enableFile?: boolean;
+    component?: string;
+  }): Logger {
+    return new Logger(options);
+  }
+
   constructor(options?: {
     level?: LogLevel;
     logFile?: string;
@@ -225,7 +238,7 @@ export class Logger {
   child(component: string): Logger {
     const childLogger = new Logger({
       level: this.logLevel,
-      logFile: this.logFile,
+      logFile: this.logFile || undefined,
       enableConsole: this.enableConsole,
       enableFile: this.enableFile,
       component

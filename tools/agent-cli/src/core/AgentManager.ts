@@ -10,6 +10,8 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { glob } from 'glob';
 import { Logger } from '../utils/Logger';
+import { securityManager } from '../utils/security';
+const sanitizeHtml = require('sanitize-html');
 
 export interface AgentDefinition {
   name: string;
@@ -64,12 +66,20 @@ export class AgentManager {
         throw new Error(`Agents directory not found: ${agentsPath}`);
       }
 
-      // Find all agent markdown files
-      const agentFiles = await glob('*.md', { cwd: agentsPath });
+      // Find all agent markdown files with secure glob pattern
+      const agentPattern = path.join(agentsPath, '*.md');
+      const globValidation = securityManager.validateGlobPattern('*.md', agentsPath);
+      if (!globValidation.isValid) {
+        throw new Error(`Unsafe glob pattern: ${globValidation.violations.join(', ')}`);
+      }
+      const agentFilePaths = await glob(agentPattern);
       
-      this.logger.debug(`Found ${agentFiles.length} agent files`);
+      // Convert to relative paths and ensure they're strings
+      const relativeFiles = Array.isArray(agentFilePaths) ? agentFilePaths.map(file => path.relative(agentsPath, file)) : [];
+      
+      this.logger.debug(`Found ${Array.isArray(agentFilePaths) ? agentFilePaths.length : 0} agent files`);
 
-      for (const file of agentFiles) {
+      for (const file of relativeFiles) {
         const agentPath = path.join(agentsPath, file);
         const agentName = path.basename(file, '.md');
         
@@ -93,7 +103,8 @@ export class AgentManager {
    * Parse agent definition from markdown file
    */
   private async parseAgentDefinition(filePath: string, agentName: string): Promise<AgentDefinition> {
-    const content = await fs.readFile(filePath, 'utf-8');
+    // Secure file read with path validation
+    const content = await securityManager.secureReadFile(filePath);
     
     // Extract frontmatter and content
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -275,20 +286,30 @@ export class AgentManager {
       return { valid: false, errors, warnings };
     }
 
-    // Validate context path if provided
+    // Validate context path if provided with security checks
     if (options.contextPath) {
-      const exists = await fs.pathExists(options.contextPath);
-      if (!exists) {
-        errors.push(`Context path does not exist: ${options.contextPath}`);
+      const pathValidation = await securityManager.validatePath(options.contextPath, 'read');
+      if (!pathValidation.isValid) {
+        errors.push(`Context path security validation failed: ${pathValidation.violations.join(', ')}`);
+      } else {
+        const exists = await fs.pathExists(pathValidation.resolvedPath!);
+        if (!exists) {
+          errors.push(`Context path does not exist: ${options.contextPath}`);
+        }
       }
     }
 
-    // Validate output path directory
+    // Validate output path directory with security checks
     if (options.outputPath) {
-      const outputDir = path.dirname(options.outputPath);
-      const exists = await fs.pathExists(outputDir);
-      if (!exists) {
-        errors.push(`Output directory does not exist: ${outputDir}`);
+      const pathValidation = await securityManager.validatePath(options.outputPath, 'write');
+      if (!pathValidation.isValid) {
+        errors.push(`Output path security validation failed: ${pathValidation.violations.join(', ')}`);
+      } else {
+        const outputDir = path.dirname(pathValidation.resolvedPath!);
+        const exists = await fs.pathExists(outputDir);
+        if (!exists) {
+          errors.push(`Output directory does not exist: ${outputDir}`);
+        }
       }
     }
 
@@ -348,31 +369,88 @@ export class AgentManager {
   }
 
   /**
-   * Load context files with limits
+   * Load context files with limits and security validation
    */
   private async loadContextFiles(contextPath: string, limits: AgentDefinition['context_limits']): Promise<string> {
-    const stats = await fs.stat(contextPath);
+    // Validate context path security
+    const pathValidation = await securityManager.validatePath(contextPath, 'read');
+    if (!pathValidation.isValid) {
+      throw new Error(`Context path security validation failed: ${pathValidation.violations.join(', ')}`);
+    }
+    
+    const stats = await fs.stat(pathValidation.resolvedPath!);
     let content = '';
 
     if (stats.isFile()) {
-      // Single file
-      const fileContent = await fs.readFile(contextPath, 'utf-8');
-      content = `### ${path.basename(contextPath)}\n\`\`\`\n${fileContent}\n\`\`\`\n\n`;
-    } else if (stats.isDirectory()) {
-      // Directory - load multiple files with limits
-      const files = await glob('**/*', { 
-        cwd: contextPath, 
-        nodir: true,
-        ignore: ['node_modules/**', '.git/**', 'dist/**', 'build/**']
+      // Single file - secure read
+      const fileContent = await securityManager.secureReadFile(pathValidation.resolvedPath!);
+      // Sanitize content to prevent injection
+      const sanitizedContent = sanitizeHtml(fileContent, {
+        allowedTags: [],
+        allowedAttributes: {},
+        textFilter: (text) => {
+          // Remove potential injection patterns
+          return text.replace(/[<>&"']/g, (char) => {
+            const entityMap: { [key: string]: string } = {
+              '<': '&lt;',
+              '>': '&gt;',
+              '&': '&amp;',
+              '"': '&quot;',
+              "'": '&#39;'
+            };
+            return entityMap[char] || char;
+          });
+        }
       });
+      content = `### ${path.basename(contextPath)}\n\`\`\`\n${sanitizedContent}\n\`\`\`\n\n`;
+    } else if (stats.isDirectory()) {
+      // Directory - load multiple files with limits and security
+      const pattern = path.join(pathValidation.resolvedPath!, '**/*');
+      const globValidation = securityManager.validateGlobPattern('**/*', pathValidation.resolvedPath!);
+      if (!globValidation.isValid) {
+        throw new Error(`Unsafe glob pattern: ${globValidation.violations.join(', ')}`);
+      }
+      const allFilePaths = await glob(pattern);
+
+      // Filter out directories and convert to relative paths
+      const fileList = Array.isArray(allFilePaths) ? allFilePaths : [];
+      const files = fileList
+        .filter(file => fs.statSync(file).isFile())
+        .map(file => path.relative(contextPath, file))
+        .filter(file => !file.includes('node_modules') && !file.includes('.git') && !file.includes('dist') && !file.includes('build'));
 
       const limitedFiles = files.slice(0, limits.max_files || 10);
       
       for (const file of limitedFiles) {
-        const filePath = path.join(contextPath, file);
+        const filePath = path.join(pathValidation.resolvedPath!, file);
         try {
-          const fileContent = await fs.readFile(filePath, 'utf-8');
-          content += `### ${file}\n\`\`\`\n${fileContent}\n\`\`\`\n\n`;
+          // Validate each file path
+          const fileValidation = await securityManager.validatePath(filePath, 'read');
+          if (!fileValidation.isValid) {
+            this.logger.warn(`Skipping unsafe file ${file}:`, fileValidation.violations);
+            continue;
+          }
+          
+          const fileContent = await securityManager.secureReadFile(fileValidation.resolvedPath!);
+          // Sanitize file content
+          const sanitizedContent = sanitizeHtml(fileContent, {
+            allowedTags: [],
+            allowedAttributes: {},
+            textFilter: (text) => {
+              // Remove potential injection patterns
+              return text.replace(/[<>&"']/g, (char) => {
+                const entityMap: { [key: string]: string } = {
+                  '<': '&lt;',
+                  '>': '&gt;',
+                  '&': '&amp;',
+                  '"': '&quot;',
+                  "'": '&#39;'
+                };
+                return entityMap[char] || char;
+              });
+            }
+          });
+          content += `### ${file}\n\`\`\`\n${sanitizedContent}\n\`\`\`\n\n`;
         } catch (error) {
           this.logger.warn(`Failed to read file ${file}:`, error);
         }
@@ -395,5 +473,50 @@ export class AgentManager {
    */
   getAgentNames(): string[] {
     return Array.from(this.agentDefinitions.keys()).sort();
+  }
+
+  /**
+   * Load context files for agent execution with security validation
+   */
+  async loadContext(contextPath: string, agent?: string): Promise<string> {
+    if (!contextPath) return '';
+    
+    try {
+      // Security validation first
+      const pathValidation = await securityManager.validatePath(contextPath, 'read');
+      if (!pathValidation.isValid) {
+        this.logger.error('Context path security validation failed:', pathValidation.violations);
+        return '';
+      }
+      
+      const agentDef = agent ? this.agentDefinitions.get(agent) : undefined;
+      const limits = agentDef?.context_limits || { max_files: 50, max_tokens: 100000 };
+      return await this.loadContextFiles(contextPath, limits);
+    } catch (error) {
+      this.logger.error('Failed to load context:', error);
+      return '';
+    }
+  }
+
+  /**
+   * Ensure agents are loaded before operations
+   */
+  private async ensureLoaded(): Promise<void> {
+    if (this.agentDefinitions.size === 0) {
+      await this.loadAgentDefinitions();
+    }
+  }
+
+  /**
+   * List all available agents with their descriptions
+   */
+  async listAgents(): Promise<Array<{ name: string; description: string; capabilities: string[] }>> {
+    await this.ensureLoaded();
+    
+    return Array.from(this.agentDefinitions.entries()).map(([name, def]) => ({
+      name,
+      description: def.description,
+      capabilities: def.capabilities
+    }));
   }
 }

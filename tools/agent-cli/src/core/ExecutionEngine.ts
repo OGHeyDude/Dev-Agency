@@ -13,6 +13,8 @@ import { EventEmitter } from 'events';
 import { AgentManager, AgentInvocationOptions } from './AgentManager';
 import { ConfigManager } from './ConfigManager';
 import { Logger } from '../utils/Logger';
+import { securityManager } from '../utils/security';
+const sanitizeHtml = require('sanitize-html');
 
 export interface ExecutionResult {
   success: boolean;
@@ -80,17 +82,17 @@ export interface ExecutionMetrics {
 export class ExecutionEngine extends EventEmitter {
   private logger = new Logger();
   private agentManager: AgentManager;
-  private configManager: ConfigManager;
+  // private configManager: ConfigManager; // TODO: Use or remove
   
   private activeExecutions = new Map<string, ExecutionResult>();
   private executionQueue: SingleExecutionOptions[] = [];
   private executionHistory: ExecutionResult[] = [];
-  private metrics: ExecutionMetrics;
+  private metrics!: ExecutionMetrics;
 
   constructor() {
     super();
     this.agentManager = new AgentManager();
-    this.configManager = new ConfigManager();
+    // this.configManager = new ConfigManager(); // TODO: Use or remove
     this.initializeMetrics();
   }
 
@@ -164,9 +166,16 @@ export class ExecutionEngine extends EventEmitter {
       result.metrics.duration = Date.now() - startTime;
       result.metrics.tokens_used = workerResult.tokens_used;
 
-      // Save output if requested
+      // Save output if requested with security validation
       if (options.outputPath && result.output) {
-        await this.saveOutput(result.output, options.outputPath, options.format || 'text');
+        // Validate output path security
+        const pathValidation = await securityManager.validatePath(options.outputPath, 'write');
+        if (!pathValidation.isValid) {
+          this.logger.error('Output path security validation failed:', pathValidation.violations);
+          result.error = `Output path security validation failed: ${pathValidation.violations.join(', ')}`;
+        } else {
+          await this.saveOutput(result.output, pathValidation.resolvedPath!, options.format || 'text');
+        }
       }
 
       // Update metrics
@@ -210,15 +219,21 @@ export class ExecutionEngine extends EventEmitter {
     const startTime = Date.now();
     this.logger.info(`Starting batch execution: ${options.agents.length} agents, ${options.parallelLimit} parallel`);
 
-    // Prepare execution options for each agent
-    const executions: SingleExecutionOptions[] = options.agents.map(agentName => ({
-      agentName,
-      contextPath: options.contextPath,
-      outputPath: options.outputPath ? 
-        path.join(path.dirname(options.outputPath), `${agentName}_${path.basename(options.outputPath)}`) : 
-        undefined,
-      format: options.format
-    }));
+    // Prepare execution options for each agent with security validation
+    const executions: SingleExecutionOptions[] = [];
+    for (const agentName of options.agents) {
+      let secureOutputPath: string | undefined;
+      if (options.outputPath) {
+        secureOutputPath = await this.generateSecureOutputPath(options.outputPath, agentName);
+      }
+      
+      executions.push({
+        agentName,
+        contextPath: options.contextPath,
+        outputPath: secureOutputPath,
+        format: options.format
+      });
+    }
 
     // Execute with concurrency limit
     const results = await this.executeWithConcurrency(executions, options.parallelLimit);
@@ -286,6 +301,79 @@ export class ExecutionEngine extends EventEmitter {
   }
 
   /**
+   * Generate secure output path for batch execution
+   */
+  private async generateSecureOutputPath(basePath: string, agentName: string): Promise<string> {
+    // Validate base path first
+    const pathValidation = await securityManager.validatePath(basePath, 'write');
+    if (!pathValidation.isValid) {
+      throw new Error(`Base output path validation failed: ${pathValidation.violations.join(', ')}`);
+    }
+    
+    // Generate agent-specific path
+    const sanitizedAgentName = agentName.replace(/[^a-zA-Z0-9\-_]/g, '_');
+    const agentPath = path.join(path.dirname(pathValidation.resolvedPath!), `${sanitizedAgentName}_${path.basename(pathValidation.resolvedPath!)}`);
+    
+    // Validate the generated path
+    const agentPathValidation = await securityManager.validatePath(agentPath, 'write');
+    if (!agentPathValidation.isValid) {
+      throw new Error(`Generated agent path validation failed: ${agentPathValidation.violations.join(', ')}`);
+    }
+    
+    return agentPathValidation.resolvedPath!;
+  }
+
+  /**
+   * Sanitize output content
+   */
+  private sanitizeOutput(output: string): string {
+    if (typeof output !== 'string') {
+      return String(output);
+    }
+    
+    // Remove null bytes and control characters
+    let sanitized = output.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, '');
+    
+    // Check for and log potential injection patterns
+    const injectionPatterns = [
+      { name: 'script_tag', pattern: /<script[\s\S]*?>/gi },
+      { name: 'javascript_protocol', pattern: /javascript:/gi },
+      { name: 'event_handler', pattern: /on\w+\s*=/gi },
+      { name: 'eval_function', pattern: /eval\s*\(/gi },
+      { name: 'function_constructor', pattern: /Function\s*\(/gi }
+    ];
+    
+    for (const { name, pattern } of injectionPatterns) {
+      if (pattern.test(sanitized)) {
+        this.logger.warn(`Potential ${name} detected in output, sanitizing`, { pattern: pattern.source });
+        // Remove the dangerous pattern
+        sanitized = sanitized.replace(pattern, '[SANITIZED_CONTENT]');
+      }
+    }
+    
+    return sanitized;
+  }
+
+  /**
+   * Recursively sanitize JSON object
+   */
+  private sanitizeJsonObject(obj: any): any {
+    if (typeof obj === 'string') {
+      return this.sanitizeOutput(obj);
+    } else if (Array.isArray(obj)) {
+      return obj.map(item => this.sanitizeJsonObject(item));
+    } else if (obj && typeof obj === 'object') {
+      const sanitized: any = {};
+      for (const [key, value] of Object.entries(obj)) {
+        const sanitizedKey = key.replace(/[^a-zA-Z0-9_]/g, '_');
+        sanitized[sanitizedKey] = this.sanitizeJsonObject(value);
+      }
+      return sanitized;
+    }
+    return obj;
+  }
+
+  /**
    * Execute agent in worker thread with timeout
    */
   private async executeInWorker(data: any): Promise<any> {
@@ -319,38 +407,54 @@ export class ExecutionEngine extends EventEmitter {
   }
 
   /**
-   * Save execution output to file
+   * Save execution output to file with security validation
    */
   private async saveOutput(output: string, outputPath: string, format: string): Promise<void> {
-    await fs.ensureDir(path.dirname(outputPath));
+    // Validate and sanitize the output path (should already be validated but double-check)
+    const pathValidation = await securityManager.validatePath(outputPath, 'write');
+    if (!pathValidation.isValid) {
+      throw new Error(`Output path validation failed: ${pathValidation.violations.join(', ')}`);
+    }
     
-    let content = output;
+    await fs.ensureDir(path.dirname(pathValidation.resolvedPath!));
+    
+    // Sanitize output content to prevent injection
+    let content = this.sanitizeOutput(output);
     
     // Format output based on format type
     switch (format) {
       case 'json':
         try {
-          const parsed = JSON.parse(output);
-          content = JSON.stringify(parsed, null, 2);
+          const parsed = JSON.parse(content);
+          // Sanitize JSON values
+          const sanitizedJson = this.sanitizeJsonObject(parsed);
+          content = JSON.stringify(sanitizedJson, null, 2);
         } catch {
-          content = JSON.stringify({ output }, null, 2);
+          content = JSON.stringify({ output: this.sanitizeOutput(output) }, null, 2);
         }
         break;
         
       case 'markdown':
-        if (!output.includes('# ') && !output.includes('## ')) {
-          content = `# Agent Output\n\n${output}`;
+        // Sanitize markdown content
+        content = sanitizeHtml(content, {
+          allowedTags: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'pre', 'code', 'blockquote'],
+          allowedAttributes: {},
+          disallowedTagsMode: 'escape'
+        });
+        if (!content.includes('# ') && !content.includes('## ')) {
+          content = `# Agent Output\n\n${content}`;
         }
         break;
         
       case 'text':
       default:
-        // Keep as-is
+        // Already sanitized above
         break;
     }
     
-    await fs.writeFile(outputPath, content, 'utf-8');
-    this.logger.debug(`Output saved to: ${outputPath}`);
+    // Use secure file write
+    await securityManager.secureWriteFile(pathValidation.resolvedPath!, content);
+    this.logger.debug(`Output saved securely to: ${outputPath}`);
   }
 
   /**
@@ -502,11 +606,25 @@ export class ExecutionEngine extends EventEmitter {
     
     return { ...this.metrics };
   }
+
+  /**
+   * Alias for executeSingle - invoke a single agent
+   */
+  async invokeAgent(options: SingleExecutionOptions): Promise<ExecutionResult> {
+    return this.executeSingle(options);
+  }
+
+  /**
+   * Alias for executeBatch - execute multiple agents in parallel
+   */
+  async batchExecute(options: BatchExecutionOptions): Promise<BatchExecutionResult> {
+    return this.executeBatch(options);
+  }
 }
 
 // Worker thread execution logic
 if (!isMainThread) {
-  const { agentName, context, options, timeout } = workerData;
+  const { agentName, context, options } = workerData;
   
   // Simulate agent execution
   // In real implementation, this would invoke Claude Code with the agent context

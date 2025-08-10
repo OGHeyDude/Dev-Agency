@@ -16,21 +16,20 @@ global.console = {
   error: jest.fn(),
 };
 
-// Global test utilities
-declare global {
-  namespace NodeJS {
-    interface Global {
-      testUtils: {
-        mockAgent: (name: string) => any;
-        mockRecipe: (name: string) => any;
-        createTempDir: () => Promise<string>;
-        cleanupTempDir: (dir: string) => Promise<void>;
-      };
-    }
-  }
+// Global test utilities interface  
+interface TestUtils {
+  mockAgent: (name: string) => any;
+  mockRecipe: (name: string) => any;
+  createTempDir: () => Promise<string>;
+  cleanupTempDir: (dir: string) => Promise<void>;
 }
 
-global.testUtils = {
+// Declare global testUtils without augmentation
+declare global {
+  var testUtils: TestUtils;
+}
+
+(global as any).testUtils = {
   mockAgent: (name: string) => ({
     name,
     description: `Test agent: ${name}`,
@@ -65,3 +64,6 @@ global.testUtils = {
     await fs.remove(dir);
   }
 };
+
+// Export to make this file a module
+export {};

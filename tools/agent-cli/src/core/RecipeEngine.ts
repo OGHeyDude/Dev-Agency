@@ -70,14 +70,14 @@ export class RecipeEngine {
   private logger = new Logger();
   private executionEngine: ExecutionEngine;
   private agentManager: AgentManager;
-  private configManager: ConfigManager;
+  // private configManager: ConfigManager; // TODO: Use or remove
   private recipes = new Map<string, Recipe>();
   private devAgencyPath: string;
 
   constructor() {
     this.executionEngine = new ExecutionEngine();
     this.agentManager = new AgentManager();
-    this.configManager = new ConfigManager();
+    // this.configManager = new ConfigManager(); // TODO: Use or remove
     this.devAgencyPath = '/home/hd/Desktop/LAB/Dev-Agency';
     this.loadRecipes();
   }
@@ -94,11 +94,15 @@ export class RecipeEngine {
       }
 
       // Find all recipe markdown files
-      const recipeFiles = await glob('*.md', { cwd: recipesPath });
+      const recipePattern = path.join(recipesPath, '*.md');
+      const recipeFilePaths = await glob(recipePattern);
       
-      this.logger.debug(`Found ${recipeFiles.length} recipe files`);
+      // Convert to relative paths and ensure they're strings
+      const relativeFiles = Array.isArray(recipeFilePaths) ? recipeFilePaths.map(file => path.relative(recipesPath, file)) : [];
+      
+      this.logger.debug(`Found ${Array.isArray(recipeFilePaths) ? recipeFilePaths.length : 0} recipe files`);
 
-      for (const file of recipeFiles) {
+      for (const file of relativeFiles) {
         const recipePath = path.join(recipesPath, file);
         const recipeName = path.basename(file, '.md');
         
@@ -694,5 +698,12 @@ export class RecipeEngine {
   async reloadRecipes(): Promise<void> {
     this.recipes.clear();
     await this.loadRecipes();
+  }
+
+  /**
+   * Alias for getAllRecipes - list all available recipes
+   */
+  async listRecipes(): Promise<Recipe[]> {
+    return this.getAllRecipes();
   }
 }
