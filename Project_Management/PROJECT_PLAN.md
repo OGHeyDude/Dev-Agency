@@ -112,7 +112,7 @@ This is the master list of all work to be done. Tickets are pulled from here int
 | AGENT-017 | Memory Sync Agent - Intelligent codebase knowledge graph sync | Integration Framework | [Spec](./Specs/AGENT-017_spec.md) | 8 | `DONE` |
 | AGENT-018 | Documentation Standardization Recipe & Slash Command | Recipe Library | [Spec](./Specs/AGENT-018_spec.md) | 5 | `DONE` |
 | AGENT-019 | Sprint Planning Automation Recipe & Slash Command | Recipe Library | [Spec](./Specs/AGENT-019_spec.md) | 5 | `DONE` |
-| AGENT-020 | Sprint Execution Strategy Recipe & Slash Command | Recipe Library | [Spec](./Specs/AGENT-020_spec.md) | 8 | `TODO` |
+| AGENT-020 | Sprint Execution Strategy Recipe & Slash Command | Recipe Library | [Spec](./Specs/AGENT-020_spec.md) | 8 | `DONE` |
 | SECURITY-001 | Fix CLI tool security vulnerabilities | Integration Framework | [Spec](./Specs/SECURITY-001_spec.md) | 5 | `DONE` |
 | BUILD-001 | Resolve TypeScript compilation errors | Integration Framework | [Spec](./Specs/BUILD-001_spec.md) | 2 | `DONE` |
 | PERF-001 | Implement performance optimizations | Performance Tracking | [Spec](./Specs/PERF-001_spec.md) | 3 | `DONE` |
@@ -141,6 +141,12 @@ This is the master list of all work to be done. Tickets are pulled from here int
 | AGENT-018 | Documentation Standardization Recipe & Slash Command | Recipe Library | 08-10-2025 |
 | AGENT-019 | Sprint Planning Automation Recipe & Slash Command | Recipe Library | 08-10-2025 |
 | AGENT-020 | Sprint Execution Strategy Recipe & Slash Command | Recipe Library | 08-10-2025 |
+| AGENT-011 | Agent selection assistant | Integration Framework | 08-10-2025 |
+| AGENT-004 | Domain-specific prompt libraries | Prompt Engineering | 08-10-2025 |
+| AGENT-007 | Prompt versioning system | Prompt Engineering | 08-10-2025 |
+| AGENT-012 | TDD workflow with agents | Recipe Library | 08-10-2025 |
+| AGENT-006 | Agent performance dashboard | Performance Tracking | 08-10-2025 |
+| AGENT-014 | Performance benchmarking suite | Performance Tracking | 08-10-2025 |
 
 ## **6. Notes**
 
