@@ -79,7 +79,9 @@ export class RecipeEngine {
     this.agentManager = new AgentManager();
     // this.configManager = new ConfigManager(); // TODO: Use or remove
     this.devAgencyPath = '/home/hd/Desktop/LAB/Dev-Agency';
-    this.loadRecipes();
+    this.loadRecipes().catch(error => {
+      this.logger.error('Failed to load recipes:', error);
+    });
   }
 
   /**
@@ -95,7 +97,12 @@ export class RecipeEngine {
 
       // Find all recipe markdown files
       const recipePattern = path.join(recipesPath, '*.md');
-      const recipeFilePaths = await glob(recipePattern);
+      const recipeFilePaths = await new Promise<string[]>((resolve, reject) => {
+        glob(recipePattern, (err, matches) => {
+          if (err) reject(err);
+          else resolve(matches);
+        });
+      });
       
       // Convert to relative paths and ensure they're strings
       const relativeFiles = Array.isArray(recipeFilePaths) ? recipeFilePaths.map(file => path.relative(recipesPath, file)) : [];

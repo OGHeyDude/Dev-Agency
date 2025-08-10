@@ -20,11 +20,43 @@ import { securityAuditor } from './utils/SecurityAuditor';
 const logger = Logger.create({ component: 'CLI' });
 const program = new Command();
 
-// Initialize managers
-const configManager = new ConfigManager();
-const agentManager = new AgentManager();
-const executionEngine = new ExecutionEngine();
-const recipeEngine = new RecipeEngine();
+// Lazy-loaded managers - initialized only when needed
+let configManager: ConfigManager | null = null;
+let agentManager: AgentManager | null = null;
+let executionEngine: ExecutionEngine | null = null;
+let recipeEngine: RecipeEngine | null = null;
+
+// Track startup time
+const startupStartTime = Date.now();
+
+// Lazy initialization functions
+const getConfigManager = (): ConfigManager => {
+  if (!configManager) {
+    configManager = new ConfigManager();
+  }
+  return configManager;
+};
+
+const getAgentManager = (): AgentManager => {
+  if (!agentManager) {
+    agentManager = new AgentManager();
+  }
+  return agentManager;
+};
+
+const getExecutionEngine = (): ExecutionEngine => {
+  if (!executionEngine) {
+    executionEngine = new ExecutionEngine();
+  }
+  return executionEngine;
+};
+
+const getRecipeEngine = (): RecipeEngine => {
+  if (!recipeEngine) {
+    recipeEngine = new RecipeEngine();
+  }
+  return recipeEngine;
+};
 
 program
   .name('agent')
@@ -74,7 +106,8 @@ program
       logger.info(`Invoking agent: ${chalk.blue(validatedOptions.agentName)}`);
       
       if (options.dryRun) {
-        const validation = await agentManager.validateAgent(validatedOptions.agentName, validatedOptions);
+        const agentMgr = getAgentManager();
+        const validation = await agentMgr.validateAgent(validatedOptions.agentName, validatedOptions);
         if (validation.valid) {
           console.log(chalk.green('✓ Agent validation passed'));
           console.log(`Agent: ${validatedOptions.agentName}`);
@@ -89,10 +122,11 @@ program
       }
 
       // const context = options.context ? 
-      //   await agentManager.loadContext(options.context) : 
+      //   await getAgentManager().loadContext(options.context) : 
       //   'No specific context provided';
 
-      const result = await executionEngine.invokeAgent(validatedOptions);
+      const execEngine = getExecutionEngine();
+      const result = await execEngine.invokeAgent(validatedOptions);
 
       console.log(chalk.green('\n✓ Agent execution completed'));
       console.log(result.output);
@@ -144,10 +178,11 @@ program
       logger.info(`Executing ${agents.length} agents with ${parallelLimit} parallel`);
 
       // const context = options.context ? 
-      //   await agentManager.loadContext(options.context) : 
+      //   await getAgentManager().loadContext(options.context) : 
       //   'No specific context provided';
 
-      const results = await executionEngine.batchExecute({
+      const execEngine = getExecutionEngine();
+      const results = await execEngine.batchExecute({
         agents,
         contextPath: validatedOptions.contextPath,
         parallelLimit,
@@ -199,11 +234,12 @@ program
 
       const variables = validatedOptions.vars || {};
       const context = validatedOptions.contextPath ? 
-        await agentManager.loadContext(validatedOptions.contextPath) : 
+        await getAgentManager().loadContext(validatedOptions.contextPath) : 
         undefined;
 
+      const recipeMgr = getRecipeEngine();
       if (options.dryRun) {
-        const validation = await recipeEngine.validateRecipe(validatedOptions.recipeName, variables);
+        const validation = await recipeMgr.validateRecipe(validatedOptions.recipeName, variables);
         if (validation.valid) {
           console.log(chalk.green('✓ Recipe validation passed'));
           console.log(`Recipe: ${validatedOptions.recipeName}`);
@@ -216,7 +252,7 @@ program
         }
       }
 
-      const result = await recipeEngine.executeRecipe({
+      const result = await recipeMgr.executeRecipe({
         recipeName: validatedOptions.recipeName,
         contextPath: validatedOptions.contextPath,
         variables,
@@ -251,7 +287,8 @@ configCmd
   .option('--force', 'Overwrite existing configuration')
   .action(async (options) => {
     try {
-      await configManager.initializeProject(options.projectType, options.force);
+      const configMgr = getConfigManager();
+      await configMgr.initializeProject(options.projectType, options.force);
       console.log(chalk.green('✓ Configuration initialized'));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -275,7 +312,8 @@ configCmd
         process.exit(1);
       }
       
-      await configManager.set(key, value);
+      const configMgr = getConfigManager();
+      await configMgr.set(key, value);
       console.log(chalk.green(`✓ Set ${key} = ${value}`));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -290,7 +328,8 @@ configCmd
   .argument('[key]', 'Configuration key (optional, shows all if omitted)')
   .action(async (key) => {
     try {
-      const value = await configManager.get(key);
+      const configMgr = getConfigManager();
+      const value = await configMgr.get(key);
       if (key) {
         console.log(`${key}: ${value}`);
       } else {
@@ -310,17 +349,28 @@ program
   .option('--active', 'Show only active executions')
   .action(async (options) => {
     try {
-      const status = await executionEngine.getStatus();
+      const startupTime = Date.now() - startupStartTime;
+      const execEngine = getExecutionEngine();
+      const status = await execEngine.getStatus();
+      const perfStatus = await execEngine.getPerformanceStatus();
       
       console.log(chalk.blue('=== Dev-Agency CLI Status ==='));
-      console.log(`Available agents: ${status.availableAgents}`);
-      console.log(`Active executions: ${status.activeExecutions}`);
-      console.log(`Total executions: ${status.totalExecutions}`);
-      console.log(`Cache hit rate: ${(status.cacheHitRate * 100).toFixed(1)}%`);
-
-      if (options.active && status.activeExecutions > 0) {
+      console.log(`Startup time: ${startupTime}ms`);
+      console.log(`Available agents: ${status.total_agents_available || 'Loading...'}`);
+      console.log(`Active executions: ${status.active_executions}`);
+      console.log(`Completed today: ${status.completed_today}`);
+      console.log(`Failed today: ${status.failed_today}`);
+      
+      // Performance metrics
+      console.log(chalk.blue('\n=== Performance Status ==='));
+      console.log(`Memory: ${(perfStatus.memory.heapUsed / 1024 / 1024).toFixed(1)}MB heap, ${perfStatus.memory.cacheEntries} cached executions`);
+      console.log(`Cache: ${(perfStatus.cache.hitRate * 100).toFixed(1)}% hit rate, ${perfStatus.cache.totalEntries} entries`);
+      console.log(`Health: ${perfStatus.health.overallHealthy ? chalk.green('✓ Healthy') : chalk.yellow('⚠ Issues detected')}`);
+      
+      if (options.active && status.active_executions > 0) {
         console.log(chalk.yellow('\nActive Executions:'));
-        // Show active execution details
+        const activeLogs = await execEngine.getStatus(true);
+        console.log(JSON.stringify(activeLogs, null, 2));
       }
 
     } catch (error) {
@@ -339,7 +389,8 @@ program
   .action(async (options) => {
     try {
       if (options.agents || (!options.agents && !options.recipes)) {
-        const agents = await agentManager.listAgents();
+        const agentMgr = getAgentManager();
+        const agents = await agentMgr.listAgents();
         console.log(chalk.blue('Available Agents:'));
         agents.forEach((agent: any) => {
           console.log(`  ${chalk.green(agent.name)} - ${agent.description}`);
@@ -347,7 +398,8 @@ program
       }
 
       if (options.recipes || (!options.agents && !options.recipes)) {
-        const recipes = await recipeEngine.listRecipes();
+        const recipeMgr = getRecipeEngine();
+        const recipes = await recipeMgr.listRecipes();
         console.log(chalk.blue('\nAvailable Recipes:'));
         recipes.forEach((recipe: any) => {
           console.log(`  ${chalk.green(recipe.name)} - ${recipe.description}`);
@@ -369,20 +421,51 @@ program
   .option('--export <format>', 'Export metrics (csv, json)')
   .action(async (options) => {
     try {
-      const metrics = await executionEngine.getMetrics();
+      const execEngine = getExecutionEngine();
+      const agentMgr = getAgentManager();
+      
+      const execMetrics = await execEngine.getMetrics();
+      const perfStatus = await execEngine.getPerformanceStatus();
+      const agentMetrics = agentMgr.getPerformanceMetrics();
       
       if (options.summary) {
         console.log(chalk.blue('=== Performance Summary ==='));
-        console.log(`Total executions: ${metrics.totalExecutions}`);
-        console.log(`Average duration: ${metrics.averageDuration.toFixed(0)}ms`);
-        console.log(`Success rate: ${(metrics.successRate * 100).toFixed(1)}%`);
+        console.log(`Total executions: ${execMetrics.total_executions || 0}`);
+        console.log(`Average duration: ${execMetrics.average_duration.toFixed(0)}ms`);
+        console.log(`Success rate: ${((execMetrics.successful_executions / execMetrics.total_executions) * 100).toFixed(1)}%`);
+        
+        // Performance metrics
+        console.log(chalk.blue('\n=== Cache Performance ==='));
+        console.log(`Context cache hit rate: ${(agentMetrics.cache.hitRate * 100).toFixed(1)}%`);
+        console.log(`Execution cache size: ${perfStatus.memory.cacheEntries} entries`);
+        console.log(`Memory usage: ${(perfStatus.memory.heapUsed / 1024 / 1024).toFixed(1)}MB`);
+        console.log(`File loader throughput: ${agentMetrics.fileLoader.throughputMBps.toFixed(1)}MB/s`);
       } else {
-        console.log(JSON.stringify(metrics, null, 2));
+        console.log('=== Execution Metrics ===');
+        console.log(JSON.stringify(execMetrics, null, 2));
+        console.log('\n=== Performance Status ===');
+        console.log(JSON.stringify(perfStatus, null, 2));
+        console.log('\n=== Agent Metrics ===');
+        console.log(JSON.stringify(agentMetrics, null, 2));
       }
 
       if (options.export) {
         // Export metrics in specified format
         const exportPath = `metrics-${Date.now()}.${options.export}`;
+        const exportData = {
+          execution: execMetrics,
+          performance: perfStatus,
+          agent: agentMetrics,
+          timestamp: new Date().toISOString()
+        };
+        
+        if (options.export === 'csv') {
+          // Simple CSV export
+          console.log('CSV export not implemented yet');
+        } else {
+          const fs = require('fs-extra');
+          await fs.writeFile(exportPath, JSON.stringify(exportData, null, 2));
+        }
         console.log(chalk.green(`✓ Metrics exported to ${exportPath}`));
       }
 
@@ -515,4 +598,85 @@ process.on('uncaughtException', (error) => {
 });
 
 // Parse command line arguments
-// Graceful shutdown handling for security audit finalization\nconst gracefulShutdown = async (signal: string) => {\n  logger.info(`Received ${signal}, shutting down gracefully...`);\n  \n  try {\n    await securityAuditor.finalize();\n  } catch (error) {\n    logger.error('Error during security audit finalization:', error);\n  }\n  \n  process.exit(0);\n};\n\n// Graceful shutdown signals\nprocess.on('SIGTERM', () => gracefulShutdown('SIGTERM'));\nprocess.on('SIGINT', () => gracefulShutdown('SIGINT'));\n\n// Parse command line arguments\nprogram.parse();
+// Performance-aware graceful shutdown handling
+const gracefulShutdown = async (signal: string) => {
+  logger.info(`Received ${signal}, shutting down gracefully...`);
+  
+  try {
+    // Finalize security audit
+    await securityAuditor.finalize();
+    
+    // Shutdown performance-related components if they were initialized
+    if (executionEngine) {
+      await executionEngine.shutdown();
+    }
+    
+    if (agentManager) {
+      await agentManager.shutdown();
+    }
+    
+    logger.info('Graceful shutdown completed');
+  } catch (error) {
+    logger.error('Error during graceful shutdown:', error);
+  }
+  
+  process.exit(0);
+};
+
+// Graceful shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Add performance benchmark command
+program
+  .command('benchmark')
+  .description('Run performance benchmarks')
+  .option('--context <path>', 'Context path for benchmarking')
+  .option('--iterations <num>', 'Number of iterations', '5')
+  .action(async (options) => {
+    try {
+      const startTime = Date.now();
+      console.log(chalk.blue('=== Performance Benchmark ==='));
+      
+      const agentMgr = getAgentManager();
+      const execEngine = getExecutionEngine();
+      
+      // Startup time
+      const startupTime = Date.now() - startupStartTime;
+      console.log(`CLI Startup time: ${startupTime}ms`);
+      
+      // Context loading benchmark
+      if (options.context) {
+        console.log(chalk.yellow('\nContext Loading Benchmark:'));
+        const contextBench = await agentMgr.benchmarkContextLoading(options.context);
+        console.log(`  Cache miss: ${contextBench.cacheMiss.time}ms`);
+        console.log(`  Cache hit: ${contextBench.cacheHit.time}ms`);
+        console.log(`  Improvement: ${contextBench.improvement.percent.toFixed(1)}%`);
+      }
+      
+      // Memory status
+      console.log(chalk.yellow('\nMemory Status:'));
+      const memMetrics = execEngine.getMemoryMetrics();
+      console.log(`  Heap used: ${(memMetrics.heapUsed / 1024 / 1024).toFixed(1)}MB`);
+      console.log(`  Cache entries: ${memMetrics.cacheEntries}`);
+      console.log(`  Memory pressure: ${(memMetrics.memoryPressure * 100).toFixed(1)}%`);
+      
+      // Cache performance
+      console.log(chalk.yellow('\nCache Performance:'));
+      const cacheMetrics = execEngine.getCacheMetrics();
+      console.log(`  Hit rate: ${(cacheMetrics.hitRate * 100).toFixed(1)}%`);
+      console.log(`  Total entries: ${cacheMetrics.totalEntries}`);
+      console.log(`  Avg response time: ${cacheMetrics.averageResponseTime.toFixed(1)}ms`);
+      
+      const benchmarkTime = Date.now() - startTime;
+      console.log(chalk.green(`\n✓ Benchmark completed in ${benchmarkTime}ms`));
+      
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.log(chalk.red(`Benchmark error: ${errorMessage}`));
+      process.exit(1);
+    }
+  });
+
+// Parse command line arguments
+program.parse();

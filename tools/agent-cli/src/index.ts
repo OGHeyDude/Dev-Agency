@@ -37,17 +37,28 @@ export type {
 export { Logger } from './utils/Logger';
 export type { LogLevel, LogEntry } from './utils/Logger';
 
+// Import types directly to avoid circular dependency issues
+import type { AgentManager as AgentManagerType } from './core/AgentManager';
+import type { ConfigManager as ConfigManagerType } from './core/ConfigManager';
+import type { ExecutionEngine as ExecutionEngineType } from './core/ExecutionEngine';
+import type { RecipeEngine as RecipeEngineType } from './core/RecipeEngine';
+
 /**
  * Agent CLI Library
  * Provides programmatic access to all CLI functionality
  */
 export class AgentCLI {
-  public agentManager: AgentManager;
-  public configManager: ConfigManager;
-  public executionEngine: ExecutionEngine;
-  public recipeEngine: RecipeEngine;
+  public agentManager: AgentManagerType;
+  public configManager: ConfigManagerType;
+  public executionEngine: ExecutionEngineType;
+  public recipeEngine: RecipeEngineType;
 
   constructor() {
+    const { AgentManager } = require('./core/AgentManager');
+    const { ConfigManager } = require('./core/ConfigManager');
+    const { ExecutionEngine } = require('./core/ExecutionEngine');
+    const { RecipeEngine } = require('./core/RecipeEngine');
+    
     this.agentManager = new AgentManager();
     this.configManager = new ConfigManager();
     this.executionEngine = new ExecutionEngine();
@@ -74,7 +85,7 @@ export class AgentCLI {
     outputPath?: string;
     format?: string;
     timeout?: number;
-  }): Promise<ExecutionResult> {
+  }): Promise<any> {
     return this.executionEngine.executeSingle({
       agentName,
       task,
@@ -92,7 +103,7 @@ export class AgentCLI {
     contextPath?: string;
     outputPath?: string;
     variables?: Record<string, any>;
-  }): Promise<RecipeExecutionResult> {
+  }): Promise<any> {
     return this.recipeEngine.executeRecipe({
       recipeName,
       contextPath: options?.contextPath,
@@ -118,14 +129,14 @@ export class AgentCLI {
   /**
    * Get execution status
    */
-  async getStatus(): Promise<ExecutionStatus | any> {
+  async getStatus(): Promise<any> {
     return this.executionEngine.getStatus();
   }
 
   /**
    * Get performance metrics
    */
-  async getMetrics(): Promise<ExecutionMetrics | any> {
+  async getMetrics(): Promise<any> {
     return this.executionEngine.getMetrics();
   }
 }

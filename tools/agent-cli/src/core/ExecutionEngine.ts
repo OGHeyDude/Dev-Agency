@@ -13,6 +13,8 @@ import { EventEmitter } from 'events';
 import { AgentManager, AgentInvocationOptions } from './AgentManager';
 import { ConfigManager } from './ConfigManager';
 import { Logger } from '../utils/Logger';
+import { MemoryManager, MemoryMetrics } from '../utils/MemoryManager';
+import { PerformanceCache } from '../utils/PerformanceCache';
 import { securityManager } from '../utils/security';
 const sanitizeHtml = require('sanitize-html');
 
@@ -80,20 +82,33 @@ export interface ExecutionMetrics {
 }
 
 export class ExecutionEngine extends EventEmitter {
-  private logger = new Logger();
+  private logger = Logger.create({ component: 'ExecutionEngine' });
   private agentManager: AgentManager;
+  private memoryManager: MemoryManager;
+  private performanceCache: PerformanceCache;
   // private configManager: ConfigManager; // TODO: Use or remove
   
   private activeExecutions = new Map<string, ExecutionResult>();
   private executionQueue: SingleExecutionOptions[] = [];
-  private executionHistory: ExecutionResult[] = [];
   private metrics!: ExecutionMetrics;
 
   constructor() {
     super();
     this.agentManager = new AgentManager();
+    this.memoryManager = new MemoryManager({
+      maxExecutionHistory: 1000,
+      maxMemoryMB: 100,
+      ttlMinutes: 60
+    });
+    this.performanceCache = new PerformanceCache({
+      memoryCacheMaxMB: 50,
+      fileCacheMaxMB: 200,
+      ttlMinutes: 60
+    });
     // this.configManager = new ConfigManager(); // TODO: Use or remove
     this.initializeMetrics();
+    
+    this.logger.info('ExecutionEngine initialized with performance optimizations');
   }
 
   /**
@@ -181,9 +196,9 @@ export class ExecutionEngine extends EventEmitter {
       // Update metrics
       this.updateMetrics(result);
       
-      // Remove from active executions
+      // Remove from active executions and store in memory-managed cache
       this.activeExecutions.delete(executionId);
-      this.executionHistory.push(result);
+      this.memoryManager.setExecution(executionId, result);
 
       this.emit('execution:completed', { executionId, result });
       this.logger.info(`Completed execution: ${options.agentName} [${executionId}] in ${result.metrics.duration}ms`);
@@ -202,7 +217,7 @@ export class ExecutionEngine extends EventEmitter {
       };
 
       this.activeExecutions.delete(executionId);
-      this.executionHistory.push(result);
+      this.memoryManager.setExecution(executionId, result);
       this.updateMetrics(result);
 
       this.emit('execution:failed', { executionId, error: result.error });
@@ -496,9 +511,11 @@ export class ExecutionEngine extends EventEmitter {
     agentMetrics.avg_duration = 
       (agentMetrics.avg_duration * (agentMetrics.total_runs - 1) + result.metrics.duration) / 
       agentMetrics.total_runs;
-    agentMetrics.success_rate = 
-      (this.executionHistory.filter(r => r.agent === result.agent && r.success).length / 
-       this.executionHistory.filter(r => r.agent === result.agent).length) * 100;
+    
+    // Calculate success rate from memory-managed history
+    const agentExecutions = this.memoryManager.getExecutionsByAgent(result.agent);
+    const successfulRuns = agentExecutions.filter(r => r.success).length;
+    agentMetrics.success_rate = (successfulRuns / agentExecutions.length) * 100;
   }
 
   /**
@@ -550,15 +567,16 @@ export class ExecutionEngine extends EventEmitter {
     }
     
     const today = new Date().toDateString();
-    const todayResults = this.executionHistory.filter(r => 
+    const allExecutions = this.memoryManager.getAllExecutions();
+    const todayResults = allExecutions.filter((r: ExecutionResult) => 
       new Date(r.timestamp).toDateString() === today
     );
     
     return {
       active_executions: this.activeExecutions.size,
       queued_executions: this.executionQueue.length,
-      completed_today: todayResults.filter(r => r.success).length,
-      failed_today: todayResults.filter(r => !r.success).length,
+      completed_today: todayResults.filter((r: ExecutionResult) => r.success).length,
+      failed_today: todayResults.filter((r: ExecutionResult) => !r.success).length,
       total_agents_available: (await this.agentManager.getAllAgents()).length
     };
   }
@@ -567,7 +585,11 @@ export class ExecutionEngine extends EventEmitter {
    * Get execution logs
    */
   async getLogs(options: { agent?: string; limit?: number }): Promise<ExecutionLog[]> {
-    let logs = this.executionHistory
+    const executionHistory = options.agent ? 
+      this.memoryManager.getExecutionsByAgent(options.agent) :
+      this.memoryManager.getAllExecutions();
+
+    let logs = executionHistory
       .map(result => ({
         timestamp: result.timestamp,
         level: result.success ? 'info' as const : 'error' as const,
@@ -578,10 +600,6 @@ export class ExecutionEngine extends EventEmitter {
         duration: result.metrics.duration
       }))
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    
-    if (options.agent) {
-      logs = logs.filter(log => log.agent === options.agent);
-    }
     
     if (options.limit) {
       logs = logs.slice(0, options.limit);
@@ -619,6 +637,109 @@ export class ExecutionEngine extends EventEmitter {
    */
   async batchExecute(options: BatchExecutionOptions): Promise<BatchExecutionResult> {
     return this.executeBatch(options);
+  }
+
+  /**
+   * Get memory metrics from the memory manager
+   */
+  getMemoryMetrics(): MemoryMetrics {
+    return this.memoryManager.getMemoryMetrics();
+  }
+
+  /**
+   * Get cache metrics from the performance cache
+   */
+  getCacheMetrics() {
+    return this.performanceCache.getMetrics();
+  }
+
+  /**
+   * Get comprehensive performance status
+   */
+  async getPerformanceStatus(): Promise<{
+    memory: MemoryMetrics;
+    cache: any;
+    execution: ExecutionMetrics;
+    health: {
+      memoryHealthy: boolean;
+      cacheHealthy: boolean;
+      overallHealthy: boolean;
+    };
+  }> {
+    const memoryMetrics = this.getMemoryMetrics();
+    const cacheMetrics = this.getCacheMetrics();
+    const executionMetrics = await this.getMetrics();
+
+    const memoryHealthy = this.memoryManager.isWithinLimits();
+    const cacheHealthy = this.performanceCache.isHealthy();
+
+    return {
+      memory: memoryMetrics,
+      cache: cacheMetrics,
+      execution: executionMetrics,
+      health: {
+        memoryHealthy,
+        cacheHealthy,
+        overallHealthy: memoryHealthy && cacheHealthy
+      }
+    };
+  }
+
+  /**
+   * Get performance summary string
+   */
+  getPerformanceSummary(): string {
+    const memSummary = this.memoryManager.getMemorySummary();
+    const cacheSummary = this.performanceCache.getCacheStatus();
+    return `${memSummary} | ${cacheSummary}`;
+  }
+
+  /**
+   * Clear caches and reset performance data
+   */
+  async clearPerformanceData(): Promise<void> {
+    await this.performanceCache.clear();
+    this.memoryManager.clearExecutions();
+    this.logger.info('Performance data cleared');
+  }
+
+  /**
+   * Force memory cleanup
+   */
+  forceMemoryCleanup(): void {
+    this.memoryManager.forceCleanup();
+    this.logger.info('Memory cleanup forced');
+  }
+
+  /**
+   * Shutdown the execution engine and cleanup resources
+   */
+  async shutdown(): Promise<void> {
+    this.logger.info('Shutting down ExecutionEngine...');
+    
+    // Wait for active executions to complete or timeout
+    const activeCount = this.activeExecutions.size;
+    if (activeCount > 0) {
+      this.logger.info(`Waiting for ${activeCount} active executions to complete...`);
+      
+      // Give active executions 30 seconds to complete
+      const timeout = setTimeout(() => {
+        this.logger.warn('Timeout waiting for executions, forcing shutdown');
+      }, 30000);
+
+      // Wait for all active executions
+      while (this.activeExecutions.size > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      clearTimeout(timeout);
+    }
+
+    // Shutdown components
+    this.memoryManager.shutdown();
+    await this.performanceCache.shutdown();
+    
+    this.logger.info('ExecutionEngine shutdown completed');
   }
 }
 

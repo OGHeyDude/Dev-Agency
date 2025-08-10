@@ -10,6 +10,8 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { glob } from 'glob';
 import { Logger } from '../utils/Logger';
+import { PerformanceCache } from '../utils/PerformanceCache';
+import { ParallelFileLoader } from '../utils/ParallelFileLoader';
 import { securityManager } from '../utils/security';
 const sanitizeHtml = require('sanitize-html');
 
@@ -45,14 +47,33 @@ export interface AgentInvocationOptions {
 }
 
 export class AgentManager {
-  private logger = new Logger();
+  private logger = Logger.create({ component: 'AgentManager' });
   private agentDefinitions = new Map<string, AgentDefinition>();
+  private performanceCache: PerformanceCache;
+  private fileLoader: ParallelFileLoader;
   private devAgencyPath: string;
 
   constructor() {
     // Dev-Agency centralized location
     this.devAgencyPath = '/home/hd/Desktop/LAB/Dev-Agency';
-    this.loadAgentDefinitions();
+    
+    // Initialize performance components
+    this.performanceCache = new PerformanceCache({
+      memoryCacheMaxMB: 25, // Smaller cache for agent definitions
+      fileCacheMaxMB: 100,
+      ttlMinutes: 120 // Cache agent definitions longer
+    });
+    
+    this.fileLoader = new ParallelFileLoader({
+      concurrencyLimit: 3, // Lower concurrency for agent files
+      maxFileSize: 512 * 1024, // 512KB max for agent definitions
+      maxTotalFiles: 50,
+      allowedExtensions: ['.md']
+    });
+    
+    this.loadAgentDefinitions().catch(error => {
+      this.logger.error('Failed to load agent definitions:', error);
+    });
   }
 
   /**
@@ -72,7 +93,12 @@ export class AgentManager {
       if (!globValidation.isValid) {
         throw new Error(`Unsafe glob pattern: ${globValidation.violations.join(', ')}`);
       }
-      const agentFilePaths = await glob(agentPattern);
+      const agentFilePaths = await new Promise<string[]>((resolve, reject) => {
+        glob(agentPattern, (err, matches) => {
+          if (err) reject(err);
+          else resolve(matches);
+        });
+      });
       
       // Convert to relative paths and ensure they're strings
       const relativeFiles = Array.isArray(agentFilePaths) ? agentFilePaths.map(file => path.relative(agentsPath, file)) : [];
@@ -369,95 +395,100 @@ export class AgentManager {
   }
 
   /**
-   * Load context files with limits and security validation
+   * Load context files with caching and parallel loading
    */
   private async loadContextFiles(contextPath: string, limits: AgentDefinition['context_limits']): Promise<string> {
+    const startTime = Date.now();
+    
+    // Check cache first
+    const cachedContext = await this.performanceCache.getContext(contextPath);
+    if (cachedContext) {
+      this.logger.debug(`Context cache hit: ${contextPath} (${Date.now() - startTime}ms)`);
+      return cachedContext.content;
+    }
+    
+    // Cache miss - load with parallel file loader
+    this.logger.debug(`Context cache miss: ${contextPath} - loading files...`);
+    
     // Validate context path security
     const pathValidation = await securityManager.validatePath(contextPath, 'read');
     if (!pathValidation.isValid) {
       throw new Error(`Context path security validation failed: ${pathValidation.violations.join(', ')}`);
     }
     
-    const stats = await fs.stat(pathValidation.resolvedPath!);
+    const resolvedPath = pathValidation.resolvedPath!;
+    const stats = await fs.stat(resolvedPath);
     let content = '';
+    let fileCount = 0;
+    let totalSize = 0;
 
     if (stats.isFile()) {
-      // Single file - secure read
-      const fileContent = await securityManager.secureReadFile(pathValidation.resolvedPath!);
-      // Sanitize content to prevent injection
-      const sanitizedContent = sanitizeHtml(fileContent, {
-        allowedTags: [],
-        allowedAttributes: {},
-        textFilter: (text) => {
-          // Remove potential injection patterns
-          return text.replace(/[<>&"']/g, (char) => {
-            const entityMap: { [key: string]: string } = {
-              '<': '&lt;',
-              '>': '&gt;',
-              '&': '&amp;',
-              '"': '&quot;',
-              "'": '&#39;'
-            };
-            return entityMap[char] || char;
-          });
-        }
-      });
-      content = `### ${path.basename(contextPath)}\n\`\`\`\n${sanitizedContent}\n\`\`\`\n\n`;
-    } else if (stats.isDirectory()) {
-      // Directory - load multiple files with limits and security
-      const pattern = path.join(pathValidation.resolvedPath!, '**/*');
-      const globValidation = securityManager.validateGlobPattern('**/*', pathValidation.resolvedPath!);
-      if (!globValidation.isValid) {
-        throw new Error(`Unsafe glob pattern: ${globValidation.violations.join(', ')}`);
-      }
-      const allFilePaths = await glob(pattern);
-
-      // Filter out directories and convert to relative paths
-      const fileList = Array.isArray(allFilePaths) ? allFilePaths : [];
-      const files = fileList
-        .filter(file => fs.statSync(file).isFile())
-        .map(file => path.relative(contextPath, file))
-        .filter(file => !file.includes('node_modules') && !file.includes('.git') && !file.includes('dist') && !file.includes('build'));
-
-      const limitedFiles = files.slice(0, limits.max_files || 10);
+      // Single file - use file loader
+      const loadResult = await this.fileLoader.loadFiles(resolvedPath);
       
-      for (const file of limitedFiles) {
-        const filePath = path.join(pathValidation.resolvedPath!, file);
-        try {
-          // Validate each file path
-          const fileValidation = await securityManager.validatePath(filePath, 'read');
-          if (!fileValidation.isValid) {
-            this.logger.warn(`Skipping unsafe file ${file}:`, fileValidation.violations);
-            continue;
-          }
-          
-          const fileContent = await securityManager.secureReadFile(fileValidation.resolvedPath!);
-          // Sanitize file content
-          const sanitizedContent = sanitizeHtml(fileContent, {
-            allowedTags: [],
-            allowedAttributes: {},
-            textFilter: (text) => {
-              // Remove potential injection patterns
-              return text.replace(/[<>&"']/g, (char) => {
-                const entityMap: { [key: string]: string } = {
-                  '<': '&lt;',
-                  '>': '&gt;',
-                  '&': '&amp;',
-                  '"': '&quot;',
-                  "'": '&#39;'
-                };
-                return entityMap[char] || char;
-              });
-            }
-          });
-          content += `### ${file}\n\`\`\`\n${sanitizedContent}\n\`\`\`\n\n`;
-        } catch (error) {
-          this.logger.warn(`Failed to read file ${file}:`, error);
-        }
+      if (loadResult.files.length > 0) {
+        const file = loadResult.files[0];
+        const sanitizedContent = this.sanitizeContent(file.content);
+        content = `### ${path.basename(contextPath)}\n\`\`\`\n${sanitizedContent}\n\`\`\`\n\n`;
+        fileCount = 1;
+        totalSize = file.size;
+      }
+    } else if (stats.isDirectory()) {
+      // Directory - use parallel file loader
+      const loadResult = await this.fileLoader.loadFiles(resolvedPath);
+      
+      // Apply limits
+      const maxFiles = limits.max_files || 10;
+      const limitedFiles = loadResult.files.slice(0, maxFiles);
+      
+      if (limitedFiles.length < loadResult.files.length) {
+        this.logger.warn(`File limit applied: ${limitedFiles.length} of ${loadResult.files.length} files loaded`);
+      }
+      
+      // Generate content from loaded files
+      content = this.fileLoader.generateContentSummary(limitedFiles);
+      fileCount = limitedFiles.length;
+      totalSize = limitedFiles.reduce((sum, file) => sum + file.size, 0);
+      
+      // Log any errors
+      if (loadResult.errors.length > 0) {
+        this.logger.warn(`Context loading errors: ${loadResult.errors.length} files failed`);
       }
     }
 
+    // Cache the result
+    const loadTime = Date.now() - startTime;
+    await this.performanceCache.setContext(contextPath, content, fileCount, totalSize);
+    
+    this.logger.debug(
+      `Context loaded: ${contextPath} (${fileCount} files, ${totalSize} bytes) ` +
+      `in ${loadTime}ms with parallel loading`
+    );
+
     return content;
+  }
+
+  /**
+   * Sanitize content to prevent injection attacks
+   */
+  private sanitizeContent(content: string): string {
+    return sanitizeHtml(content, {
+      allowedTags: [],
+      allowedAttributes: {},
+      textFilter: (text: string) => {
+        // Remove potential injection patterns
+        return text.replace(/[<>&"']/g, (char: string) => {
+          const entityMap: { [key: string]: string } = {
+            '<': '&lt;',
+            '>': '&gt;',
+            '&': '&amp;',
+            '"': '&quot;',
+            "'": '&#39;'
+          };
+          return entityMap[char] || char;
+        });
+      }
+    });
   }
 
   /**
@@ -518,5 +549,92 @@ export class AgentManager {
       description: def.description,
       capabilities: def.capabilities
     }));
+  }
+
+  /**
+   * Get performance metrics from cache and file loader
+   */
+  getPerformanceMetrics() {
+    return {
+      cache: this.performanceCache.getMetrics(),
+      fileLoader: this.fileLoader.getMetrics()
+    };
+  }
+
+  /**
+   * Get performance status summary
+   */
+  getPerformanceStatus(): string {
+    const cacheStatus = this.performanceCache.getCacheStatus();
+    const fileLoaderStatus = this.fileLoader.getPerformanceSummary();
+    return `Agent Manager - ${cacheStatus} | ${fileLoaderStatus}`;
+  }
+
+  /**
+   * Clear agent performance caches
+   */
+  async clearCaches(): Promise<void> {
+    await this.performanceCache.clear('agent');
+    await this.performanceCache.clear('context');
+    this.logger.info('Agent caches cleared');
+  }
+
+  /**
+   * Benchmark context loading performance
+   */
+  async benchmarkContextLoading(contextPath: string): Promise<{
+    cacheHit: { time: number; fromCache: boolean };
+    cacheMiss: { time: number; fromCache: boolean };
+    improvement: { percent: number };
+  }> {
+    // First load (cache miss)
+    await this.performanceCache.delete(contextPath, 'context');
+    const missStart = Date.now();
+    await this.loadContext(contextPath);
+    const missTime = Date.now() - missStart;
+
+    // Second load (cache hit)
+    const hitStart = Date.now();
+    await this.loadContext(contextPath);
+    const hitTime = Date.now() - hitStart;
+
+    const improvement = ((missTime - hitTime) / missTime) * 100;
+
+    return {
+      cacheHit: { time: hitTime, fromCache: true },
+      cacheMiss: { time: missTime, fromCache: false },
+      improvement: { percent: Math.max(0, improvement) }
+    };
+  }
+
+  /**
+   * Get cache health status
+   */
+  getCacheHealth(): { healthy: boolean; hitRate: number; issues: string[] } {
+    const metrics = this.performanceCache.getMetrics();
+    const issues: string[] = [];
+    
+    if (metrics.hitRate < 0.3) {
+      issues.push('Low cache hit rate (<30%)');
+    }
+    
+    if (metrics.averageResponseTime > 100) {
+      issues.push('High cache response time (>100ms)');
+    }
+    
+    return {
+      healthy: issues.length === 0,
+      hitRate: metrics.hitRate,
+      issues
+    };
+  }
+
+  /**
+   * Shutdown agent manager and cleanup resources
+   */
+  async shutdown(): Promise<void> {
+    this.logger.info('Shutting down AgentManager...');
+    await this.performanceCache.shutdown();
+    this.logger.info('AgentManager shutdown completed');
   }
 }
