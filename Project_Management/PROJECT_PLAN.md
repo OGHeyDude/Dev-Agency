@@ -37,11 +37,11 @@ This document is the central source of truth for the Dev-Agency project. It cont
 #### Phase 2: BACKLOG → DONE (Weeks 2-3)
 | ID | Ticket | Points | Status |
 | --- | --- | --- | --- |
-| AGENT-004 | Domain-specific prompt libraries | 5 | `TODO` |
-| AGENT-006 | Agent performance dashboard | 3 | `TODO` |
-| AGENT-007 | Prompt versioning system | 2 | `TODO` |
-| AGENT-012 | TDD workflow with agents | 3 | `TODO` |
-| AGENT-014 | Performance benchmarking suite | 5 | `TODO` |
+| AGENT-004 | Domain-specific prompt libraries | 5 | `DONE` |
+| AGENT-006 | Agent performance dashboard | 3 | `DONE` |
+| AGENT-007 | Prompt versioning system | 2 | `DONE` |
+| AGENT-012 | TDD workflow with agents | 3 | `DONE` |
+| AGENT-014 | Performance benchmarking suite | 5 | `DONE` |
 | **Phase 2 Total** |  | **18** |  |
 
 | **SPRINT 4 TOTAL** |  | **44** | **PLANNED** |
@@ -97,17 +97,17 @@ This is the master list of all work to be done. Tickets are pulled from here int
 | AGENT-001 | Test agent system with real development task | Integration Framework | [Spec](./Specs/AGENT-001_spec.md) | 5 | `DONE` |
 | AGENT-002 | ~~Build performance tracking system~~ | Performance Tracking | - | 3 | `CANCELLED` |
 | AGENT-003 | Create agent combination recipes | Recipe Library | [Spec](./Specs/AGENT-003_spec.md) | 3 | `DONE` |
-| AGENT-004 | Develop domain-specific prompt libraries | Prompt Engineering | [Spec](./Specs/AGENT-004_spec.md) | 5 | `TODO` |
+| AGENT-004 | Develop domain-specific prompt libraries | Prompt Engineering | [Spec](./Specs/AGENT-004_spec.md) | 5 | `DONE` |
 | AGENT-005 | Establish feedback loops and refinement process | Continuous Improvement | [Spec](./Specs/AGENT-005_spec.md) | 3 | `DONE` |
-| AGENT-006 | Create agent performance dashboard | Performance Tracking | [Spec](./Specs/AGENT-006_spec.md) | 3 | `TODO` |
-| AGENT-007 | Build prompt versioning system | Prompt Engineering | [Spec](./Specs/AGENT-007_spec.md) | 2 | `TODO` |
+| AGENT-006 | Create agent performance dashboard | Performance Tracking | [Spec](./Specs/AGENT-006_spec.md) | 3 | `DONE` |
+| AGENT-007 | Build prompt versioning system | Prompt Engineering | [Spec](./Specs/AGENT-007_spec.md) | 2 | `DONE` |
 | AGENT-008 | Document security audit workflow | Recipe Library | [Spec](./Specs/AGENT-008_spec.md) | 2 | `DONE` |
 | AGENT-009 | Create MCP implementation recipe | Recipe Library | [Spec](./Specs/AGENT-009_spec.md) | 3 | `DONE` |
 | AGENT-010 | Build context size optimizer tool | Performance Tracking | [Spec](./Specs/AGENT-010_spec.md) | 5 | `DONE` |
 | AGENT-011 | Create agent selection assistant | Integration Framework | [Spec](./Specs/AGENT-011_spec.md) | 3 | `DONE` |
-| AGENT-012 | Develop TDD workflow with agents | Recipe Library | [Spec](./Specs/AGENT-012_spec.md) | 3 | `TODO` |
+| AGENT-012 | Develop TDD workflow with agents | Recipe Library | [Spec](./Specs/AGENT-012_spec.md) | 3 | `DONE` |
 | AGENT-013 | Build agent invocation CLI tool | Integration Framework | [Spec](./Specs/AGENT-013_spec.md) | 5 | `DONE` |
-| AGENT-014 | Create performance benchmarking suite | Performance Tracking | [Spec](./Specs/AGENT-014_spec.md) | 5 | `TODO` |
+| AGENT-014 | Create performance benchmarking suite | Performance Tracking | [Spec](./Specs/AGENT-014_spec.md) | 5 | `DONE` |
 | AGENT-015 | Document microservices development recipe | Recipe Library | [Spec](./Specs/AGENT-015_spec.md) | 2 | `DONE` |
 | AGENT-017 | Memory Sync Agent - Intelligent codebase knowledge graph sync | Integration Framework | [Spec](./Specs/AGENT-017_spec.md) | 8 | `DONE` |
 | AGENT-018 | Documentation Standardization Recipe & Slash Command | Recipe Library | [Spec](./Specs/AGENT-018_spec.md) | 5 | `DONE` |

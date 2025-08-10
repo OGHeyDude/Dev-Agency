@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev-Agency Agent Performance Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .metric-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .chart-container {
+            grid-column: span 2;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .agent-list {
+            list-style: none;
+        }
+        
+        .agent-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .agent-item:hover {
+            background: #e9ecef;
+        }
+        
+        .agent-name {
+            font-weight: 500;
+        }
+        
+        .agent-status {
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-idle {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .status-error {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+        
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .timestamp {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Dev-Agency Agent Performance Dashboard</h1>
+        
+        <div class="dashboard">
+            <!-- Overview Card -->
+            <div class="card">
+                <h2>📊 System Overview</h2>
+                <div class="metric">
+                    <span class="metric-label">Total Agents</span>
+                    <span class="metric-value" id="total-agents">9</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Active Tasks</span>
+                    <span class="metric-value" id="active-tasks">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Success Rate</span>
+                    <span class="metric-value" id="success-rate">94.5%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Avg Response Time</span>
+                    <span class="metric-value" id="response-time">2.3s</span>
+                </div>
+            </div>
+            
+            <!-- Agent Status Card -->
+            <div class="card">
+                <h2>🔧 Agent Status</h2>
+                <ul class="agent-list" id="agent-list">
+                    <li class="agent-item">
+                        <span class="agent-name">architect</span>
+                        <span class="agent-status status-idle">idle</span>
+                    </li>
+                    <li class="agent-item">
+                        <span class="agent-name">coder</span>
+                        <span class="agent-status status-idle">idle</span>
+                    </li>
+                    <li class="agent-item">
+                        <span class="agent-name">tester</span>
+                        <span class="agent-status status-idle">idle</span>
+                    </li>
+                    <li class="agent-item">
+                        <span class="agent-name">security</span>
+                        <span class="agent-status status-idle">idle</span>
+                    </li>
+                    <li class="agent-item">
+                        <span class="agent-name">documenter</span>
+                        <span class="agent-status status-idle">idle</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Token Usage Card -->
+            <div class="card">
+                <h2>💰 Token Usage</h2>
+                <div class="metric">
+                    <span class="metric-label">Today</span>
+                    <span class="metric-value" id="tokens-today">45,230</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">This Week</span>
+                    <span class="metric-value" id="tokens-week">312,450</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">This Month</span>
+                    <span class="metric-value" id="tokens-month">1.2M</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 65%"></div>
+                </div>
+                <p style="text-align: center; color: #666; font-size: 0.9em;">65% of monthly limit</p>
+            </div>
+            
+            <!-- Performance Metrics Card -->
+            <div class="card">
+                <h2>⚡ Performance Metrics</h2>
+                <div class="metric">
+                    <span class="metric-label">Cache Hit Rate</span>
+                    <span class="metric-value" id="cache-rate">78%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Parallel Executions</span>
+                    <span class="metric-value" id="parallel-exec">156</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Context Optimization</span>
+                    <span class="metric-value" id="context-opt">42%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Memory Usage</span>
+                    <span class="metric-value" id="memory-usage">184MB</span>
+                </div>
+            </div>
+            
+            <!-- Recent Activity Chart -->
+            <div class="chart-container">
+                <h2>📈 Recent Activity (Last 24 Hours)</h2>
+                <canvas id="activity-chart" width="400" height="200"></canvas>
+            </div>
+        </div>
+        
+        <p class="timestamp" id="timestamp">Last updated: --</p>
+    </div>
+    
+    <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
+    
+    <script>
+        // Mock data generation
+        function generateMockData() {
+            return {
+                totalAgents: 9,
+                activeTasks: Math.floor(Math.random() * 5),
+                successRate: (90 + Math.random() * 10).toFixed(1) + '%',
+                responseTime: (1 + Math.random() * 3).toFixed(1) + 's',
+                tokensToday: Math.floor(40000 + Math.random() * 20000),
+                tokensWeek: Math.floor(300000 + Math.random() * 50000),
+                tokensMonth: (1 + Math.random() * 0.5).toFixed(1) + 'M',
+                cacheRate: Math.floor(70 + Math.random() * 20) + '%',
+                parallelExec: Math.floor(100 + Math.random() * 100),
+                contextOpt: Math.floor(30 + Math.random() * 30) + '%',
+                memoryUsage: Math.floor(150 + Math.random() * 100) + 'MB'
+            };
+        }
+        
+        // Update dashboard with new data
+        function updateDashboard(data) {
+            document.getElementById('total-agents').textContent = data.totalAgents;
+            document.getElementById('active-tasks').textContent = data.activeTasks;
+            document.getElementById('success-rate').textContent = data.successRate;
+            document.getElementById('response-time').textContent = data.responseTime;
+            document.getElementById('tokens-today').textContent = data.tokensToday.toLocaleString();
+            document.getElementById('tokens-week').textContent = data.tokensWeek.toLocaleString();
+            document.getElementById('tokens-month').textContent = data.tokensMonth;
+            document.getElementById('cache-rate').textContent = data.cacheRate;
+            document.getElementById('parallel-exec').textContent = data.parallelExec;
+            document.getElementById('context-opt').textContent = data.contextOpt;
+            document.getElementById('memory-usage').textContent = data.memoryUsage;
+            
+            // Update timestamp
+            const now = new Date();
+            document.getElementById('timestamp').textContent = 
+                `Last updated: ${now.toLocaleString()}`;
+            
+            // Randomly update agent statuses
+            const agents = document.querySelectorAll('.agent-item');
+            agents.forEach(agent => {
+                const status = agent.querySelector('.agent-status');
+                const random = Math.random();
+                if (random < 0.1) {
+                    status.className = 'agent-status status-active';
+                    status.textContent = 'active';
+                } else if (random < 0.15) {
+                    status.className = 'agent-status status-error';
+                    status.textContent = 'error';
+                } else {
+                    status.className = 'agent-status status-idle';
+                    status.textContent = 'idle';
+                }
+            });
+        }
+        
+        // Refresh data
+        function refreshData() {
+            const data = generateMockData();
+            updateDashboard(data);
+            
+            // Animate refresh button
+            const btn = document.querySelector('.refresh-btn');
+            btn.style.transform = 'scale(0.95) rotate(360deg)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1) rotate(0deg)';
+            }, 500);
+        }
+        
+        // Draw simple chart
+        function drawChart() {
+            const canvas = document.getElementById('activity-chart');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Generate random data points
+            const points = 24;
+            const data = Array.from({length: points}, () => 
+                Math.floor(20 + Math.random() * 60)
+            );
+            
+            // Draw grid
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = (height / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+            
+            // Draw line chart
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            data.forEach((value, index) => {
+                const x = (width / (points - 1)) * index;
+                const y = height - (value / 100) * height;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            ctx.stroke();
+            
+            // Draw dots
+            ctx.fillStyle = '#667eea';
+            data.forEach((value, index) => {
+                const x = (width / (points - 1)) * index;
+                const y = height - (value / 100) * height;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        
+        // Initialize dashboard
+        function init() {
+            refreshData();
+            drawChart();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(() => {
+                refreshData();
+                drawChart();
+            }, 30000);
+        }
+        
+        // Start when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

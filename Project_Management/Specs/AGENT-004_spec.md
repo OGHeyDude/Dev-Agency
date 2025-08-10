@@ -12,7 +12,7 @@ status: todo
 # **Spec: Domain-specific Prompt Libraries**
 
 **Ticket ID:** `AGENT-004`  
-**Status:** `BACKLOG`  
+**Status:** `DONE`  
 **Last Updated:** 2025-08-10  
 **Story Points:** 5  
 **Link to Project Plan:** [PROJECT_PLAN.md](../PROJECT_PLAN.md)

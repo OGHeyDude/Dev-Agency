@@ -6,7 +6,7 @@ category: recipe
 tags: [tdd, testing, workflow, automation, agents, red-green-refactor]
 created: 2025-08-10
 updated: 2025-08-10
-status: todo
+status: done
 ---
 
 # **Spec: TDD Workflow with Agents**

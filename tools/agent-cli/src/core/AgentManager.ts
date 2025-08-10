@@ -44,6 +44,7 @@ export interface AgentInvocationOptions {
   format?: string;
   timeout?: number;
   variables?: Record<string, any>;
+  domains?: string[];
 }
 
 export class AgentManager {
@@ -71,6 +72,7 @@ export class AgentManager {
       maxTotalFiles: 50,
       allowedExtensions: ['.md']
     });
+    
     
     // Store the loading promise so we can wait for it
     this.loadingPromise = this.loadAgentDefinitions().catch(error => {
@@ -375,27 +377,27 @@ export class AgentManager {
    * Prepare context for agent execution
    */
   async prepareContext(agent: AgentDefinition, options: AgentInvocationOptions): Promise<string> {
-    let context = '';
+    let context = agent.prompt_template;
 
-    // Add agent prompt template
-    context += agent.prompt_template + '\n\n';
+    // Traditional context preparation
+    context += '\n\n';
 
     // Add task if provided
     if (options.task) {
       context += `## Task\n${options.task}\n\n`;
     }
 
-    // Add context files if provided
-    if (options.contextPath) {
-      const contextContent = await this.loadContextFiles(options.contextPath, agent.context_limits);
-      if (contextContent) {
-        context += `## Context\n${contextContent}\n\n`;
-      }
-    }
-
     // Add variables if provided
     if (options.variables) {
       context += `## Variables\n${JSON.stringify(options.variables, null, 2)}\n\n`;
+    }
+
+    // Add context files if provided (for both domain and non-domain paths)
+    if (options.contextPath) {
+      const contextContent = await this.loadContextFiles(options.contextPath, agent.context_limits);
+      if (contextContent) {
+        context += `## Context Files\n${contextContent}\n\n`;
+      }
     }
 
     return context;

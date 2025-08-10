@@ -6,7 +6,7 @@ category: prompt-engineering
 tags: [versioning, prompts, templates, git-like, change-management]
 created: 2025-08-10
 updated: 2025-08-10
-status: todo
+status: done
 ---
 
 # **Spec: Prompt Versioning System**

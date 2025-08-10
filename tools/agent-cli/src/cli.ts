@@ -11,6 +11,7 @@ import { AgentManager, AgentInvocationOptions } from './core/AgentManager';
 import { ConfigManager } from './core/ConfigManager';
 import { ExecutionEngine } from './core/ExecutionEngine';
 import { RecipeEngine } from './core/RecipeEngine';
+import { PromptLibrary } from './core/PromptLibrary';
 import { Logger } from './utils/Logger';
 import { ValidationManager } from './utils/validation';
 import { securityManager } from './utils/security';
@@ -82,6 +83,8 @@ program
   .argument('<agent>', 'Agent name (architect, coder, tester, etc.)')
   .option('-t, --task <description>', 'Task description', 'General development task')
   .option('-c, --context <path>', 'Context file or directory path')
+  .option('-d, --domains <list>', 'Comma-separated list of domains (react, nodejs, python, etc.)')
+  .option('--auto-detect', 'Auto-detect domains from context files')
   .option('--timeout <seconds>', 'Execution timeout in seconds', '300')
   .option('--format <type>', 'Output format (json, markdown, text)', 'markdown')
   .option('--dry-run', 'Validate without execution')
@@ -112,7 +115,27 @@ program
       }
       
       const validatedOptions = validationResult.data!;
+      
+      // Process domains
+      let domains: string[] = [];
+      if (options.domains) {
+        domains = options.domains.split(',').map((d: string) => d.trim()).filter(Boolean);
+      }
+      
+      // Auto-detect domains if requested
+      if (options.autoDetect && validatedOptions.contextPath) {
+        const promptLib = PromptLibrary.getInstance();
+        const detectedDomains = await promptLib.detectDomain(validatedOptions.contextPath);
+        domains = [...new Set([...domains, ...detectedDomains])];
+        if (detectedDomains.length > 0) {
+          console.log(chalk.blue(`Auto-detected domains: ${detectedDomains.join(', ')}`));
+        }
+      }
+      
       logger.info(`Invoking agent: ${chalk.blue(validatedOptions.agentName)}`);
+      if (domains.length > 0) {
+        console.log(chalk.blue(`Using domains: ${domains.join(', ')}`));
+      }
       
       if (options.dryRun) {
         const agentMgr = getAgentManager();
@@ -122,6 +145,18 @@ program
           console.log(`Agent: ${validatedOptions.agentName}`);
           console.log(`Task: ${validatedOptions.task || 'General development task'}`);
           console.log(`Context: ${validatedOptions.contextPath || 'none'}`);
+          console.log(`Domains: ${domains.length > 0 ? domains.join(', ') : 'none'}`);
+          
+          // Validate domain prompts
+          if (domains.length > 0) {
+            const promptLib = PromptLibrary.getInstance();
+            for (const domain of domains) {
+              const domainPrompt = await promptLib.loadDomain(domain);
+              if (!domainPrompt) {
+                console.log(chalk.yellow(`⚠ Domain '${domain}' not found`));
+              }
+            }
+          }
           return;
         } else {
           console.log(chalk.red('✗ Agent validation failed'));
@@ -135,7 +170,10 @@ program
       //   'No specific context provided';
 
       const execEngine = getExecutionEngine();
-      const result = await execEngine.invokeAgent(validatedOptions);
+      const result = await execEngine.invokeAgent({
+        ...validatedOptions,
+        domains: domains.length > 0 ? domains : undefined
+      });
 
       console.log(chalk.green('\n✓ Agent execution completed'));
       console.log(result.output);
@@ -155,6 +193,8 @@ program
   .option('-a, --agents <list>', 'Comma-separated list of agents')
   .option('-p, --parallel <count>', 'Number of parallel executions', '3')
   .option('-c, --context <path>', 'Context file or directory path')
+  .option('-d, --domains <list>', 'Comma-separated list of domains (react, nodejs, python, etc.)')
+  .option('--auto-detect', 'Auto-detect domains from context files')
   .option('--timeout <seconds>', 'Execution timeout in seconds', '600')
   .option('--format <type>', 'Output format (json, markdown, text)', 'markdown')
   .action(async (options) => {
@@ -393,12 +433,15 @@ program
 // List command
 program
   .command('list')
-  .description('List available agents and recipes')
+  .description('List available agents, recipes, and domains')
   .option('--agents', 'List available agents')
   .option('--recipes', 'List available recipes')
+  .option('--domains', 'List available domain prompts')
   .action(async (options) => {
     try {
-      if (options.agents || (!options.agents && !options.recipes)) {
+      const showAll = !options.agents && !options.recipes && !options.domains;
+
+      if (options.agents || showAll) {
         const agentMgr = getAgentManager();
         const agents = await agentMgr.listAgents();
         console.log(chalk.blue('Available Agents:'));
@@ -407,13 +450,35 @@ program
         });
       }
 
-      if (options.recipes || (!options.agents && !options.recipes)) {
+      if (options.recipes || showAll) {
         const recipeMgr = getRecipeEngine();
         const recipes = await recipeMgr.listRecipes();
-        console.log(chalk.blue('\nAvailable Recipes:'));
+        console.log(chalk.blue(showAll ? '\nAvailable Recipes:' : 'Available Recipes:'));
         recipes.forEach((recipe: any) => {
           console.log(`  ${chalk.green(recipe.name)} - ${recipe.description}`);
         });
+      }
+
+      if (options.domains || showAll) {
+        const promptLib = PromptLibrary.getInstance();
+        const domains = await promptLib.getAvailableDomains();
+        console.log(chalk.blue(showAll ? '\nAvailable Domains:' : 'Available Domains:'));
+        if (domains.length === 0) {
+          console.log(chalk.yellow('  No domain prompts loaded'));
+        } else {
+          for (const domain of domains) {
+            const domainPrompt = await promptLib.loadDomain(domain);
+            if (domainPrompt) {
+              const frameworks = domainPrompt.frameworks?.join(', ') || '';
+              console.log(`  ${chalk.green(domain)} - ${domainPrompt.basePrompt.substring(0, 50)}...`);
+              if (frameworks) {
+                console.log(`    ${chalk.gray(`Frameworks: ${frameworks}`)}`);
+              }
+            } else {
+              console.log(`  ${chalk.red(domain)} - Failed to load`);
+            }
+          }
+        }
       }
 
     } catch (error) {
@@ -589,6 +654,67 @@ program
       const errorMessage = error instanceof Error ? error.message : String(error);
       logger.error(`Agent selection failed: ${errorMessage}`);
       console.log(chalk.red(`Error: ${errorMessage}`));
+      process.exit(1);
+    }
+  });
+
+// Prompt command - manage domain-specific prompts
+program
+  .command('prompt')
+  .description('Manage domain-specific prompt templates')
+  .option('-l, --list', 'List available domains')
+  .option('-d, --domain <domain>', 'Load specific domain prompt')
+  .option('-c, --compose <domains...>', 'Compose prompts from multiple domains')
+  .option('-a, --agent <agent>', 'Agent to enhance with domain knowledge')
+  .option('--detect <path>', 'Auto-detect domains from project')
+  .action(async (options) => {
+    try {
+      const promptLibrary = PromptLibrary.getInstance();
+
+      if (options.list) {
+        const domains = await promptLibrary.getAvailableDomains();
+        console.log('\n📚 Available Domain Prompts:\n');
+        domains.forEach(domain => console.log(`  • ${domain}`));
+        console.log('\nUse: agent prompt --domain <domain> to view details');
+        return;
+      }
+
+      if (options.detect) {
+        const detected = await promptLibrary.detectDomain(options.detect);
+        console.log('\n🔍 Detected Domains:\n');
+        detected.forEach(domain => console.log(`  • ${domain}`));
+        return;
+      }
+
+      if (options.domain) {
+        const prompt = await promptLibrary.loadDomain(options.domain);
+        if (prompt) {
+          console.log(`\n📖 Domain: ${prompt.domain}`);
+          console.log(`Version: ${prompt.version}`);
+          console.log('\nBase Prompt:');
+          console.log(prompt.basePrompt);
+          console.log('\nBest Practices:', prompt.bestPractices.length, 'items');
+          console.log('Anti-Patterns:', prompt.antiPatterns.length, 'items');
+        } else {
+          console.error(`Domain not found: ${options.domain}`);
+        }
+        return;
+      }
+
+      if (options.compose) {
+        const basePrompt = 'You are an AI development assistant.';
+        const composed = await promptLibrary.compose(basePrompt, {
+          domains: options.compose,
+          agent: options.agent || 'coder'
+        });
+        console.log('\n🎨 Composed Prompt:\n');
+        console.log(composed);
+        return;
+      }
+
+      console.log('Use --help for usage information');
+    } catch (error) {
+      logger.error('Prompt command failed:', error);
       process.exit(1);
     }
   });
