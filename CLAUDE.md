@@ -29,11 +29,39 @@
 
 ## Quick Commands
 
- /sprint-execute --max-agents 4 follow this recipe: `/home/hd/Desktop/LAB/Dev-Agency/recipes/sprint_execution_recipe.md`
+### Themed Sprint Management (TEST)
+```bash
+# New strategic sprint system - currently in test
+/sprint-themed           # Complete sprint workflow (planning + execution)
+  → Uses: /recipes/test/sprint_management_recipe.md
+  → Select theme: Development|Bug Bash|Refactoring|Database|Documentation
+  → Phases 1-5: Planning & preparation
+  → User approval checkpoint
+  → Phase 6: Automatic execution of entire sprint
+  → No manual intervention needed
+  
+/sprint-execute [TICKET] # Ad-hoc single ticket execution (outside sprint scope)
+  → For urgent fixes or unplanned work
+  → Auto-selects recipe from /recipes/test/execution_library/
+  → Standalone execution
 
-/sprint-plan follow this recipe: `/home/hd/Desktop/LAB/Dev-Agency/recipes/sprint_planning_recipe.md`
+/sprint-status           # Monitor active sprint progress
+  → Shows completed/in-progress/blocked tickets
+  → Displays velocity and points tracking
+  → Lists remaining work in sprint
+```
 
-/doc-audit follow this recipe:  `/home/hd/Desktop/LAB/Dev-Agency/recipes/documentation_standardization_recipe.md`
+### Production Sprint Commands
+```bash
+/sprint-execute --max-agents 4   # Execute sprint with current system
+  → Uses: /recipes/sprint_execution_recipe.md
+
+/sprint-plan                      # Plan sprint with current system
+  → Uses: /recipes/sprint_planning_recipe.md
+
+/doc-audit                        # Audit documentation
+  → Uses: /recipes/documentation_standardization_recipe.md
+```
 
 ### Standard Workflow
 **Workflow:** `/cmd` → select ticket → `/research` → `/plan` → `/build` → `/test` → `/document` → `/done`
@@ -110,7 +138,7 @@ If you encounter a slash commend you are not familiar with follow: `/home/hd/Des
 ## Session Management with Agents
 
 ### Standard Commands (Enhanced)
-- `/cmd` - Initialize session, read CLAUDE.md, check PROJECT_PLAN
+- `/cmd` - Initialize session, read CLAUDE.md, check Project_Management/PROJECT_PLAN.md
 - `/standards` - Review standards + agent guidelines
 - `/reflect` - Review implementation with agent output analysis
 - `/done` - Complete checklist including agent performance review

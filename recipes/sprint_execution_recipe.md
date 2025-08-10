@@ -1,33 +1,42 @@
 ---
-title: Sprint Execution Strategy
-description: Comprehensive workflow for executing a planned sprint with optimal agent utilization and parallelization
+title: Sprint Execution Recipe
+description: Implement-Test-Document-Commit workflow for executing prepared sprints with optimal implementation order, testing strategies, and documentation plans
 type: recipe
 category: execution
-tags: [sprint, execution, implementation, agents, parallelization, workflow]
+tags: [sprint, execution, implementation, testing, documentation, commit, workflow]
 created: 2025-08-09
-updated: 2025-08-09
-version: 1.0
+updated: 2025-08-10
+version: 2.0
 status: stable
 ---
 
-# Recipe: Sprint Execution Strategy
+# Recipe: Sprint Execution (Implement-Test-Document-Commit)
 
 ## Overview
-Automated sprint execution workflow that takes a planned sprint and creates an optimal implementation strategy. Assigns agents to development tasks, respects dependencies, leverages recipe combinations, and ensures all tickets reach DONE status including memory sync and commits.
+Comprehensive sprint execution workflow focusing on Implement-Test-Document-Commit phases. Takes prepared tickets with specs and executes them in optimal order with complete development, testing, and documentation plans.
 
 ## Philosophy
-"Plan the work, then work the plan" - Strategic execution with maximum parallelization while respecting dependencies ensures predictable delivery and quality.
+"Plan the work, then work the plan" - Execute prepared tickets systematically with best practices, comprehensive testing, and complete documentation.
+
+## Focus Areas
+1. **Implementation Order** - Determine optimal ticket execution sequence
+2. **Tool Selection** - Identify best tools for efficient implementation
+3. **Sprint Plan Spec** - Write complete execution plan with architect notes
+4. **Testing Strategy** - Define edge cases and validation criteria
+5. **Documentation Plan** - Specify all documentation updates needed
+6. **Sprint Closure** - Checklist for DONE status and final reporting
 
 ## Use Case
-- Beginning sprint execution after planning
-- Optimizing agent utilization during implementation
-- Managing complex ticket dependencies
-- Ensuring consistent quality across all tickets
-- Tracking progress through to DONE status
+- Executing prepared sprint tickets
+- Determining implementation order
+- Writing comprehensive Sprint Plan Spec
+- Ensuring testing with edge cases
+- Completing documentation requirements
+- Sprint closure and commit preparation
 
 ## Prerequisites
-- Completed `/sprint-plan` with selected tickets and specs
-- All ticket specs written and reviewed
+- Completed sprint preparation with tickets, specs, and agent assignments
+- All dependencies validated and blockers resolved
 - Dependencies mapped and understood
 - Team ready to begin implementation
 
@@ -50,7 +59,7 @@ graph TD
 
 ### Phase 1: Sprint Loading & Analysis
 **Agent:** Main Claude  
-**Time:** 5-10 minutes
+**Time:** Medium complexity
 
 **Actions:**
 ```bash
@@ -91,7 +100,7 @@ BUILD-001 → SECURITY-001 → AGENT-010 → AGENT-005 → Others
 
 ### Phase 2: Agent Assignment Strategy
 **Agent:** Main Claude  
-**Time:** 10-15 minutes
+**Time:** Medium complexity
 
 **Create Agent Assignment Matrix:**
 ```markdown
@@ -154,7 +163,7 @@ Context: [Current implementation, CVE details, attack vectors]
 /agent:architect - Design secure solution
 Context: [Security analysis, existing architecture, constraints]
 
-### Step 3: Implementation (2 hours)
+### Step 3: Implementation (High complexity)
 /agent:coder - Implement security fix
 Context: [Design, security requirements, test cases]
 
@@ -255,7 +264,7 @@ class SprintExecutor {
 
 ### Phase 6: Memory Sync & Knowledge Update
 **Agent:** `/agent:memory-sync`  
-**Time:** 5-10 minutes per ticket
+**Time:** Medium complexity per ticket
 
 **After each ticket completion:**
 ```bash
@@ -278,7 +287,7 @@ mcp__memory__create_entities([
 
 ### Phase 7: Commit Workflow
 **Agent:** Main Claude  
-**Time:** 5-10 minutes per ticket
+**Time:** Medium complexity per ticket
 
 **Commit Process:**
 ```bash
@@ -305,7 +314,7 @@ Update PROJECT_PLAN.md status: DONE
 
 ### Phase 8: Definition of DONE Verification
 **Agent:** Main Claude  
-**Time:** 5 minutes per ticket
+**Time:** Low complexity per ticket
 
 **DONE Checklist:**
 ```markdown

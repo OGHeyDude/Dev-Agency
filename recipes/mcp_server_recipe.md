@@ -187,15 +187,15 @@ After MCP implementation (Step 3), run in parallel:
 - [ ] Tests passing
 - [ ] Documentation complete
 
-## Time Estimates
-- Research: 20-30 minutes
-- Architecture: 25-35 minutes
-- MCP Implementation: 60-90 minutes
-- Integration: 30-45 minutes
-- Testing: 30-40 minutes
-- Documentation: 25-35 minutes
+## Complexity Assessment
+- Research: Medium complexity
+- Architecture: Medium complexity
+- MCP Implementation: Medium complexity
+- Integration: Medium complexity
+- Testing: Medium complexity
+- Documentation: Low complexity
 
-**Total: 3-4.5 hours**
+**Story Points: 5-8 points**
 
 ## Example MCP Tool Pattern
 

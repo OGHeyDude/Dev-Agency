@@ -51,7 +51,7 @@ graph TD
 
 ### Phase 1: Requirements Analysis
 **Agent:** Main Claude  
-**Time:** 10-15 minutes
+**Complexity**: Medium
 
 **Actions:**
 ```bash
@@ -84,7 +84,7 @@ grep "describe\|test\|it" tests/* | head -20
 
 ### Phase 2: Write Failing Tests (Red)
 **Agent:** `/agent:tester`  
-**Time:** 20-30 minutes
+**Complexity**: Medium
 
 **Context for Agent:**
 ```markdown
@@ -141,7 +141,7 @@ describe('FeatureName', () => {
 
 ### Phase 3: Verify Red State
 **Agent:** Main Claude  
-**Time:** 5 minutes
+**Complexity**: Low
 
 **Actions:**
 ```bash
@@ -163,7 +163,7 @@ go test ./... -v
 
 ### Phase 4: Implement Solution (Green)
 **Agent:** `/agent:coder`  
-**Time:** 30-45 minutes
+**Complexity**: Medium
 
 **Context for Agent:**
 ```markdown
@@ -202,7 +202,7 @@ go test ./... -v
 
 ### Phase 5: Verify Green State
 **Agent:** Main Claude  
-**Time:** 5 minutes
+**Complexity**: Low
 
 **Actions:**
 ```bash
@@ -226,7 +226,7 @@ pytest --cov=src --cov-report=term-missing
 
 ### Phase 6: Refactor Design
 **Agent:** `/agent:architect`  
-**Time:** 15-20 minutes
+**Complexity**: Medium
 
 **Context for Agent:**
 ```markdown
@@ -276,7 +276,7 @@ pytest --cov=src --cov-report=term-missing
 
 ### Phase 7: Refactor Implementation
 **Agent:** `/agent:coder`  
-**Time:** 20-30 minutes
+**Complexity**: Medium
 
 **Context for Agent:**
 ```markdown
@@ -309,7 +309,7 @@ pytest --cov=src --cov-report=term-missing
 
 ### Phase 8: Final Validation
 **Agent:** Main Claude  
-**Time:** 10 minutes
+**Complexity**: Low
 
 **Actions:**
 ```bash
@@ -342,7 +342,7 @@ mutmut run
 
 ### Phase 9: Documentation Update
 **Agent:** `/agent:documenter`  
-**Time:** 15 minutes
+**Complexity**: Low
 
 **Context for Agent:**
 ```markdown

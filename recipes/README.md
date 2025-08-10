@@ -64,7 +64,7 @@ Every recipe MUST include:
 4. **Step-by-Step Process** - Detailed workflow
 5. **Anti-Clutter Checks** - Prevent redundancy
 6. **Success Criteria** - How to measure success
-7. **Time Estimates** - Realistic expectations
+7. **Complexity Level** - Simple, Medium, Complex
 8. **Common Issues** - Known problems and solutions
 
 ## Recipe Template
@@ -104,10 +104,10 @@ Include this section ONLY if agents need specialized prompts beyond their base d
 - [ ] [Measurable outcome]
 - [ ] [Quality metric]
 
-## Time Estimates
-- Phase 1: X minutes
-- Phase 2: Y minutes
-- Total: Z hours
+## Complexity Level
+**Level:** [Simple/Medium/Complex]
+**Story Points:** [1-13 range]
+**Prerequisites:** [Required skills/tools]
 
 ## Common Issues and Solutions
 | Issue | Solution |
@@ -117,23 +117,23 @@ Include this section ONLY if agents need specialized prompts beyond their base d
 
 ## Parallel Execution Patterns
 
-### Maximizing Efficiency with Parallel Agents
-Our recipes leverage parallel execution to reduce development time by 30-40% on average. Common patterns include:
+### Maximizing Quality with Parallel Agents
+Our recipes leverage parallel execution to improve quality coverage without sacrificing thoroughness. Common patterns include:
 
 #### Analysis Phase Parallelization
-- **Pattern**: Run analysis agents simultaneously at project start
-- **Example**: `performance` + `memory-sync` for baseline establishment
-- **Time Savings**: 30-45 minutes typically
+- **Pattern**: Run analysis agents simultaneously for comprehensive baseline
+- **Example**: `performance` + `memory-sync` for complete system understanding
+- **Benefit**: More thorough analysis without sequential delays
 
 #### Quality Assurance Parallelization  
-- **Pattern**: Run testing, security, and performance agents in parallel after implementation
-- **Example**: `tester` + `security` + `performance` post-coding
-- **Time Savings**: 45-90 minutes typically
+- **Pattern**: Run multiple validation agents simultaneously after implementation
+- **Example**: `tester` + `security` + `performance` comprehensive validation
+- **Benefit**: Complete quality coverage in parallel
 
 #### Documentation & Sync Parallelization
 - **Pattern**: Update documentation and knowledge graph simultaneously
-- **Example**: `documenter` + `memory-sync` in final phase
-- **Time Savings**: 30-45 minutes typically
+- **Example**: `documenter` + `memory-sync` for complete information capture
+- **Benefit**: Comprehensive documentation without sequential overhead
 
 ### Parallel Execution Guidelines
 1. **Maximum 5 agents** can run simultaneously (system constraint)

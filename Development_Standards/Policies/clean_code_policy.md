@@ -1,16 +1,16 @@
 ---
-title: Clean Code Enforcement - Anti-Clutter Workflow
-description: Enforces clean code principles and prevents clutter accumulation through systematic checks and DRY principles
-type: recipe
-category: quality
-tags: [clean-code, dry-principle, refactoring, code-quality, anti-clutter, maintenance]
+title: Clean Code and Anti-Clutter Policy
+description: Mandatory clean code principles and anti-clutter standards that prevent redundancy and maintain single source of truth
+type: policy
+category: standards
+tags: [clean-code, dry-principle, refactoring, code-quality, anti-clutter, maintenance, policy]
 created: 2025-08-09
-updated: 2025-08-09
-version: 1.0
-status: stable
+updated: 2025-08-10
+version: 1.1
+status: active
 ---
 
-# Recipe: Clean Code Enforcement - Anti-Clutter Workflow
+# Policy: Clean Code and Anti-Clutter Standards
 
 ## Philosophy
 **"Single Source of Truth - No Clutter, No Redundancy"**

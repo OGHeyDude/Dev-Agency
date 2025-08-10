@@ -1,0 +1,152 @@
+{
+  "system": {
+    "cpu": {
+      "warning": 70,
+      "critical": 90,
+      "unit": "percentage",
+      "checkInterval": 30
+    },
+    "memory": {
+      "warning": 80,
+      "critical": 95,
+      "unit": "percentage",
+      "checkInterval": 30
+    },
+    "disk": {
+      "warning": 85,
+      "critical": 95,
+      "unit": "percentage",
+      "checkInterval": 60
+    },
+    "load": {
+      "warning": 0.8,
+      "critical": 1.5,
+      "unit": "ratio",
+      "checkInterval": 30
+    }
+  },
+  "agents": {
+    "responseTime": {
+      "warning": 5000,
+      "critical": 10000,
+      "unit": "milliseconds",
+      "checkInterval": 60
+    },
+    "errorRate": {
+      "warning": 5,
+      "critical": 15,
+      "unit": "percentage",
+      "checkInterval": 60
+    },
+    "availability": {
+      "warning": 95,
+      "critical": 90,
+      "unit": "percentage",
+      "checkInterval": 300
+    },
+    "consecutiveFailures": {
+      "warning": 3,
+      "critical": 5,
+      "unit": "count",
+      "checkInterval": 60
+    },
+    "queueSize": {
+      "warning": 100,
+      "critical": 500,
+      "unit": "count",
+      "checkInterval": 30
+    }
+  },
+  "dependencies": {
+    "responseTime": {
+      "warning": 3000,
+      "critical": 8000,
+      "unit": "milliseconds",
+      "checkInterval": 60
+    },
+    "availability": {
+      "warning": 98,
+      "critical": 95,
+      "unit": "percentage",
+      "checkInterval": 300
+    },
+    "errorRate": {
+      "warning": 2,
+      "critical": 10,
+      "unit": "percentage",
+      "checkInterval": 60
+    }
+  },
+  "cache": {
+    "hitRate": {
+      "warning": 70,
+      "critical": 50,
+      "unit": "percentage",
+      "checkInterval": 300
+    },
+    "memoryUsage": {
+      "warning": 80,
+      "critical": 95,
+      "unit": "percentage",
+      "checkInterval": 60
+    },
+    "responseTime": {
+      "warning": 100,
+      "critical": 500,
+      "unit": "milliseconds",
+      "checkInterval": 60
+    }
+  },
+  "circuitBreaker": {
+    "failureThreshold": {
+      "default": 5,
+      "critical": 3,
+      "unit": "count"
+    },
+    "timeout": {
+      "default": 60000,
+      "critical": 30000,
+      "unit": "milliseconds"
+    },
+    "halfOpenMaxCalls": {
+      "default": 3,
+      "critical": 1,
+      "unit": "count"
+    },
+    "volumeThreshold": {
+      "default": 10,
+      "critical": 5,
+      "unit": "count"
+    }
+  },
+  "alerting": {
+    "escalation": {
+      "warning": {
+        "initialDelay": 300,
+        "repeatInterval": 1800,
+        "maxRepeats": 5
+      },
+      "critical": {
+        "initialDelay": 60,
+        "repeatInterval": 300,
+        "maxRepeats": 10
+      }
+    },
+    "suppression": {
+      "duplicateWindow": 300,
+      "recoveryWindow": 600,
+      "maintenanceMode": false
+    }
+  },
+  "recovery": {
+    "healthCheckInterval": 30,
+    "healthCheckTimeout": 5000,
+    "requiredPassingChecks": 3,
+    "maxRecoveryAttempts": 5,
+    "recoveryBackoff": {
+      "initial": 1000,
+      "multiplier": 2,
+      "maxDelay": 60000
+    }
+  }
+}

@@ -1,16 +1,16 @@
 ---
-title: Quality-First Development Workflow
-description: Quality-focused development workflow emphasizing planning, testing, and documentation over speed
-type: recipe
-category: quality
-tags: [quality, planning, tdd, documentation, best-practices, methodology]
+title: Quality-First Development Policy
+description: Mandatory quality principles that govern all development work - planning, testing, and documentation over speed
+type: policy
+category: standards
+tags: [quality, planning, tdd, documentation, best-practices, methodology, policy]
 created: 2025-08-09
-updated: 2025-08-09
-version: 1.0
-status: stable
+updated: 2025-08-10
+version: 1.1
+status: active
 ---
 
-# Recipe: Quality-First Development Workflow
+# Policy: Quality-First Development Standards
 
 ## Philosophy
 **"Quality, Efficiency, Security, and Documentation OVER Speed"**

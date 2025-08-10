@@ -1,0 +1,224 @@
+{
+  "healthChecks": {
+    "enabled": true,
+    "interval": 30000,
+    "timeout": 5000,
+    "retryAttempts": 3,
+    "retryDelay": 1000,
+    "endpoints": {
+      "system": {
+        "enabled": true,
+        "path": "/health",
+        "interval": 30000
+      },
+      "ready": {
+        "enabled": true,
+        "path": "/health/ready",
+        "interval": 15000
+      },
+      "live": {
+        "enabled": true,
+        "path": "/health/live",
+        "interval": 10000
+      },
+      "agents": {
+        "enabled": true,
+        "path": "/health/agents",
+        "interval": 60000
+      },
+      "dependencies": {
+        "enabled": true,
+        "path": "/health/dependencies",
+        "interval": 120000
+      }
+    }
+  },
+  "metrics": {
+    "enabled": true,
+    "prometheus": {
+      "enabled": true,
+      "port": 9090,
+      "path": "/metrics",
+      "prefix": "dev_agency_"
+    },
+    "collection": {
+      "interval": 15000,
+      "retention": {
+        "raw": "24h",
+        "aggregated": "30d",
+        "summary": "1y"
+      },
+      "aggregation": {
+        "intervals": ["1m", "5m", "15m", "1h", "1d"],
+        "functions": ["avg", "min", "max", "sum", "count"]
+      }
+    },
+    "system": {
+      "cpu": true,
+      "memory": true,
+      "disk": true,
+      "network": true,
+      "process": true
+    },
+    "application": {
+      "agents": true,
+      "cache": true,
+      "performance": true,
+      "errors": true
+    }
+  },
+  "alerting": {
+    "enabled": true,
+    "channels": {
+      "console": {
+        "enabled": true,
+        "level": "warning"
+      },
+      "file": {
+        "enabled": true,
+        "path": "logs/alerts.log",
+        "level": "warning",
+        "rotation": {
+          "maxSize": "100MB",
+          "maxFiles": 10
+        }
+      },
+      "webhook": {
+        "enabled": false,
+        "url": null,
+        "headers": {},
+        "timeout": 5000,
+        "retryAttempts": 3
+      },
+      "email": {
+        "enabled": false,
+        "smtp": {
+          "host": null,
+          "port": 587,
+          "secure": false,
+          "auth": {
+            "user": null,
+            "pass": null
+          }
+        },
+        "from": null,
+        "to": []
+      }
+    },
+    "rules": {
+      "groupBy": ["component", "severity"],
+      "groupWait": "10s",
+      "groupInterval": "10s",
+      "repeatInterval": "12h",
+      "receiver": "default"
+    },
+    "inhibitRules": [
+      {
+        "sourceMatch": {"severity": "critical"},
+        "targetMatch": {"severity": "warning"},
+        "equal": ["component"]
+      }
+    ]
+  },
+  "dashboard": {
+    "enabled": true,
+    "port": 3001,
+    "path": "/dashboard",
+    "refreshInterval": 5000,
+    "authentication": {
+      "enabled": false,
+      "type": "basic",
+      "users": []
+    },
+    "features": {
+      "systemOverview": true,
+      "agentHealth": true,
+      "circuitBreakers": true,
+      "alerts": true,
+      "metrics": true,
+      "logs": true
+    }
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "outputs": [
+      {
+        "type": "console",
+        "level": "info"
+      },
+      {
+        "type": "file",
+        "level": "debug",
+        "filename": "logs/health-monitor.log",
+        "maxsize": 100000000,
+        "maxFiles": 10
+      }
+    ],
+    "categories": {
+      "healthCheck": "info",
+      "circuitBreaker": "info",
+      "degradation": "info",
+      "recovery": "info",
+      "alerts": "warn",
+      "metrics": "debug"
+    }
+  },
+  "storage": {
+    "type": "memory",
+    "config": {
+      "maxMemoryMB": 100,
+      "persistenceEnabled": true,
+      "persistencePath": "data/health-storage"
+    },
+    "cleanup": {
+      "enabled": true,
+      "interval": 3600000,
+      "retentionDays": 30
+    }
+  },
+  "recovery": {
+    "enabled": true,
+    "strategies": {
+      "restart": {
+        "enabled": true,
+        "maxAttempts": 3,
+        "backoffMultiplier": 2,
+        "initialDelay": 5000
+      },
+      "circuitBreaker": {
+        "enabled": true,
+        "resetTimeout": 60000,
+        "halfOpenRequests": 3
+      },
+      "gracefulDegradation": {
+        "enabled": true,
+        "fallbackTimeout": 30000,
+        "cacheFallback": true
+      }
+    }
+  },
+  "security": {
+    "rateLimiting": {
+      "enabled": true,
+      "windowMs": 900000,
+      "max": 100,
+      "skipSuccessfulRequests": false
+    },
+    "cors": {
+      "enabled": true,
+      "origin": "*",
+      "credentials": false
+    },
+    "helmet": {
+      "enabled": true,
+      "contentSecurityPolicy": false
+    }
+  },
+  "development": {
+    "mockMode": false,
+    "simulateFailures": false,
+    "debugMode": false,
+    "hotReload": true
+  }
+}

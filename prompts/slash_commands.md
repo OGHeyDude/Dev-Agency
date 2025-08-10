@@ -99,6 +99,94 @@ Risk Mitigations:
 ✅ Ready to start sprint
 ```
 
+### `/sprint-predict` - Predictive Sprint Analysis
+**Purpose:** Data-driven sprint planning insights using historical analysis  
+**Agent:** `predictive-planner`  
+**Implementation:** `/src/planning/PredictivePlanner.ts`
+
+#### Basic Usage
+```bash
+/sprint-predict
+```
+
+#### Options
+```bash
+/sprint-predict --target 35         # Custom point target (default: 30)
+/sprint-predict --risk high         # Risk tolerance: low/medium/high
+/sprint-predict --duration 1        # Sprint duration in weeks (default: 2)
+/sprint-predict --scope last-3      # Analysis scope: all/last-N/recent
+/sprint-predict --format json       # Output format: summary/full/json
+/sprint-predict --confidence        # Include confidence breakdown
+/sprint-predict --patterns          # Focus on pattern analysis
+```
+
+#### What It Does
+1. **Historical Analysis:**
+   - Parses PROJECT_PLAN.md for sprint completion data
+   - Calculates team velocity trends and patterns
+   - Identifies successful sprint compositions
+
+2. **Velocity Insights:**
+   - Current vs. average velocity analysis
+   - Trend detection (increasing/decreasing/stable)
+   - Confidence intervals for planning targets
+
+3. **Pattern Recognition:**
+   - Successful ticket size distributions
+   - Epic combinations that work well together
+   - Sprint composition patterns with high success rates
+
+4. **Blocker Prediction:**
+   - Historical blocker analysis by epic/ticket type
+   - Risk assessment based on past patterns
+   - Mitigation strategies for predicted issues
+
+5. **Optimal Composition:**
+   - Recommended sprint point target
+   - Ideal ticket mix (small/medium/large)
+   - Epic prioritization based on success patterns
+
+#### Output Example
+```
+🎯 PREDICTIVE SPRINT PLANNING INSIGHTS
+=====================================
+
+📊 VELOCITY ANALYSIS
+Current Velocity: 44 points
+Average Velocity: 25 points
+Trend: INCREASING
+Confidence Range: 12-38 points
+
+🎯 RECOMMENDED SPRINT COMPOSITION
+Target Points: 31
+Ticket Mix: 1 small + 7 medium + 1 large
+
+🔍 IDENTIFIED PATTERNS
+• Pattern 1: Epic mix of System+Integration shows 95% success
+• Pattern 2: Sprints with 6-8 tickets complete 90% vs 65% for 10+
+• Pattern 3: Security tickets early in sprint reduce blockers by 40%
+
+⚠️ BLOCKER PREDICTIONS
+• Medium Risk: Integration Framework epic - dependency complexity
+  Mitigation: Schedule dependency reviews early, prepare fallbacks
+
+💡 RECOMMENDATIONS
+• Team velocity trending up - consider 33-35 point target
+• Focus on Integration Framework, System Observability
+• Include 1 buffer ticket for unexpected complexity
+
+🎯 Confidence Level: 87% (based on 4 sprint history)
+```
+
+#### Integration with Planning
+```bash
+# Enhanced sprint planning workflow
+/sprint-predict              # Get data-driven insights
+[Review predictions]
+/sprint-plan --insights      # Use predictions in planning
+/sprint-execute              # Execute optimized plan
+```
+
 ### `/sprint-execute` - Sprint Execution Strategy
 **Purpose:** Create optimal implementation strategy for executing a planned sprint  
 **Recipe:** `/recipes/sprint_execution_recipe.md`  
@@ -342,6 +430,7 @@ For convenience, these aliases are available:
 
 ```bash
 /sp     → /sprint-plan
+/spr    → /sprint-predict
 /se     → /sprint-execute
 /da     → /doc-audit
 /dt     → /doc-template

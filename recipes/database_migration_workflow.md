@@ -783,7 +783,7 @@ def test_partial_rollback():
 - [ ] All foreign key relationships preserved
 - [ ] Performance impact < 15% during migration
 - [ ] Performance baseline restored post-migration
-- [ ] Complete rollback capability in < 5 minutes
+- [ ] Complete rollback capability implemented
 
 ### Data Integrity
 - [ ] Row count validation passes (100% match)
@@ -808,15 +808,15 @@ def test_partial_rollback():
 - [ ] Row-level security policies active
 - [ ] Performance scaling per tenant validated
 
-## Time Estimates
+## Complexity Assessment
 
-- **Research:** 45-60 minutes
-- **Phase 1 (Parallel Planning):** 75-90 minutes
-- **Phase 2 (Implementation):** 3-5 hours
-- **Phase 3 (Parallel Validation):** 90-120 minutes
-- **Phase 4 (Production Validation):** 45-60 minutes
+- **Research: Medium complexity
+- **Phase 1 (Parallel Planning):** Medium complexity
+- **Phase 2 (Implementation):** High complexity
+- **Phase 3 (Parallel Validation):** Medium complexity
+- **Phase 4 (Production Validation):** Medium complexity
 
-**Total: 6-9 hours** (varies by complexity and data volume)
+**Story Points: 5-8 points** (varies by complexity and data volume)
 
 ## Risk Mitigation
 

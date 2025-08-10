@@ -1,0 +1,156 @@
+{
+  "server": {
+    "port": 3002,
+    "cors": {
+      "origins": ["*"],
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    },
+    "rateLimit": {
+      "windowMs": 60000,
+      "max": 1000
+    }
+  },
+  "websocket": {
+    "enabled": true,
+    "heartbeatInterval": 30000,
+    "maxClients": 100,
+    "clientTimeout": 120000,
+    "enableCompression": true
+  },
+  "serverSentEvents": {
+    "enabled": true,
+    "keepAliveInterval": 30000
+  },
+  "redis": {
+    "enabled": false,
+    "url": "redis://localhost:6379",
+    "keyPrefix": "health-dashboard:",
+    "ttl": {
+      "alerts": 86400,
+      "healthUpdates": 3600,
+      "metrics": 7200
+    }
+  },
+  "dashboard": {
+    "refreshInterval": 5000,
+    "alertThresholds": {
+      "critical": {
+        "responseTime": 10000,
+        "errorRate": 15,
+        "memoryUsage": 80,
+        "agentFailures": 3,
+        "cpuUsage": 90,
+        "diskUsage": 95
+      },
+      "warning": {
+        "responseTime": 5000,
+        "errorRate": 5,
+        "memoryUsage": 60,
+        "agentFailures": 1,
+        "cpuUsage": 70,
+        "diskUsage": 85
+      },
+      "recovery": {
+        "confirmationTime": 120,
+        "successRateRequired": 90,
+        "healthScoreRequired": 80
+      }
+    },
+    "escalationRules": [
+      {
+        "severity": "warning",
+        "initialDelay": 300,
+        "repeatInterval": 1800,
+        "maxRepeats": 5,
+        "channels": ["slack"],
+        "escalationChain": ["team-lead"]
+      },
+      {
+        "severity": "critical",
+        "initialDelay": 60,
+        "repeatInterval": 300,
+        "maxRepeats": 10,
+        "channels": ["slack", "email"],
+        "escalationChain": ["team-lead", "manager", "on-call"]
+      }
+    ],
+    "notificationChannels": {
+      "slack": {
+        "enabled": false,
+        "webhook": "",
+        "channel": "#alerts",
+        "username": "Health Monitor",
+        "iconEmoji": ":warning:"
+      },
+      "email": {
+        "enabled": false,
+        "smtp": {
+          "host": "smtp.gmail.com",
+          "port": 587,
+          "secure": false,
+          "auth": {
+            "user": "",
+            "pass": ""
+          }
+        },
+        "from": "alerts@dev-agency.com",
+        "recipients": []
+      },
+      "teams": {
+        "enabled": false,
+        "webhook": ""
+      }
+    },
+    "ui": {
+      "autoRefresh": true,
+      "soundAlerts": true,
+      "browserNotifications": true,
+      "theme": "auto",
+      "showHealthScore": true,
+      "showResourceUsage": true,
+      "showIncidentTimeline": true
+    }
+  },
+  "healthCollection": {
+    "interval": 5000,
+    "timeout": 30000,
+    "resourceMonitoring": true,
+    "historicalDataRetention": 24,
+    "cache": {
+      "enabled": true,
+      "size": 1000,
+      "ttl": 300
+    },
+    "predictiveAnalysis": false
+  },
+  "alerting": {
+    "enabled": true,
+    "autoResolution": true,
+    "autoResolutionTimeout": 30,
+    "suppressDuplicates": true,
+    "duplicateWindow": 300,
+    "maxActiveAlerts": 1000,
+    "notificationRetry": {
+      "attempts": 3,
+      "delay": 30,
+      "backoffMultiplier": 2
+    }
+  },
+  "logging": {
+    "level": "info",
+    "file": "logs/health-dashboard.log",
+    "maxFiles": 10,
+    "maxSize": "10m"
+  },
+  "security": {
+    "helmet": {
+      "enabled": true,
+      "contentSecurityPolicy": false
+    },
+    "authentication": {
+      "enabled": false,
+      "type": "jwt",
+      "secret": "your-secret-key-here"
+    }
+  }
+}

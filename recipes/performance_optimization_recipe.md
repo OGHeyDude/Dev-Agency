@@ -61,7 +61,7 @@ graph TD
 
 ### Phase 1: Baseline Analysis (Parallel Agents)
 **Status**: `BACKLOG` → `TODO` → `IN_PROGRESS`
-**Duration**: 45-60 minutes (parallel)
+**Complexity**: Medium (parallel execution)
 
 #### `/agent:performance` (Performance Profiling)
 - **Load Testing**: Establish current capacity limits
@@ -82,7 +82,7 @@ graph TD
 
 ### Phase 2: Optimization Design (Solo Agent)
 **Agent**: `/agent:architect`
-**Duration**: 60-90 minutes
+**Complexity**: Medium-High
 
 1. **Bottleneck Prioritization**
    - Rank issues by impact and effort
@@ -107,7 +107,7 @@ graph TD
 
 ### Phase 3: Implementation (Solo Agent)
 **Agent**: `/agent:coder`
-**Duration**: 2-4 hours
+**Complexity**: High (varies by bottleneck type)
 
 1. **Database Optimizations**
    ```sql
@@ -140,7 +140,7 @@ graph TD
 **Output**: Optimized code with performance improvements applied
 
 ### Phase 4: Validation (Parallel Agents)
-**Duration**: 60-90 minutes (parallel)
+**Complexity**: Medium (parallel execution)
 
 #### `/agent:performance` (Performance Validation)
 - Re-run baseline tests
@@ -161,9 +161,9 @@ graph TD
 ## Parallel Execution Opportunities
 
 ### Optimization Benefits
-- **Phase 1**: Parallel analysis saves 30-45 minutes
-- **Phase 4**: Parallel validation saves 45-60 minutes
-- **Total Time Savings**: ~35% reduction
+- **Phase 1**: Parallel analysis provides comprehensive baseline
+- **Phase 4**: Parallel validation ensures thorough verification
+- **Quality Enhancement**: Complete optimization without shortcuts
 
 ### Parallel Execution Groups
 1. **Analysis**: `performance` + `memory-sync`
@@ -231,28 +231,28 @@ graph TD
 - [ ] Documentation updated
 - [ ] Rollback plan tested
 
-## Time Estimates
+## Complexity Assessment
 
 ### API Optimization
-- Phase 1: 45-60 minutes
-- Phase 2: 60 minutes
-- Phase 3: 2-3 hours
-- Phase 4: 60-90 minutes
-- **Total**: 5-6 hours
+- Phase 1: Analysis & baseline establishment
+- Phase 2: Optimization strategy planning
+- Phase 3: Implementation of improvements
+- Phase 4: Validation & documentation
+- **Story Points**: 5-8 points
 
 ### Full Stack Optimization
-- Phase 1: 60-90 minutes
-- Phase 2: 90-120 minutes
-- Phase 3: 4-6 hours
-- Phase 4: 90-120 minutes
-- **Total**: 8-10 hours
+- Phase 1: Complex system analysis
+- Phase 2: Advanced optimization planning
+- Phase 3: Comprehensive implementation
+- Phase 4: Extensive validation
+- **Story Points**: 8-13 points
 
 ### Database-Heavy Optimization
-- Phase 1: 60 minutes
-- Phase 2: 90 minutes
-- Phase 3: 3-4 hours
-- Phase 4: 90 minutes
-- **Total**: 6-7 hours
+- Phase 1: Focused analysis
+- Phase 2: Targeted optimization planning
+- Phase 3: Efficient implementation
+- Phase 4: Thorough validation
+- **Story Points**: 5-8 points
 
 ## Common Issues and Solutions
 

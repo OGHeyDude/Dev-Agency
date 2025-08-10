@@ -1,52 +1,64 @@
 ---
-title: Sprint Planning Automation
-description: Comprehensive workflow for planning sprints with automated spec writing, documentation mapping, and dependency analysis
+title: Sprint Preparation Recipe
+description: Research-Plan-Specs workflow for comprehensive sprint preparation including ticket selection, dependency validation, spec writing, and agent assignment
 type: recipe
 category: planning
-tags: [sprint, planning, automation, specs, documentation, dependencies]
+tags: [sprint, preparation, research, planning, specs, dependencies, agent-assignment]
 created: 2025-08-09
-updated: 2025-08-09
-version: 1.0
+updated: 2025-08-10
+version: 2.0
 status: stable
 ---
 
-# Recipe: Sprint Planning Automation
+# Recipe: Sprint Preparation (Research-Plan-Specs)
 
 ## Overview
-Automated sprint planning workflow that selects tickets, writes specs, maps documentation needs, identifies dependencies, and eliminates implementation guesswork. Targets 30-35 story points per sprint with comprehensive preparation.
+Comprehensive sprint preparation workflow focusing on Research-Plan-Specs phases. Ensures tickets are properly selected, dependencies validated, specs written, and specialized agents assigned BEFORE any implementation begins.
 
 ## Philosophy
-"The better you plan, the better the outcome" - Thorough sprint planning with complete context preparation ensures smooth execution and predictable delivery.
+"The better you plan, the better the outcome" - Thorough preparation with complete specs and context ensures smooth execution without implementation guesswork.
+
+## Focus Areas
+1. **Ticket Selection & Validation** - Ensure no blockers, all dependencies fulfilled
+2. **Story Point Validation** - Break down any ticket over 5 points
+3. **Comprehensive Spec Writing** - Complete specs for each ticket
+4. **Agent Assignment** - Map specialized agents to appropriate tickets
+5. **Documentation Discovery** - Link existing guides and research to tickets
+6. **Progress Tracking** - Update PROJECT_PLAN.md with all preparation work
 
 ## Use Case
-- Sprint planning sessions (beginning of each sprint)
-- Mid-sprint replanning when priorities shift
-- Capacity planning for upcoming work
-- Dependency analysis for complex features
-- Documentation roadmap creation
+- Sprint preparation sessions (before sprint execution)
+- Ticket validation and dependency checking
+- Breaking down complex tickets (>5 points)
+- Agent assignment planning
+- Documentation linking and research
 
 ## Agent Sequence
 
 ```mermaid
 graph TD
     A[Main Claude] --> B[Analysis Phase]
-    B --> C[architect - Ticket Selection]
-    C --> D[documenter - Spec Writing]
-    D --> E[architect - Dependency Analysis]
-    E --> F[documenter - Doc Mapping]
-    F --> G[Main Claude - Plan Generation]
+    B --> C[predictive-planner - Data Analysis]
+    C --> D[architect - Ticket Selection]
+    D --> E[documenter - Spec Writing]
+    E --> F[architect - Dependency Analysis]
+    F --> G[documenter - Doc Mapping]
+    G --> H[Main Claude - Plan Generation]
 ```
 
 ## Step-by-Step Process
 
 ### Phase 1: Sprint Preparation & Analysis
 **Agent:** Main Claude  
-**Time:** 5-10 minutes
+**Complexity**: Medium
 
 **Actions:**
 ```bash
 # Get current date for sprint planning
 date +"%m-%d-%Y"
+
+# Load project context for informed decision-making
+Read /Project_Management/PROJECT_CONTEXT.md
 
 # Review PROJECT_PLAN.md for current state
 Read PROJECT_PLAN.md
@@ -62,51 +74,173 @@ Grep "READY_FOR_RELEASE" PROJECT_PLAN.md
 ```
 
 **Analysis Points:**
+- Project context and technical capabilities
+- Business objectives and success metrics  
 - Previous sprint completion rate
 - Current work in progress
 - Blocked tickets
 - Team velocity trends
 - Release-ready items needing deployment
 
-### Phase 2: Ticket Selection & Prioritization
-**Agent:** `/agent:architect`  
-**Time:** 15-20 minutes
+### Phase 2: Predictive Analysis & Insights
+**Agent:** `/agent:predictive-planner`  
+**Complexity**: Medium
 
 **Context for Agent:**
 ```markdown
-## Sprint Planning Context
+## Predictive Sprint Planning Analysis
 
-### Target
-- Sprint Points: 30-35 story points
+### Historical Data Source
+- **PROJECT_PLAN.md Path**: /Project_Management/PROJECT_PLAN.md
+- **Analysis Scope**: All available sprint data
+
+### Current Planning Parameters
+- **Target Sprint Points**: 30-35 points
+- **Sprint Duration**: 2 weeks
+- **Team Capacity**: 1 developer full-time
+- **Risk Tolerance**: MEDIUM
+
+### Priority Epics (in order)
+1. System Foundation
+2. Integration Framework  
+3. Performance Tracking
+4. Recipe Library
+5. Advanced Automation
+
+### Planning Constraints
+- Include in-progress work: [Based on current sprint state]
+- Exclude ticket types: [None, unless specified]
+- Special considerations: [Any unique sprint requirements]
+
+### Required Analysis
+- [x] Velocity trend analysis with confidence intervals
+- [x] Optimal sprint composition recommendations
+- [x] Pattern recognition from successful sprints
+- [x] Blocker predictions with mitigation strategies
+- [x] Risk assessment based on historical data
+- [x] Actionable recommendations for ticket selection
+
+### Integration Context
+- Will feed into architect agent for informed ticket selection
+- Output will guide capacity and risk planning decisions
+- Results will inform sprint composition optimization
+```
+
+**Expected Output:**
+```markdown
+## 🎯 Predictive Sprint Planning Insights
+
+### Velocity Analysis
+- Current velocity: [X] points
+- Average velocity: [Y] points
+- Velocity trend: [INCREASING/DECREASING/STABLE]
+- Confidence range: [Min-Max] points
+- Recommended target: [Z] points
+
+### Optimal Sprint Composition
+- Total points: [Recommended total]
+- Ticket mix: [X] small + [Y] medium + [Z] large tickets
+- Epic focus: [Priority epics with ticket allocation]
+- Risk balance: [Distribution of low/medium/high risk work]
+
+### Historical Patterns
+- Pattern 1: [Successful composition pattern]
+- Pattern 2: [Successful sequence pattern]  
+- Pattern 3: [Risk management pattern]
+
+### Blocker Predictions
+- High risk: [Description + mitigation strategy]
+- Medium risk: [Description + monitoring approach]
+- Predictive confidence: [X]% based on [data quality factors]
+
+### Strategic Recommendations
+1. [Data-driven ticket selection guidance]
+2. [Velocity-based capacity recommendation]
+3. [Risk mitigation priority suggestions]
+4. [Composition optimization advice]
+```
+
+**Integration Notes:**
+- Results feed directly into Phase 3 architect context
+- Velocity insights guide target point selection
+- Pattern recognition informs ticket mix decisions
+- Blocker predictions enable proactive risk mitigation
+
+### Phase 3: Ticket Selection & Prioritization
+**Agent:** `/agent:architect`  
+**Complexity**: Medium
+
+**Context for Agent:**
+```markdown
+## Data-Driven Sprint Planning Context
+
+### Project Context (from PROJECT_CONTEXT.md)
+[INSERT COMPLETE PROJECT_CONTEXT.md CONTENT]
+
+This includes:
+- **Tech Stack**: Languages, frameworks, architecture patterns
+- **Business Context**: Vision, users, success metrics
+- **Development Standards**: Quality requirements, testing strategy  
+- **Current Architecture**: Agents, recipes, integration points
+- **Technical Constraints**: Performance, security, system limitations
+- **Integration Requirements**: External tools and dependencies
+
+Use this context to ensure ticket selection aligns with:
+- Technical capabilities and constraints
+- Business objectives and user needs
+- Architecture patterns and standards
+- Available tools and integrations
+
+### Predictive Analysis Results
+[INSERT PREDICTIVE PLANNER OUTPUT FROM PHASE 2]
+
+Key insights to incorporate:
+- **Recommended Target Points**: [From velocity analysis]
+- **Optimal Ticket Mix**: [From pattern recognition]
+- **High-Risk Areas**: [From blocker predictions]
+- **Proven Success Patterns**: [From historical analysis]
+
+### Target (Adjusted based on data)
+- Sprint Points: [Use predictive recommendation, default 30-35 if unavailable]
 - Sprint Duration: 2 weeks
-- Team Capacity: [calculated from velocity]
+- Team Capacity: [From velocity analysis confidence range]
+- Risk Tolerance: MEDIUM (adjust based on predictive warnings)
 
-### Priorities (in order)
-1. Critical security issues (SECURITY-*)
-2. Build/deployment blockers (BUILD-*)
-3. Incomplete work from previous sprint
-4. High-value features aligned with quarterly goals
-5. Technical debt with immediate impact
-6. New feature development
+### Priorities (Data-Informed)
+1. Critical security issues (SECURITY-*) [If historically problematic, address first]
+2. Build/deployment blockers (BUILD-*) [Priority if blocking pattern detected]
+3. Incomplete work from previous sprint [Factor in completion rate impact]
+4. High-value features from successful epic patterns
+5. Technical debt with immediate velocity impact
+6. New feature development (balanced per optimal composition)
 
 ### Current Backlog
 [INSERT BACKLOG TABLE FROM PROJECT_PLAN.md]
 
-### Constraints
-- Maximum 8 tickets per sprint (focus over quantity)
-- Mix of sizes: 2-3 small (1-2 pts), 3-4 medium (3-5 pts), 1-2 large (8-13 pts)
-- Consider dependencies between tickets
-- Balance risk (include some safe tickets)
+### Data-Driven Constraints
+- **Ticket Count**: [Based on successful sprint patterns, typically 6-8 tickets]
+- **Size Distribution**: [Use optimal mix from predictive analysis]
+- **Epic Balance**: [Follow successful epic combination patterns]
+- **Risk Distribution**: [Apply recommended risk balance ratios]
+- **Blocker Mitigation**: [Address predicted high-risk areas first]
 
-### Selection Criteria
-For each ticket, evaluate:
-1. Business value (1-5)
-2. Technical risk (1-5)
-3. Dependencies cleared? (Y/N)
-4. Documentation exists? (Y/N)
-5. Blocker for other work? (Y/N)
+### Enhanced Selection Criteria
+For each ticket, evaluate with predictive context:
+1. **Business Value** (1-5): Standard assessment
+2. **Historical Risk** (1-5): Cross-reference with blocker predictions
+3. **Pattern Alignment** (1-5): Fits successful sprint composition patterns
+4. **Dependencies Cleared** (Y/N): Validated against dependency predictions
+5. **Documentation Status** (Y/N): Required context availability
+6. **Velocity Impact** (1-5): Expected contribution to sprint success
 
-Please select tickets totaling 30-35 points and provide rationale for each selection.
+### Selection Strategy
+1. **Start with predictive recommendations**: Use optimal composition as baseline
+2. **Address predicted blockers**: Prioritize mitigation strategies
+3. **Follow successful patterns**: Apply historical success factors
+4. **Balance risk appropriately**: Match recommended risk distribution
+5. **Validate against constraints**: Ensure dependencies and capacity alignment
+
+Please select tickets using data-driven insights and provide rationale referencing predictive analysis.
 ```
 
 **Expected Output:**
@@ -126,7 +260,7 @@ Risk Assessment: Medium (2 high-risk tickets balanced by 4 low-risk)
 
 ### Phase 3: Automated Spec Writing with Feature Boundaries
 **Agent:** `/agent:documenter` (parallel execution for each ticket without spec)  
-**Time:** 20-30 minutes
+**Complexity**: Medium
 **Max Parallel Agents:** Configurable (default: 5)
 
 **For EACH ticket without a spec, prepare context:**
@@ -206,7 +340,7 @@ function executeSpecWritingInBatches(tickets, maxAgents = 5) {
 
 ### Phase 4: Documentation Mapping
 **Agent:** `/agent:documenter`  
-**Time:** 10-15 minutes
+**Complexity**: Medium
 
 **Context:**
 ```markdown
@@ -250,7 +384,7 @@ Create a documentation roadmap table:
 
 ### Phase 5: Dependency Analysis & Risk Assessment
 **Agent:** `/agent:architect`  
-**Time:** 10-15 minutes
+**Complexity**: Medium
 
 **Context:**
 ```markdown
@@ -302,7 +436,7 @@ graph TD
 
 ### Phase 6: Context Preparation for Agents
 **Agent:** Main Claude  
-**Time:** 10-15 minutes
+**Complexity**: Medium
 
 **For each ticket, prepare agent context package:**
 ```markdown
@@ -337,7 +471,7 @@ graph TD
 
 ### Phase 7: Sprint Plan Generation
 **Agent:** Main Claude  
-**Time:** 5-10 minutes
+**Complexity**: Medium
 
 **Generate comprehensive sprint plan:**
 ```markdown
@@ -407,15 +541,15 @@ All context packages prepared in: `/sprint-[N]-context/`
 - ✅ Risk assessment completed
 - ✅ Work sequence optimized
 
-## Time Estimates
-- Phase 1: Sprint Analysis - 5-10 minutes
-- Phase 2: Ticket Selection - 15-20 minutes
-- Phase 3: Spec Writing - 20-30 minutes
-- Phase 4: Documentation Mapping - 10-15 minutes
-- Phase 5: Dependency Analysis - 10-15 minutes
-- Phase 6: Context Preparation - 10-15 minutes
-- Phase 7: Plan Generation - 5-10 minutes
-- **Total: 75-115 minutes** (vs 4-6 hours manual)
+## Complexity Assessment
+- Phase 1: Sprint Analysis - Low complexity
+- Phase 2: Ticket Selection - Medium complexity 
+- Phase 3: Spec Writing - Medium complexity
+- Phase 4: Documentation Mapping - Medium complexity
+- Phase 5: Dependency Analysis - Medium complexity
+- Phase 6: Context Preparation - Medium complexity
+- Phase 7: Plan Generation - Low complexity
+- **Overall Complexity**: Medium complexity planning
 
 ## Common Issues and Solutions
 
@@ -502,7 +636,7 @@ All context packages prepared in: `/sprint-[N]-context/`
 | 8+ | 45-60 min | Very High | High-end servers |
 
 ## Automation Benefits
-- **Time Savings:** 4-6 hours → 1.5-2 hours (75% reduction)
+- **Quality Enhancement:** Systematic preparation eliminates implementation guesswork
 - **Completeness:** 100% specs written before start
 - **Context Ready:** All agent packages prepared
 - **Risk Managed:** Dependencies and blockers identified

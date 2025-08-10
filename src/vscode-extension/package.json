@@ -1,0 +1,306 @@
+{
+  "name": "dev-agency-vscode",
+  "displayName": "Dev-Agency",
+  "description": "Native VS Code integration for the Dev-Agency agentic development system",
+  "version": "1.0.0",
+  "publisher": "dev-agency",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "AI",
+    "Programming Languages", 
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "agents",
+    "development",
+    "automation",
+    "debugging"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:dev-agency.invokeAgent",
+    "onLanguage:typescript",
+    "onLanguage:javascript", 
+    "onLanguage:python",
+    "onLanguage:markdown"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dev-agency.invokeAgent",
+        "title": "Invoke Agent",
+        "category": "Dev-Agency",
+        "icon": "$(robot)"
+      },
+      {
+        "command": "dev-agency.showStatus",
+        "title": "Show Agent Status",
+        "category": "Dev-Agency",
+        "icon": "$(pulse)"
+      },
+      {
+        "command": "dev-agency.openDebugger", 
+        "title": "Open Agent Debugger",
+        "category": "Dev-Agency",
+        "icon": "$(debug)"
+      },
+      {
+        "command": "dev-agency.selectAgent",
+        "title": "Select Agent",
+        "category": "Dev-Agency"
+      },
+      {
+        "command": "dev-agency.showOutput",
+        "title": "Show Output",
+        "category": "Dev-Agency"
+      },
+      {
+        "command": "dev-agency.clearCache",
+        "title": "Clear Cache",
+        "category": "Dev-Agency"
+      },
+      {
+        "command": "dev-agency.refreshAgents",
+        "title": "Refresh Agents",
+        "category": "Dev-Agency"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "dev-agency.invokeAgent",
+          "when": "dev-agency.enabled"
+        },
+        {
+          "command": "dev-agency.showStatus",
+          "when": "dev-agency.enabled"
+        },
+        {
+          "command": "dev-agency.openDebugger",
+          "when": "dev-agency.enabled"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "dev-agency.invokeAgent",
+          "group": "dev-agency@1",
+          "when": "editorHasSelection && dev-agency.enabled"
+        },
+        {
+          "command": "dev-agency.selectAgent",
+          "group": "dev-agency@2", 
+          "when": "dev-agency.enabled"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "dev-agency.invokeAgent",
+          "group": "dev-agency@1",
+          "when": "dev-agency.enabled"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "dev-agency.invokeAgent",
+        "key": "ctrl+alt+a",
+        "mac": "cmd+alt+a",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "dev-agency.showStatus",
+        "key": "ctrl+alt+s",
+        "mac": "cmd+alt+s"
+      },
+      {
+        "command": "dev-agency.openDebugger",
+        "key": "ctrl+alt+d",
+        "mac": "cmd+alt+d"
+      }
+    ],
+    "configuration": {
+      "title": "Dev-Agency",
+      "properties": {
+        "dev-agency.agentPath": {
+          "type": "string",
+          "default": "/home/hd/Desktop/LAB/Dev-Agency",
+          "description": "Path to Dev-Agency system directory"
+        },
+        "dev-agency.cliPath": {
+          "type": "string", 
+          "default": "/home/hd/Desktop/LAB/Dev-Agency/tools/agent-cli/dist/cli.js",
+          "description": "Path to Dev-Agency CLI tool"
+        },
+        "dev-agency.enableInlineAnnotations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable inline code annotations from agents"
+        },
+        "dev-agency.enableAutoInvocation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable automatic agent invocation on file changes"
+        },
+        "dev-agency.debugPort": {
+          "type": "number",
+          "default": 8081,
+          "description": "Port for debug visualization server"
+        },
+        "dev-agency.maxConcurrentAgents": {
+          "type": "number",
+          "default": 3,
+          "description": "Maximum number of concurrent agent executions"
+        },
+        "dev-agency.outputFormat": {
+          "type": "string",
+          "enum": ["json", "markdown", "text"],
+          "default": "markdown",
+          "description": "Default output format for agent responses"
+        },
+        "dev-agency.logLevel": {
+          "type": "string",
+          "enum": ["debug", "info", "warn", "error"],
+          "default": "info",
+          "description": "Logging level for extension"
+        },
+        "dev-agency.statusBarPosition": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "default": "right", 
+          "description": "Position of status bar widget"
+        },
+        "dev-agency.enableNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable agent execution notifications"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "dev-agency",
+          "title": "Dev-Agency",
+          "icon": "$(robot)"
+        }
+      ]
+    },
+    "views": {
+      "dev-agency": [
+        {
+          "id": "dev-agency.agents",
+          "name": "Agents",
+          "when": "dev-agency.enabled"
+        },
+        {
+          "id": "dev-agency.executions",
+          "name": "Executions", 
+          "when": "dev-agency.enabled"
+        },
+        {
+          "id": "dev-agency.debug",
+          "name": "Debug",
+          "when": "dev-agency.enabled && dev-agency.debuggerAttached"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "dev-agency.agents",
+        "contents": "Welcome to Dev-Agency!\n\n[Invoke Agent](command:dev-agency.invokeAgent)\n[Configure Settings](command:workbench.action.openSettings?%5B%22dev-agency%22%5D)"
+      }
+    ],
+    "languages": [
+      {
+        "id": "dev-agency-trace",
+        "aliases": ["Dev-Agency Trace", "trace"],
+        "extensions": [".trace"],
+        "configuration": "./syntaxes/trace.configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "dev-agency-trace",
+        "scopeName": "source.devagency.trace",
+        "path": "./syntaxes/trace.tmGrammar.json"
+      }
+    ],
+    "problemMatchers": [
+      {
+        "name": "dev-agency",
+        "owner": "dev-agency",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "dev-agency",
+        "required": ["agent"],
+        "properties": {
+          "agent": {
+            "type": "string",
+            "description": "The agent to invoke"
+          },
+          "task": {
+            "type": "string", 
+            "description": "The task to execute"
+          },
+          "context": {
+            "type": "string",
+            "description": "Context path for the agent"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./dist/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "dependencies": {
+    "@types/ws": "^8.5.5",
+    "ws": "^8.13.0",
+    "chokidar": "^3.5.3",
+    "glob": "^10.3.3",
+    "node-pty": "^0.10.1",
+    "semver": "^7.5.4",
+    "fs-extra": "^11.1.1",
+    "sanitize-html": "^2.11.0",
+    "d3": "^7.8.5"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "18.x",
+    "@types/fs-extra": "^11.0.1",
+    "@types/d3": "^7.4.0",
+    "@types/sanitize-html": "^2.9.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "@vscode/test-electron": "^2.3.4",
+    "@vscode/vsce": "^2.19.0",
+    "eslint": "^8.47.0",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "ts-loader": "^9.4.4"
+  }
+}

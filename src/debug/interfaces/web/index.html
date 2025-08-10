@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Visualizer - Dev-Agency</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="debug-header">
+            <div class="header-content">
+                <h1 class="debug-title">
+                    <span class="icon">🔍</span>
+                    Debug Visualizer
+                </h1>
+                <div class="header-controls">
+                    <div class="connection-status" id="connection-status">
+                        <span class="status-indicator disconnected"></span>
+                        <span class="status-text">Disconnected</span>
+                    </div>
+                    <button class="btn btn-primary" id="connect-btn">Connect</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="debug-main">
+            <!-- Sidebar -->
+            <aside class="debug-sidebar">
+                <nav class="sidebar-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#traces" class="nav-link active" data-tab="traces">
+                                <span class="icon">📊</span>
+                                Traces
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#flow" class="nav-link" data-tab="flow">
+                                <span class="icon">🔄</span>
+                                Flow Diagram
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#performance" class="nav-link" data-tab="performance">
+                                <span class="icon">⚡</span>
+                                Performance
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#tokens" class="nav-link" data-tab="tokens">
+                                <span class="icon">🎯</span>
+                                Token Usage
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#decisions" class="nav-link" data-tab="decisions">
+                                <span class="icon">🌳</span>
+                                Decision Tree
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#breakpoints" class="nav-link" data-tab="breakpoints">
+                                <span class="icon">🛑</span>
+                                Breakpoints
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Quick Stats -->
+                <div class="sidebar-stats">
+                    <h3>Quick Stats</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Active Traces:</span>
+                        <span class="stat-value" id="active-traces">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Breakpoints:</span>
+                        <span class="stat-value" id="active-breakpoints">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Bottlenecks:</span>
+                        <span class="stat-value" id="detected-bottlenecks">0</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="debug-content">
+                <!-- Traces Tab -->
+                <div class="tab-panel active" id="traces-panel">
+                    <div class="panel-header">
+                        <h2>Execution Traces</h2>
+                        <div class="panel-controls">
+                            <select id="agent-filter" class="form-select">
+                                <option value="">All Agents</option>
+                            </select>
+                            <select id="status-filter" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="running">Running</option>
+                                <option value="completed">Completed</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                            <button class="btn btn-secondary" id="refresh-traces">Refresh</button>
+                        </div>
+                    </div>
+                    <div class="traces-container">
+                        <div class="traces-list" id="traces-list">
+                            <!-- Traces will be populated here -->
+                        </div>
+                        <div class="trace-details" id="trace-details">
+                            <div class="no-selection">
+                                <p>Select a trace to view details</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flow Diagram Tab -->
+                <div class="tab-panel" id="flow-panel">
+                    <div class="panel-header">
+                        <h2>Execution Flow</h2>
+                        <div class="panel-controls">
+                            <select id="flow-trace-select" class="form-select">
+                                <option value="">Select a trace</option>
+                            </select>
+                            <div class="flow-controls">
+                                <button class="btn btn-sm" id="flow-zoom-in">+</button>
+                                <button class="btn btn-sm" id="flow-zoom-out">-</button>
+                                <button class="btn btn-sm" id="flow-fit">Fit</button>
+                                <button class="btn btn-sm" id="flow-reset">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flow-container">
+                        <div id="flow-diagram" class="flow-diagram"></div>
+                        <div class="flow-legend">
+                            <div class="legend-item">
+                                <div class="legend-color pending"></div>
+                                <span>Pending</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color running"></div>
+                                <span>Running</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color completed"></div>
+                                <span>Completed</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color failed"></div>
+                                <span>Failed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Tab -->
+                <div class="tab-panel" id="performance-panel">
+                    <div class="panel-header">
+                        <h2>Performance Analysis</h2>
+                        <div class="panel-controls">
+                            <select id="perf-trace-select" class="form-select">
+                                <option value="">Select a trace</option>
+                            </select>
+                            <button class="btn btn-primary" id="analyze-performance">Analyze</button>
+                        </div>
+                    </div>
+                    <div class="performance-container">
+                        <div class="performance-metrics">
+                            <div class="metric-card">
+                                <h3>Performance Score</h3>
+                                <div class="score-display" id="performance-score">--</div>
+                            </div>
+                            <div class="metric-card">
+                                <h3>Efficiency Score</h3>
+                                <div class="score-display" id="efficiency-score">--</div>
+                            </div>
+                            <div class="metric-card">
+                                <h3>Reliability Score</h3>
+                                <div class="score-display" id="reliability-score">--</div>
+                            </div>
+                        </div>
+                        <div class="bottlenecks-section">
+                            <h3>Detected Bottlenecks</h3>
+                            <div id="bottlenecks-list" class="bottlenecks-list">
+                                <!-- Bottlenecks will be populated here -->
+                            </div>
+                        </div>
+                        <div class="optimizations-section">
+                            <h3>Optimization Suggestions</h3>
+                            <div id="optimizations-list" class="optimizations-list">
+                                <!-- Optimizations will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Token Usage Tab -->
+                <div class="tab-panel" id="tokens-panel">
+                    <div class="panel-header">
+                        <h2>Token Usage Visualization</h2>
+                        <div class="panel-controls">
+                            <select id="token-trace-select" class="form-select">
+                                <option value="">Select a trace</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="tokens-container">
+                        <div class="token-summary">
+                            <div class="token-stat">
+                                <span class="stat-label">Total Tokens:</span>
+                                <span class="stat-value" id="total-tokens">0</span>
+                            </div>
+                            <div class="token-stat">
+                                <span class="stat-label">Input Tokens:</span>
+                                <span class="stat-value" id="input-tokens">0</span>
+                            </div>
+                            <div class="token-stat">
+                                <span class="stat-label">Output Tokens:</span>
+                                <span class="stat-value" id="output-tokens">0</span>
+                            </div>
+                            <div class="token-stat">
+                                <span class="stat-label">Estimated Cost:</span>
+                                <span class="stat-value" id="estimated-cost">$0.00</span>
+                            </div>
+                        </div>
+                        <div class="token-charts">
+                            <div class="chart-container">
+                                <canvas id="token-usage-chart" width="400" height="200"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="token-heatmap-chart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decision Tree Tab -->
+                <div class="tab-panel" id="decisions-panel">
+                    <div class="panel-header">
+                        <h2>Decision Tree Explorer</h2>
+                        <div class="panel-controls">
+                            <select id="decision-trace-select" class="form-select">
+                                <option value="">Select a trace</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="decisions-container">
+                        <div id="decision-tree" class="decision-tree"></div>
+                        <div class="decision-details" id="decision-details">
+                            <div class="no-selection">
+                                <p>Click on a decision node to view details</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Breakpoints Tab -->
+                <div class="tab-panel" id="breakpoints-panel">
+                    <div class="panel-header">
+                        <h2>Breakpoints</h2>
+                        <div class="panel-controls">
+                            <button class="btn btn-primary" id="add-breakpoint">Add Breakpoint</button>
+                        </div>
+                    </div>
+                    <div class="breakpoints-container">
+                        <div class="breakpoints-list" id="breakpoints-list">
+                            <!-- Breakpoints will be populated here -->
+                        </div>
+                        <div class="step-execution" id="step-execution" style="display: none;">
+                            <h3>Step Execution</h3>
+                            <div class="step-controls">
+                                <button class="btn btn-primary" id="step-over">Step Over</button>
+                                <button class="btn btn-primary" id="step-into">Step Into</button>
+                                <button class="btn btn-primary" id="step-out">Step Out</button>
+                                <button class="btn btn-success" id="continue">Continue</button>
+                                <button class="btn btn-danger" id="stop">Stop</button>
+                            </div>
+                            <div class="variables-view">
+                                <h4>Variables</h4>
+                                <div id="variables-list" class="variables-list">
+                                    <!-- Variables will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="add-breakpoint-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Breakpoint</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="breakpoint-form">
+                    <div class="form-group">
+                        <label for="breakpoint-name">Name:</label>
+                        <input type="text" id="breakpoint-name" name="name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="breakpoint-agent">Agent:</label>
+                        <select id="breakpoint-agent" name="agentName" class="form-select">
+                            <option value="">Any Agent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="breakpoint-step">Step:</label>
+                        <input type="text" id="breakpoint-step" name="stepName" class="form-input" 
+                               placeholder="Leave empty for any step">
+                    </div>
+                    <div class="form-group">
+                        <label for="breakpoint-condition">Condition (JavaScript):</label>
+                        <textarea id="breakpoint-condition" name="condition" class="form-textarea" 
+                                  placeholder="e.g., step.duration > 5000"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="breakpoint-description">Description:</label>
+                        <textarea id="breakpoint-description" name="description" class="form-textarea"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-breakpoint">Cancel</button>
+                <button class="btn btn-primary" id="save-breakpoint">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="services/websocket.js"></script>
+    <script src="services/api.js"></script>
+    <script src="utils/helpers.js"></script>
+    <script src="components/trace-list.js"></script>
+    <script src="components/flow-diagram.js"></script>
+    <script src="components/performance-analyzer.js"></script>
+    <script src="components/token-visualizer.js"></script>
+    <script src="components/decision-tree.js"></script>
+    <script src="components/breakpoint-manager.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

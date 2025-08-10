@@ -30,6 +30,7 @@ A ticket is "DONE" when it meets ALL these criteria:
 - Use Bash to get current date
 - Spec document is complete and current
 - Module README updated (ONLY if you changed the API or architecture)
+- PROJECT_CONTEXT.md updated if architecture, tech stack, or business context changed
 - Add commit notes to the Release_Notes.md
 
 **✅ Ready for Production**

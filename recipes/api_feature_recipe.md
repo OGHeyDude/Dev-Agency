@@ -174,15 +174,15 @@ After implementation (Step 3), run in parallel:
 - [ ] Performance acceptable
 - [ ] Follows existing patterns
 
-## Time Estimates
-- Research: 15-30 minutes
-- Architecture: 20-30 minutes
-- Implementation: 45-90 minutes
-- Testing: 30-45 minutes
-- Security Review: 15-20 minutes
-- Documentation: 20-30 minutes
+## Complexity Assessment
+- Research: Medium complexity
+- Architecture: Medium complexity
+- Implementation: High complexity
+- Testing: Medium complexity
+- Security Review: Medium complexity
+- Documentation: Low complexity
 
-**Total: 2.5-4 hours**
+**Story Points: 5-8 points**
 
 ## Tips for Success
 

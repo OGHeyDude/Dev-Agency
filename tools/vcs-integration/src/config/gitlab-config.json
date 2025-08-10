@@ -1,0 +1,117 @@
+{
+  "apiVersion": "v4",
+  "baseUrl": "https://gitlab.com/api/v4",
+  "timeout": 30000,
+  "rateLimit": {
+    "requestsPerMinute": 2000,
+    "reserveQuota": 50,
+    "respectLimits": true
+  },
+  "webhookEvents": [
+    "merge_request",
+    "issues",
+    "push", 
+    "tag_push",
+    "pipeline",
+    "job",
+    "deployment",
+    "release",
+    "wiki_page",
+    "repository",
+    "subgroup",
+    "member"
+  ],
+  "prTemplates": {
+    "feature": "feature.md",
+    "bugfix": "bugfix.md",
+    "refactor": "refactor.md", 
+    "hotfix": "hotfix.md",
+    "release": "release.md"
+  },
+  "issueTemplates": {
+    "bug-report": "bug-report.md",
+    "feature-request": "feature-request.md",
+    "task": "task.md",
+    "epic": "epic.md"
+  },
+  "defaultLabels": {
+    "feature": ["enhancement", "feature"],
+    "bugfix": ["bug", "fix"],
+    "refactor": ["refactor", "improvement"],
+    "hotfix": ["hotfix", "urgent", "bug"],
+    "release": ["release", "deployment"]
+  },
+  "branchProtection": {
+    "default": {
+      "pushAccessLevel": 30,
+      "mergeAccessLevel": 30,
+      "unprotectAccessLevel": 40,
+      "allowForcePush": false,
+      "codeOwnerApprovalRequired": true
+    }
+  },
+  "mergeRequestSettings": {
+    "defaultMergeMethod": "merge",
+    "squashOption": "default_off",
+    "mergeCommitTemplate": "",
+    "squashCommitTemplate": "",
+    "removeSourceBranch": true,
+    "onlyAllowMergeIfPipelineSucceeds": true,
+    "onlyAllowMergeIfAllDiscussionsAreResolved": true
+  },
+  "securityScanning": {
+    "dependencyScanning": true,
+    "sastScanning": true,
+    "secretDetection": true,
+    "containerScanning": true,
+    "dastScanning": true,
+    "licenseScannnig": true,
+    "coverageFuzzing": true
+  },
+  "automation": {
+    "autoMerge": {
+      "enabled": false,
+      "conditions": {
+        "minApprovals": 1,
+        "requiresPipelineSuccess": true,
+        "noUnresolvedDiscussions": true,
+        "authorCannotApprove": true
+      }
+    },
+    "staleMergeRequests": {
+      "enabled": true,
+      "daysUntilStale": 30,
+      "daysUntilClose": 7,
+      "exemptLabels": ["keep-open", "work-in-progress"]
+    },
+    "issueManagement": {
+      "autoClose": {
+        "enabled": true,
+        "inactivityDays": 60,
+        "requiresLabel": "awaiting-response"
+      }
+    }
+  },
+  "notifications": {
+    "mergeRequestEvents": ["opened", "closed", "merged", "approved"],
+    "issueEvents": ["opened", "closed", "assigned"],
+    "pipelineEvents": ["success", "failed", "canceled"],
+    "deploymentEvents": ["success", "failed", "canceled", "running"]
+  },
+  "cicd": {
+    "defaultTimeout": 3600,
+    "maxArtifactSize": "1GB",
+    "defaultImage": "alpine:latest",
+    "sharedRunnersEnabled": true,
+    "groupRunnersEnabled": true,
+    "pipelineScheduleEnabled": true
+  },
+  "retryConfig": {
+    "maxRetries": 3,
+    "baseDelay": 1000,
+    "maxDelay": 30000,
+    "backoffMultiplier": 2,
+    "retryableStatusCodes": [429, 500, 502, 503, 504],
+    "retryableErrors": ["ECONNRESET", "ETIMEDOUT", "ENOTFOUND"]
+  }
+}

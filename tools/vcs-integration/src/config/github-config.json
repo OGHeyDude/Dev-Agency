@@ -1,0 +1,106 @@
+{
+  "apiVersion": "v3",
+  "baseUrl": "https://api.github.com",
+  "timeout": 30000,
+  "rateLimit": {
+    "requestsPerHour": 5000,
+    "reserveQuota": 100,
+    "respectLimits": true
+  },
+  "webhookEvents": [
+    "pull_request",
+    "issues",
+    "push",
+    "release",
+    "check_run",
+    "check_suite",
+    "deployment",
+    "deployment_status",
+    "workflow_run",
+    "repository",
+    "branch_protection_rule",
+    "security_advisory"
+  ],
+  "prTemplates": {
+    "feature": "feature.md",
+    "bugfix": "bugfix.md", 
+    "refactor": "refactor.md",
+    "hotfix": "hotfix.md",
+    "release": "release.md"
+  },
+  "issueTemplates": {
+    "bug-report": "bug-report.md",
+    "feature-request": "feature-request.md",
+    "task": "task.md",
+    "epic": "epic.md"
+  },
+  "defaultLabels": {
+    "feature": ["enhancement", "feature"],
+    "bugfix": ["bug", "fix"],
+    "refactor": ["refactor", "improvement"],
+    "hotfix": ["hotfix", "urgent", "bug"],
+    "release": ["release", "deployment"]
+  },
+  "branchProtection": {
+    "default": {
+      "requiredStatusChecks": {
+        "strict": true,
+        "contexts": ["ci/tests", "ci/lint", "ci/security"]
+      },
+      "enforceAdmins": false,
+      "requiredPullRequestReviews": {
+        "requireCodeOwnerReviews": true,
+        "requiredApprovingReviewCount": 1,
+        "dismissStaleReviews": true
+      },
+      "restrictions": null,
+      "allowForcePushes": false,
+      "allowDeletions": false
+    }
+  },
+  "securityScanning": {
+    "dependencyAlerts": true,
+    "secretScanning": true,
+    "codeScanning": true,
+    "vulnerabilityAlerts": true,
+    "securityUpdates": true
+  },
+  "automation": {
+    "autoMerge": {
+      "enabled": false,
+      "conditions": {
+        "minApprovals": 2,
+        "requiresStatusChecks": true,
+        "noPendingReviews": true,
+        "authorCannotApprove": true
+      }
+    },
+    "stalePRs": {
+      "enabled": true,
+      "daysUntilStale": 30,
+      "daysUntilClose": 7,
+      "exemptLabels": ["keep-open", "work-in-progress"]
+    },
+    "issueManagement": {
+      "autoClose": {
+        "enabled": true,
+        "inactivityDays": 60,
+        "requiresLabel": "awaiting-response"
+      }
+    }
+  },
+  "notifications": {
+    "prEvents": ["opened", "closed", "merged", "review_requested"],
+    "issueEvents": ["opened", "closed", "assigned"],
+    "pipelineEvents": ["completed", "failed"],
+    "securityEvents": ["vulnerability_alert", "secret_detected"]
+  },
+  "retryConfig": {
+    "maxRetries": 3,
+    "baseDelay": 1000,
+    "maxDelay": 30000,
+    "backoffMultiplier": 2,
+    "retryableStatusCodes": [429, 500, 502, 503, 504],
+    "retryableErrors": ["ECONNRESET", "ETIMEDOUT", "ENOTFOUND"]
+  }
+}
