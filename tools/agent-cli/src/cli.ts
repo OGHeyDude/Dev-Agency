@@ -16,6 +16,7 @@ import { ValidationManager } from './utils/validation';
 import { securityManager } from './utils/security';
 import { validateCommandArg } from './utils/security';
 import { securityAuditor } from './utils/SecurityAuditor';
+import { AgentSelector } from './core/AgentSelector';
 
 const logger = Logger.create({ component: 'CLI' });
 const program = new Command();
@@ -25,6 +26,7 @@ let configManager: ConfigManager | null = null;
 let agentManager: AgentManager | null = null;
 let executionEngine: ExecutionEngine | null = null;
 let recipeEngine: RecipeEngine | null = null;
+let agentSelector: AgentSelector | null = null;
 
 // Track startup time
 const startupStartTime = Date.now();
@@ -56,6 +58,13 @@ const getRecipeEngine = (): RecipeEngine => {
     recipeEngine = new RecipeEngine();
   }
   return recipeEngine;
+};
+
+const getAgentSelector = (): AgentSelector => {
+  if (!agentSelector) {
+    agentSelector = new AgentSelector();
+  }
+  return agentSelector;
 };
 
 program
@@ -288,7 +297,8 @@ configCmd
   .action(async (options) => {
     try {
       const configMgr = getConfigManager();
-      await configMgr.initializeProject(options.projectType, options.force);
+      const projectPath = process.cwd(); // Use current working directory
+      await configMgr.initializeProject(projectPath, { type: options.projectType });
       console.log(chalk.green('✓ Configuration initialized'));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -469,6 +479,143 @@ program
         console.log(chalk.green(`✓ Metrics exported to ${exportPath}`));
       }
 
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.log(chalk.red(`Error: ${errorMessage}`));
+      process.exit(1);
+    }
+  });
+
+// Agent selection commands
+program
+  .command('select')
+  .description('Get agent recommendations for a task')
+  .argument('<task>', 'Task description')
+  .option('--max-agents <num>', 'Maximum number of agents to recommend', '4')
+  .option('--no-recipes', 'Exclude recipe recommendations')
+  .option('--exclude <agents>', 'Comma-separated list of agents to exclude')
+  .option('--complexity <level>', 'Preferred complexity level (simple, medium, complex)')
+  .option('--format <type>', 'Output format (json, markdown, text)', 'text')
+  .action(async (task, options) => {
+    try {
+      // Validate inputs
+      const validation = validateCommandArg(task, 'string');
+      if (!validation) {
+        console.log(chalk.red('Error: Invalid task description'));
+        process.exit(1);
+      }
+
+      const selector = getAgentSelector();
+      
+      // Validate task description
+      const taskValidation = selector.validateTask(task);
+      if (!taskValidation.valid) {
+        console.log(chalk.red('Task validation failed:'));
+        taskValidation.issues.forEach(issue => console.log(chalk.red(`  ${issue}`)));
+        process.exit(1);
+      }
+
+      // Parse options
+      const selectionOptions = {
+        maxAgents: parseInt(options.maxAgents),
+        includeRecipes: options.recipes,
+        excludeAgents: options.exclude ? options.exclude.split(',').map((s: string) => s.trim()) : [],
+        preferredComplexity: options.complexity
+      };
+
+      logger.info(`Analyzing task: ${chalk.blue(task)}`);
+      const recommendation = await selector.selectAgents(task, selectionOptions);
+
+      // Format output
+      if (options.format === 'json') {
+        console.log(JSON.stringify(recommendation, null, 2));
+      } else if (options.format === 'markdown') {
+        console.log(chalk.blue('## Agent Recommendation\n'));
+        console.log(`**Task:** ${task}\n`);
+        console.log(`**Complexity:** ${recommendation.estimated_complexity}`);
+        console.log(`**Confidence:** ${recommendation.confidence.toFixed(0)}%\n`);
+        
+        console.log('**Recommended Agents:**');
+        recommendation.agents.forEach((agent, index) => {
+          console.log(`${index + 1}. ${agent}`);
+        });
+        
+        if (recommendation.recipe) {
+          console.log(`\n**Recipe:** ${recommendation.recipe}`);
+        }
+        
+        console.log('\n**Workflow Steps:**');
+        recommendation.workflow_steps.forEach(step => {
+          console.log(`${step.step}. **${step.agent}** - ${step.purpose}`);
+        });
+        
+        console.log(`\n**Reasoning:** ${recommendation.reasoning}`);
+      } else {
+        // Default text format
+        console.log(chalk.green('\n✓ Agent Recommendation Complete'));
+        console.log(chalk.blue('═'.repeat(50)));
+        
+        console.log(`Task: ${chalk.yellow(task)}`);
+        console.log(`Complexity: ${chalk.yellow(recommendation.estimated_complexity)}`);
+        console.log(`Confidence: ${chalk.green(recommendation.confidence.toFixed(0) + '%')}`);
+        
+        console.log(chalk.blue('\nRecommended Agents:'));
+        recommendation.agents.forEach((agent, index) => {
+          console.log(`  ${index + 1}. ${chalk.cyan(agent)}`);
+        });
+        
+        if (recommendation.recipe) {
+          console.log(chalk.blue(`\nSuggested Recipe:`));
+          console.log(`  ${chalk.green(recommendation.recipe)}`);
+        }
+        
+        console.log(chalk.blue('\nWorkflow Steps:'));
+        recommendation.workflow_steps.forEach(step => {
+          console.log(`  ${step.step}. ${chalk.cyan(step.agent)} - ${step.purpose}`);
+        });
+        
+        console.log(chalk.blue('\nReasoning:'));
+        console.log(`  ${recommendation.reasoning}`);
+        
+        console.log(chalk.blue('\nExample Usage:'));
+        if (recommendation.recipe) {
+          console.log(chalk.gray(`  agent recipe ${recommendation.recipe}`));
+        } else {
+          console.log(chalk.gray(`  agent batch --agents ${recommendation.agents.join(',')}`));
+        }
+      }
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error(`Agent selection failed: ${errorMessage}`);
+      console.log(chalk.red(`Error: ${errorMessage}`));
+      process.exit(1);
+    }
+  });
+
+program
+  .command('wizard')
+  .description('Interactive agent selection wizard')
+  .option('--format <type>', 'Output format (json, markdown, text)', 'text')
+  .action(async (options) => {
+    try {
+      console.log(chalk.blue('🧙 Agent Selection Wizard'));
+      console.log(chalk.gray('Interactive wizard coming soon. For now, use the select command:\n'));
+      console.log(chalk.yellow('Examples:'));
+      console.log(chalk.gray('  agent select "implement user authentication"'));
+      console.log(chalk.gray('  agent select "fix memory leak in payment service"'));
+      console.log(chalk.gray('  agent select "optimize database queries"'));
+      console.log(chalk.gray('  agent select "create API documentation"'));
+      
+      // For now, show available agents
+      const selector = getAgentSelector();
+      const capabilities = selector.getAgentCapabilities();
+      
+      console.log(chalk.blue('\nAvailable Agents:'));
+      Array.from(capabilities.entries()).forEach(([name, capability]) => {
+        console.log(`  ${chalk.cyan(name)} - ${capability.description}`);
+      });
+      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       console.log(chalk.red(`Error: ${errorMessage}`));

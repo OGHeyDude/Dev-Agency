@@ -1,11 +1,11 @@
 ---
 title: Documentation Standardization Recipe & Slash Command
 ticket_id: AGENT-018
-status: READY_FOR_RELEASE
+status: DONE
 priority: HIGH
 story_points: 5
 created: 2025-08-09
-updated: 2025-08-09
+updated: 2025-08-10
 tags: [documentation, standardization, recipe, automation, memory-tool]
 ---
 

@@ -1,15 +1,15 @@
 {
-  "key": "context:a7f7a766:554655bc",
+  "key": "context:a7f7a766:c3a0fe9c",
   "value": {
     "content": "No files loaded.",
     "fileCount": 0,
     "totalSize": 0,
     "fileHashes": {
-      "/home/hd/Desktop/LAB/Dev-Agency/tools/agent-cli/.test-temp/context-test": "554655bc83c1b0f9f35ffb5911cb551f"
+      "/home/hd/Desktop/LAB/Dev-Agency/tools/agent-cli/.test-temp/context-test": "c3a0fe9c6179ce70e21a3909cbd9fa58"
     },
     "contextPath": "/home/hd/Desktop/LAB/Dev-Agency/tools/agent-cli/.test-temp/context-test"
   },
-  "timestamp": 1754820823888,
+  "timestamp": 1754824754113,
   "size": 270,
-  "hash": "0881b5a039d63806ad12a504864b4fdd"
+  "hash": "f7a1f902a5de6680f08316cc2f27a7ae"
 }

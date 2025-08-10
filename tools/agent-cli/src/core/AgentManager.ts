@@ -52,6 +52,7 @@ export class AgentManager {
   private performanceCache: PerformanceCache;
   private fileLoader: ParallelFileLoader;
   private devAgencyPath: string;
+  private loadingPromise: Promise<void>;
 
   constructor() {
     // Dev-Agency centralized location
@@ -71,10 +72,13 @@ export class AgentManager {
       allowedExtensions: ['.md']
     });
     
-    this.loadAgentDefinitions().catch(error => {
+    // Store the loading promise so we can wait for it
+    this.loadingPromise = this.loadAgentDefinitions().catch(error => {
       this.logger.error('Failed to load agent definitions:', error);
+      throw error;
     });
   }
+
 
   /**
    * Load all agent definitions from Dev-Agency
@@ -288,6 +292,7 @@ export class AgentManager {
    * Get agent definition by name
    */
   async getAgent(name: string): Promise<AgentDefinition | null> {
+    await this.ensureLoaded();
     return this.agentDefinitions.get(name) || null;
   }
 
@@ -295,6 +300,7 @@ export class AgentManager {
    * Get all available agents
    */
   async getAllAgents(): Promise<AgentDefinition[]> {
+    await this.ensureLoaded();
     return Array.from(this.agentDefinitions.values());
   }
 
@@ -302,6 +308,7 @@ export class AgentManager {
    * Validate agent configuration for execution
    */
   async validateAgent(name: string, options: AgentInvocationOptions): Promise<AgentValidation> {
+    await this.ensureLoaded();
     const errors: string[] = [];
     const warnings: string[] = [];
 
@@ -502,7 +509,8 @@ export class AgentManager {
   /**
    * Get agent list for CLI help
    */
-  getAgentNames(): string[] {
+  async getAgentNames(): Promise<string[]> {
+    await this.ensureLoaded();
     return Array.from(this.agentDefinitions.keys()).sort();
   }
 
@@ -533,9 +541,7 @@ export class AgentManager {
    * Ensure agents are loaded before operations
    */
   private async ensureLoaded(): Promise<void> {
-    if (this.agentDefinitions.size === 0) {
-      await this.loadAgentDefinitions();
-    }
+    await this.loadingPromise;
   }
 
   /**

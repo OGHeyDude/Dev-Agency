@@ -359,25 +359,27 @@ export class SecurityManager {
     // Remove null bytes and dangerous control characters
     let sanitized = content.replace(/[\x00\x08\x0b\x0c\x0e-\x1f]/g, '');
     
-    // Check for potential script injection patterns
+    // Define and REMOVE potential script injection patterns
     const dangerousPatterns = [
-      /<script[\s\S]*?>[\s\S]*?<\/script>/gi,
-      /javascript:/gi,
-      /on\w+\s*=/gi,
-      /eval\s*\(/gi,
-      /Function\s*\(/gi,
-      /setTimeout\s*\(/gi,
-      /setInterval\s*\(/gi
+      { pattern: /<script[\s\S]*?>[\s\S]*?<\/script>/gi, replacement: '<!-- SCRIPT_REMOVED -->' },
+      { pattern: /javascript:/gi, replacement: 'blocked:' },
+      { pattern: /on\w+\s*=/gi, replacement: 'data-blocked=' },
+      { pattern: /eval\s*\(/gi, replacement: 'blocked(' },
+      { pattern: /Function\s*\(/gi, replacement: 'blocked(' },
+      { pattern: /setTimeout\s*\(/gi, replacement: 'blocked(' },
+      { pattern: /setInterval\s*\(/gi, replacement: 'blocked(' }
     ];
     
-    for (const pattern of dangerousPatterns) {
+    // Actually remove/replace dangerous patterns
+    for (const { pattern, replacement } of dangerousPatterns) {
       if (pattern.test(sanitized)) {
         const event = this.logSecurityEvent('injection_attempt', 'high', {
           operation: 'write',
-          violation: `Potential code injection detected: ${pattern.source}`
+          violation: `Code injection blocked: ${pattern.source}`
         });
         
-        securityLogger.warn('Potential code injection detected', { pattern: pattern.source, event });
+        securityLogger.warn('Code injection blocked and sanitized', { pattern: pattern.source, event });
+        sanitized = sanitized.replace(pattern, replacement);
       }
     }
     

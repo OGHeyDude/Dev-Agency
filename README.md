@@ -5,7 +5,7 @@ type: overview
 category: system
 tags: [dev-agency, agents, enterprise, development]
 created: 2025-08-09
-updated: 2025-08-09
+updated: 2025-08-10
 ---
 
 # Dev-Agency: Centralized Agentic Development System
@@ -18,6 +18,26 @@ Enterprise-grade system providing specialized AI agents, proven workflows, and d
 - **New to Dev-Agency?** → [5-Minute Success Guide](quick-start/5_MINUTE_SUCCESS.md)
 - **Choose an Agent** → [Agent Catalog](quick-start/AGENT_CATALOG.md)
 - **Need Help?** → [Troubleshooting](docs/reference/troubleshooting.md)
+
+## ⚡ Quick Commands
+
+### Sprint Management
+```bash
+/sprint-execute --max-agents 4  # Execute current sprint with parallel agents
+/sprint-plan                    # Plan next sprint with agent coordination  
+/doc-audit                      # Comprehensive documentation standardization
+```
+
+### Development Workflow
+```bash
+/cmd                           # Initialize session and check project status
+/research → /plan → /build → /test → /document → /done  # Standard workflow
+/agent:architect               # System design and architecture
+/agent:coder                   # Implementation with best practices
+/agent:tester                  # Quality assurance and testing
+```
+
+**Additional Commands**: See [slash commands reference](prompts/slash_commands.md)
 
 ## 📚 Documentation Hub
 | Section | Purpose | Key Resources |
@@ -36,6 +56,8 @@ Enterprise-grade system providing specialized AI agents, proven workflows, and d
 **"Single Source of Truth - No Clutter, No Redundancy"**
 
 ### Recent Achievements
+✅ **Sprint 3 Success** - 16/16 points completed with 100% success rate  
+✅ **Production Tools** - CLI and Context Optimizer fully operational  
 ✅ **Parallel Agent Execution** - 5-agent coordination with 40%+ time savings  
 ✅ **Enterprise CLI Tool** - TypeScript architecture with comprehensive automation  
 ✅ **Multi-Agent QA** - Comprehensive parallel quality assurance process  
@@ -64,6 +86,8 @@ Enterprise-grade system providing specialized AI agents, proven workflows, and d
 - **`/agent:performance`** - Performance optimization
 - **`/agent:integration`** - System integration
 - **`/agent:memory-sync`** - Knowledge synchronization
+- **`/agent:hooks`** - Hooks and middleware development
+- **`/agent:clutter-detector`** - Code cleanup and deduplication
 
 [Complete agent catalog →](quick-start/AGENT_CATALOG.md)
 
@@ -71,17 +95,35 @@ Enterprise-grade system providing specialized AI agents, proven workflows, and d
 
 | Tool | Purpose | Status |
 |------|---------|--------|
-| **[Agent CLI](tools/agent-cli/)** | Command-line agent orchestration | ⚠️ Development (build issues) |
-| **[Context Optimizer](tools/context_optimizer/)** | Token usage optimization | ⚠️ Partial (missing modules) |
+| **[Agent CLI](tools/agent-cli/)** | Command-line agent orchestration | ✅ Operational |
+| **[Context Optimizer](tools/context_optimizer/)** | Token usage optimization | ✅ Operational |
 | **[Memory Sync](utils/memory_sync/)** | AI knowledge synchronization | ✅ Operational |
 
 ## 📖 Proven Workflows
 
 **Recipe System** - Standardized multi-agent workflows:
+
+### Core Development Workflows
 - **Full Stack Features** - Complete feature development (5 agents)
+- **API Development** - REST API implementation pipeline
+- **Bug Fix Workflow** - Investigation and resolution process
+- **TDD Development Cycle** - Test-driven development with agents
+
+### Sprint & Project Management  
+- **Sprint Planning** - Automated sprint planning with agent coordination
+- **Sprint Execution** - Multi-agent parallel execution strategies
+- **Documentation Standardization** - Comprehensive documentation audit
+
+### Specialized Workflows
 - **Security Audits** - Comprehensive security review
-- **Performance Optimization** - System performance analysis
+- **Performance Optimization** - System performance analysis  
 - **MCP Development** - Protocol implementation patterns
+- **Database Migration** - Schema and data migration workflows
+- **Complex Refactoring** - Large-scale code restructuring
+
+### Quality Assurance
+- **Clean Code Enforcement** - Code quality and standards compliance
+- **Memory Sync** - Intelligent codebase knowledge synchronization
 
 [All recipes →](recipes/)
 
