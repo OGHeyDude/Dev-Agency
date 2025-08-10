@@ -1,0 +1,18 @@
+{
+  "allowedDirectories": [
+    "/home/hd/Desktop/LAB/Dev-Agency",
+    "/home/hd/Desktop/LAB/Development_Standards"
+  ],
+  "excludePatterns": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/venv/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.env*"
+  ],
+  "maxFileSize": 10485760,
+  "encoding": "utf8",
+  "debug": false,
+  "followSymlinks": false
+}

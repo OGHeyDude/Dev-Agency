@@ -1,0 +1,8 @@
+{
+  "memoryPath": "./.mcp-data/memory/knowledge.json",
+  "maxEntities": 10000,
+  "maxObservationsPerEntity": 1000,
+  "enableAutoBackup": true,
+  "backupInterval": 3600,
+  "logLevel": "info"
+}

@@ -1,0 +1,534 @@
+/**
+ * Execution Engine - Parallel agent execution coordinator
+ * 
+ * @file ExecutionEngine.ts
+ * @created 2025-08-09
+ * @updated 2025-08-09
+ */
+
+import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import { EventEmitter } from 'events';
+import { AgentManager, AgentInvocationOptions } from './AgentManager';
+import { ConfigManager } from './ConfigManager';
+import { Logger } from '../utils/Logger';
+
+export interface ExecutionResult {
+  success: boolean;
+  output?: string;
+  error?: string;
+  metrics: {
+    duration: number;
+    tokens_used?: number;
+    context_size: number;
+  };
+  agent: string;
+  timestamp: string;
+}
+
+export interface SingleExecutionOptions extends AgentInvocationOptions {
+  agentName: string;
+}
+
+export interface BatchExecutionOptions {
+  agents: string[];
+  parallelLimit: number;
+  contextPath?: string;
+  outputPath?: string;
+  format?: string;
+}
+
+export interface BatchExecutionResult {
+  total: number;
+  successful: number;
+  failed: number;
+  results: ExecutionResult[];
+  summary: string;
+}
+
+export interface ExecutionStatus {
+  active_executions: number;
+  queued_executions: number;
+  completed_today: number;
+  failed_today: number;
+  total_agents_available: number;
+}
+
+export interface ExecutionLog {
+  timestamp: string;
+  level: 'info' | 'warn' | 'error';
+  agent?: string;
+  message: string;
+  duration?: number;
+}
+
+export interface ExecutionMetrics {
+  total_executions: number;
+  successful_executions: number;
+  failed_executions: number;
+  average_duration: number;
+  total_tokens_used: number;
+  agents_usage: Record<string, number>;
+  performance_by_agent: Record<string, {
+    avg_duration: number;
+    success_rate: number;
+    total_runs: number;
+  }>;
+}
+
+export class ExecutionEngine extends EventEmitter {
+  private logger = new Logger();
+  private agentManager: AgentManager;
+  private configManager: ConfigManager;
+  
+  private activeExecutions = new Map<string, ExecutionResult>();
+  private executionQueue: SingleExecutionOptions[] = [];
+  private executionHistory: ExecutionResult[] = [];
+  private metrics: ExecutionMetrics;
+
+  constructor() {
+    super();
+    this.agentManager = new AgentManager();
+    this.configManager = new ConfigManager();
+    this.initializeMetrics();
+  }
+
+  /**
+   * Initialize execution metrics
+   */
+  private initializeMetrics(): void {
+    this.metrics = {
+      total_executions: 0,
+      successful_executions: 0,
+      failed_executions: 0,
+      average_duration: 0,
+      total_tokens_used: 0,
+      agents_usage: {},
+      performance_by_agent: {}
+    };
+  }
+
+  /**
+   * Execute single agent
+   */
+  async executeSingle(options: SingleExecutionOptions): Promise<ExecutionResult> {
+    const executionId = this.generateExecutionId();
+    const startTime = Date.now();
+    
+    this.logger.info(`Starting execution: ${options.agentName} [${executionId}]`);
+    
+    try {
+      // Validate agent and options
+      const validation = await this.agentManager.validateAgent(options.agentName, options);
+      if (!validation.valid) {
+        throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
+      }
+
+      // Get agent definition
+      const agent = await this.agentManager.getAgent(options.agentName);
+      if (!agent) {
+        throw new Error(`Agent not found: ${options.agentName}`);
+      }
+
+      // Prepare context
+      const context = await this.agentManager.prepareContext(agent, options);
+      
+      // Create execution result placeholder
+      const result: ExecutionResult = {
+        success: false,
+        agent: options.agentName,
+        timestamp: new Date().toISOString(),
+        metrics: {
+          duration: 0,
+          context_size: context.length
+        }
+      };
+
+      // Add to active executions
+      this.activeExecutions.set(executionId, result);
+      this.emit('execution:started', { executionId, agent: options.agentName });
+
+      // Execute in worker thread for timeout support
+      const workerResult = await this.executeInWorker({
+        agentName: options.agentName,
+        context,
+        options,
+        timeout: options.timeout || 300000
+      });
+
+      // Process result
+      result.success = workerResult.success;
+      result.output = workerResult.output;
+      result.error = workerResult.error;
+      result.metrics.duration = Date.now() - startTime;
+      result.metrics.tokens_used = workerResult.tokens_used;
+
+      // Save output if requested
+      if (options.outputPath && result.output) {
+        await this.saveOutput(result.output, options.outputPath, options.format || 'text');
+      }
+
+      // Update metrics
+      this.updateMetrics(result);
+      
+      // Remove from active executions
+      this.activeExecutions.delete(executionId);
+      this.executionHistory.push(result);
+
+      this.emit('execution:completed', { executionId, result });
+      this.logger.info(`Completed execution: ${options.agentName} [${executionId}] in ${result.metrics.duration}ms`);
+
+      return result;
+    } catch (error) {
+      const result: ExecutionResult = {
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+        agent: options.agentName,
+        timestamp: new Date().toISOString(),
+        metrics: {
+          duration: Date.now() - startTime,
+          context_size: 0
+        }
+      };
+
+      this.activeExecutions.delete(executionId);
+      this.executionHistory.push(result);
+      this.updateMetrics(result);
+
+      this.emit('execution:failed', { executionId, error: result.error });
+      this.logger.error(`Failed execution: ${options.agentName} [${executionId}]:`, error);
+
+      throw error;
+    }
+  }
+
+  /**
+   * Execute multiple agents in parallel
+   */
+  async executeBatch(options: BatchExecutionOptions): Promise<BatchExecutionResult> {
+    const startTime = Date.now();
+    this.logger.info(`Starting batch execution: ${options.agents.length} agents, ${options.parallelLimit} parallel`);
+
+    // Prepare execution options for each agent
+    const executions: SingleExecutionOptions[] = options.agents.map(agentName => ({
+      agentName,
+      contextPath: options.contextPath,
+      outputPath: options.outputPath ? 
+        path.join(path.dirname(options.outputPath), `${agentName}_${path.basename(options.outputPath)}`) : 
+        undefined,
+      format: options.format
+    }));
+
+    // Execute with concurrency limit
+    const results = await this.executeWithConcurrency(executions, options.parallelLimit);
+    
+    const successful = results.filter(r => r.success).length;
+    const failed = results.length - successful;
+    
+    const summary = this.generateBatchSummary(results, Date.now() - startTime);
+    
+    this.logger.info(`Batch execution completed: ${successful}/${results.length} successful in ${Date.now() - startTime}ms`);
+
+    return {
+      total: results.length,
+      successful,
+      failed,
+      results,
+      summary
+    };
+  }
+
+  /**
+   * Execute agents with concurrency control
+   */
+  private async executeWithConcurrency(
+    executions: SingleExecutionOptions[], 
+    concurrencyLimit: number
+  ): Promise<ExecutionResult[]> {
+    const results: ExecutionResult[] = [];
+    const inProgress = new Set<Promise<ExecutionResult>>();
+
+    for (const execution of executions) {
+      // Wait if we've hit the concurrency limit
+      if (inProgress.size >= concurrencyLimit) {
+        const completed = await Promise.race(inProgress);
+        results.push(completed);
+        inProgress.delete(Promise.resolve(completed));
+      }
+
+      // Start new execution
+      const promise = this.executeSingle(execution).catch(error => {
+        // Convert errors to ExecutionResult
+        return {
+          success: false,
+          error: error.message,
+          agent: execution.agentName,
+          timestamp: new Date().toISOString(),
+          metrics: {
+            duration: 0,
+            context_size: 0
+          }
+        };
+      });
+
+      inProgress.add(promise);
+    }
+
+    // Wait for remaining executions
+    while (inProgress.size > 0) {
+      const completed = await Promise.race(inProgress);
+      results.push(completed);
+      inProgress.delete(Promise.resolve(completed));
+    }
+
+    return results;
+  }
+
+  /**
+   * Execute agent in worker thread with timeout
+   */
+  private async executeInWorker(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const worker = new Worker(__filename, {
+        workerData: data
+      });
+
+      const timeout = setTimeout(() => {
+        worker.terminate();
+        reject(new Error('Execution timeout'));
+      }, data.timeout);
+
+      worker.on('message', (result) => {
+        clearTimeout(timeout);
+        resolve(result);
+      });
+
+      worker.on('error', (error) => {
+        clearTimeout(timeout);
+        reject(error);
+      });
+
+      worker.on('exit', (code) => {
+        clearTimeout(timeout);
+        if (code !== 0) {
+          reject(new Error(`Worker stopped with exit code ${code}`));
+        }
+      });
+    });
+  }
+
+  /**
+   * Save execution output to file
+   */
+  private async saveOutput(output: string, outputPath: string, format: string): Promise<void> {
+    await fs.ensureDir(path.dirname(outputPath));
+    
+    let content = output;
+    
+    // Format output based on format type
+    switch (format) {
+      case 'json':
+        try {
+          const parsed = JSON.parse(output);
+          content = JSON.stringify(parsed, null, 2);
+        } catch {
+          content = JSON.stringify({ output }, null, 2);
+        }
+        break;
+        
+      case 'markdown':
+        if (!output.includes('# ') && !output.includes('## ')) {
+          content = `# Agent Output\n\n${output}`;
+        }
+        break;
+        
+      case 'text':
+      default:
+        // Keep as-is
+        break;
+    }
+    
+    await fs.writeFile(outputPath, content, 'utf-8');
+    this.logger.debug(`Output saved to: ${outputPath}`);
+  }
+
+  /**
+   * Update execution metrics
+   */
+  private updateMetrics(result: ExecutionResult): void {
+    this.metrics.total_executions++;
+    
+    if (result.success) {
+      this.metrics.successful_executions++;
+    } else {
+      this.metrics.failed_executions++;
+    }
+    
+    // Update average duration
+    this.metrics.average_duration = 
+      (this.metrics.average_duration * (this.metrics.total_executions - 1) + result.metrics.duration) / 
+      this.metrics.total_executions;
+    
+    // Update tokens used
+    if (result.metrics.tokens_used) {
+      this.metrics.total_tokens_used += result.metrics.tokens_used;
+    }
+    
+    // Update agent usage
+    this.metrics.agents_usage[result.agent] = (this.metrics.agents_usage[result.agent] || 0) + 1;
+    
+    // Update per-agent performance
+    if (!this.metrics.performance_by_agent[result.agent]) {
+      this.metrics.performance_by_agent[result.agent] = {
+        avg_duration: 0,
+        success_rate: 0,
+        total_runs: 0
+      };
+    }
+    
+    const agentMetrics = this.metrics.performance_by_agent[result.agent];
+    agentMetrics.total_runs++;
+    agentMetrics.avg_duration = 
+      (agentMetrics.avg_duration * (agentMetrics.total_runs - 1) + result.metrics.duration) / 
+      agentMetrics.total_runs;
+    agentMetrics.success_rate = 
+      (this.executionHistory.filter(r => r.agent === result.agent && r.success).length / 
+       this.executionHistory.filter(r => r.agent === result.agent).length) * 100;
+  }
+
+  /**
+   * Generate batch execution summary
+   */
+  private generateBatchSummary(results: ExecutionResult[], totalDuration: number): string {
+    const successful = results.filter(r => r.success);
+    const failed = results.filter(r => !r.success);
+    
+    let summary = `## Batch Execution Summary\n\n`;
+    summary += `- **Total Agents**: ${results.length}\n`;
+    summary += `- **Successful**: ${successful.length}\n`;
+    summary += `- **Failed**: ${failed.length}\n`;
+    summary += `- **Total Duration**: ${(totalDuration / 1000).toFixed(2)}s\n`;
+    summary += `- **Average per Agent**: ${(totalDuration / results.length / 1000).toFixed(2)}s\n\n`;
+    
+    if (successful.length > 0) {
+      summary += `### Successful Executions\n`;
+      successful.forEach(result => {
+        summary += `- **${result.agent}**: ${(result.metrics.duration / 1000).toFixed(2)}s\n`;
+      });
+      summary += `\n`;
+    }
+    
+    if (failed.length > 0) {
+      summary += `### Failed Executions\n`;
+      failed.forEach(result => {
+        summary += `- **${result.agent}**: ${result.error}\n`;
+      });
+      summary += `\n`;
+    }
+    
+    return summary;
+  }
+
+  /**
+   * Generate unique execution ID
+   */
+  private generateExecutionId(): string {
+    return `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  /**
+   * Get current execution status
+   */
+  async getStatus(activeOnly: boolean = false): Promise<ExecutionStatus | any> {
+    if (activeOnly) {
+      return Array.from(this.activeExecutions.values());
+    }
+    
+    const today = new Date().toDateString();
+    const todayResults = this.executionHistory.filter(r => 
+      new Date(r.timestamp).toDateString() === today
+    );
+    
+    return {
+      active_executions: this.activeExecutions.size,
+      queued_executions: this.executionQueue.length,
+      completed_today: todayResults.filter(r => r.success).length,
+      failed_today: todayResults.filter(r => !r.success).length,
+      total_agents_available: (await this.agentManager.getAllAgents()).length
+    };
+  }
+
+  /**
+   * Get execution logs
+   */
+  async getLogs(options: { agent?: string; limit?: number }): Promise<ExecutionLog[]> {
+    let logs = this.executionHistory
+      .map(result => ({
+        timestamp: result.timestamp,
+        level: result.success ? 'info' as const : 'error' as const,
+        agent: result.agent,
+        message: result.success ? 
+          `Execution completed in ${result.metrics.duration}ms` : 
+          `Execution failed: ${result.error}`,
+        duration: result.metrics.duration
+      }))
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    
+    if (options.agent) {
+      logs = logs.filter(log => log.agent === options.agent);
+    }
+    
+    if (options.limit) {
+      logs = logs.slice(0, options.limit);
+    }
+    
+    return logs;
+  }
+
+  /**
+   * Get performance metrics
+   */
+  async getMetrics(summaryOnly: boolean = false): Promise<ExecutionMetrics | any> {
+    if (summaryOnly) {
+      return {
+        total_executions: this.metrics.total_executions,
+        success_rate: (this.metrics.successful_executions / this.metrics.total_executions * 100).toFixed(1),
+        average_duration: `${(this.metrics.average_duration / 1000).toFixed(2)}s`,
+        most_used_agent: Object.entries(this.metrics.agents_usage)
+          .sort(([,a], [,b]) => b - a)[0]?.[0] || 'none'
+      };
+    }
+    
+    return { ...this.metrics };
+  }
+}
+
+// Worker thread execution logic
+if (!isMainThread) {
+  const { agentName, context, options, timeout } = workerData;
+  
+  // Simulate agent execution
+  // In real implementation, this would invoke Claude Code with the agent context
+  const simulateExecution = async (): Promise<any> => {
+    const startTime = Date.now();
+    
+    // Simulate processing time
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 1000));
+    
+    // Simulate success/failure
+    const success = Math.random() > 0.1; // 90% success rate
+    
+    return {
+      success,
+      output: success ? `Agent ${agentName} completed successfully.\n\nContext processed: ${context.length} characters\n\nTask: ${options.task || 'No task specified'}` : undefined,
+      error: success ? undefined : `Agent ${agentName} encountered an error during execution`,
+      tokens_used: Math.floor(context.length / 4), // Rough token estimation
+      duration: Date.now() - startTime
+    };
+  };
+  
+  simulateExecution()
+    .then(result => parentPort?.postMessage(result))
+    .catch(error => parentPort?.postMessage({ success: false, error: error.message }));
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "session_id": "d2bb2426-ecfa-48f6-aac2-57360f97dd3e",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/d2bb2426-ecfa-48f6-aac2-57360f97dd3e.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use Bash",
+    "agent_type": "Claude"
+  },
+  {
+    "session_id": "d2bb2426-ecfa-48f6-aac2-57360f97dd3e",
+    "transcript_path": "/home/hd/.claude/projects/-home-hd-Desktop-LAB-Dev-Agency/d2bb2426-ecfa-48f6-aac2-57360f97dd3e.jsonl",
+    "cwd": "/home/hd/Desktop/LAB/Dev-Agency",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash",
+    "notification_type": "info",
+    "task_status": "waiting",
+    "task_title": "Claude needs your permission to use Bash",
+    "agent_type": "Claude"
+  }
+]

@@ -1,0 +1,73 @@
+# Agent CLI Configuration Example
+# Copy this to .agent-cli.yaml and customize for your project
+
+# General settings
+default_parallel_limit: 3
+default_timeout: 300
+default_format: "text"
+
+# Dev-Agency paths (centralized system)
+dev_agency_path: "/home/hd/Desktop/LAB/Dev-Agency"
+agents_path: "/home/hd/Desktop/LAB/Dev-Agency/Agents"
+recipes_path: "/home/hd/Desktop/LAB/Dev-Agency/recipes"
+
+# Project-specific settings
+project_type: "web-app"  # web-app, cli, library, mcp-server
+context_paths:
+  - "./src"
+  - "./docs"
+  - "./specs"
+output_directory: "./agent-output"
+
+# Agent preferences for different task types
+preferred_agents:
+  architecture: ["architect"]
+  coding: ["coder", "mcp-dev"]
+  testing: ["tester"]
+  documentation: ["documenter"]
+  security: ["security"]
+  performance: ["performance"]
+  integration: ["integration", "hooks"]
+
+# Per-agent settings
+agent_settings:
+  architect:
+    max_context_size: 8000
+    preferred_format: "markdown"
+  coder:
+    max_context_size: 6000
+    timeout: 450
+  tester:
+    parallel_allowed: true
+    max_context_size: 4000
+
+# Execution settings
+auto_optimize_context: true
+save_execution_logs: true
+metrics_enabled: true
+
+# Recipe-specific variables
+recipe_variables:
+  author: "Your Name"
+  project_name: "My Project"
+  version: "1.0.0"
+  default_branch: "main"
+  
+# Logging configuration
+logging:
+  level: "info"  # debug, info, warn, error
+  file: "./logs/agent-cli.log"
+  console: true
+  rotate_size_mb: 10
+
+# Performance tuning
+performance:
+  context_cache_enabled: true
+  parallel_optimization: true
+  memory_limit_mb: 512
+  
+# Custom paths (if different from defaults)
+custom_paths:
+  templates: "./templates"
+  temp: "./temp"
+  cache: "./.agent-cache"

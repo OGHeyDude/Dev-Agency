@@ -1,0 +1,16 @@
+{
+  "name": "memory_sync",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ts_parser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "typescript": "^5.9.2"
+  }
+}
