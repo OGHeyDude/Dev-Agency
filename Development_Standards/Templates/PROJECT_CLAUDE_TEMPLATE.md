@@ -39,27 +39,39 @@ All agent commands work in this project by reading from Dev-Agency:
 - `/agent:clutter-detector` - Find redundancy
 
 ### Workflow Commands
-Standard 5-step process with agents:
-1. `/research` - Explore codebase and requirements
+Enhanced workflow process with test-first development:
+1. `/research` - Explore codebase and check for existing solutions
 2. `/plan` - Technical planning (use `/agent:architect` for complex designs)
-3. `/build` - Implementation (use appropriate agents)
+3. `/build` - **TEST-FIRST Implementation** (write tests before code)
 4. `/test` - Validation (use `/agent:tester` and `/agent:security`)
 5. `/document` - Documentation (use `/agent:documenter` for user docs)
+6. `/reflect` - Review implementation accuracy and validate completion
+7. `/done` - Complete Definition of Done checklist and mark ticket complete
+
+### Sprint Management (NEW)
+```bash
+# For sprint-based development
+/sprint-themed           # Start themed sprint planning and execution
+/sprint-execute [TICKET] # Handle individual tickets outside sprint
+/sprint-status          # Check current sprint progress
+```
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Setup
 
-```
-/[project-root]/
-├── CLAUDE.md                 # This file (minimal, references Dev-Agency)
-├── /Project_Management/       # Project-specific planning
-│   ├── PROJECT_PLAN.md      # Project backlog and tickets
-│   ├── /Specs/              # Ticket specifications
-│   └── /Releases/           # Release documentation
-├── /src/                     # [Adjust based on project]
-├── /tests/                   # [Adjust based on project]
-└── /docs/                    # [Adjust based on project]
+**For complete project setup instructions, see:**
+`/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Guides/New Project Setup Guide.md`
+
+Quick setup reference:
+```bash
+# 1. Create structure
+mkdir -p Project_Management/{Specs,Bug_Reports,temp,"Sprint Retrospectives",Archive,Releases}
+mkdir -p docs/{features,guides,api,tutorials,integrations,agents,development/{architecture,patterns,testing,deployment}}
+mkdir -p src
+
+# 2. Copy templates (see setup guide for details)
+# 3. Customize this CLAUDE.md file
 ```
 
 ---
@@ -93,12 +105,49 @@ Standard 5-step process with agents:
 
 ---
 
-## 🚀 Quick Start
+## 🧪 Development Approach
+
+### Test-First Development (MANDATORY)
+This project follows Test-Driven Development:
+
+1. **Write tests FIRST** in `/src/[module]/__tests__/`
+2. **Run tests to see them FAIL** (Red)
+3. **Implement minimum code** to pass tests (Green)
+4. **Refactor** while keeping tests passing
+5. **Cannot mark tickets DONE** without passing tests
+
+### Quality Requirements
+- Test coverage >80%
+- All tests must pass
+- Lint and typecheck must pass
+- Documentation must be updated
+
+---
+
+## 📄 File Organization
+
+### Where Files Go
+- **Temporary files** → `/Project_Management/temp/`
+- **Feature docs** → `/docs/features/[feature-name].md`
+- **API docs** → `/docs/api/[module]-api.md`
+- **Development docs** → `/docs/development/[category]/`
+- **Test files** → `/src/[module]/__tests__/`
+
+### Documentation Rules
+- ALWAYS use appropriate category folder
+- ALWAYS create inter-links to related docs
+- NEVER create docs in random locations
+- Use temp folder for drafts
+
+---
+
+## 🚀 Development Commands
 
 ```bash
-# Project-specific setup commands
+# Project-specific development commands
 [npm install | pip install -r requirements.txt | go mod download]
 [npm run dev | python main.py | go run .]
+[npm test | pytest | go test]
 ```
 
 ---

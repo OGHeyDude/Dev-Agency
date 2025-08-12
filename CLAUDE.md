@@ -64,10 +64,10 @@
 ```
 
 ### Standard Workflow
-**Workflow:** `/cmd` → select ticket → `/research` → `/plan` → `/build` → `/test` → `/document` → `/done`
+**Workflow:** `/cmd` → select ticket → `/research` → `/plan` → `/build` → `/test` → `/document` → `/reflect` → `/done`
 
 ### Agent-Enhanced Workflow
-**With Agents:** `/cmd` → `/research` → `/plan` + `/agent:architect` → `/build` + `/agent:coder` → `/test` + `/agent:tester` → `/document` + `/agent:documenter` → `/done`
+**With Agents:** `/cmd` → `/research` → `/plan` + `/agent:architect` → `/build` + `/agent:coder` → `/test` + `/agent:tester` → `/document` + `/agent:documenter` → `/reflect` → `/done`
 
 ### Additional Commends
 If you encounter a slash commend you are not familiar with follow: `/home/hd/Desktop/LAB/Dev-Agency/prompts/slash_commands.md`
@@ -100,6 +100,23 @@ If you encounter a slash commend you are not familiar with follow: `/home/hd/Des
 # Status commands
 /sync-memory --status          # Show sync status
 /sync-memory --pending         # Show pending changes
+```
+
+### Process Enforcement Commands (NEW)
+```bash
+# Validation Commands - Block progress until requirements met
+/validate-done [TICKET]         # Ultimate validation before marking DONE
+/validate-phase [PHASE] [TICKET] # Validate specific development phase
+/commit-checkpoint [PHASE] [TICKET] # Enforce commit at checkpoints
+/sprint-closure-validation      # Validate entire sprint before completion
+
+# Documentation Enforcement
+/doc-required [TYPE] [TICKET]   # Create required documentation by ticket type
+/validate-docs [TICKET]         # Ensure all required docs exist
+
+# Quality Gates
+/quality-gate [PHASE] [TICKET]  # Run quality checks for phase
+/test-gate [TICKET]            # Validate all tests pass before proceeding
 ```
 
 ---
@@ -151,7 +168,7 @@ If you encounter a slash commend you are not familiar with follow: `/home/hd/Des
 
 ---
 
-## 5-Step Development Process with Agents
+## 7-Step Development Process with Agents
 
 ### 1. `/research` - Discovery Phase
 - **Main Claude**: Search codebase, analyze patterns
@@ -185,7 +202,19 @@ If you encounter a slash commend you are not familiar with follow: `/home/hd/Des
 - **Main Claude**: Update technical docs
 - **Optional**: `/agent:documenter` for user-facing docs
 - **Output**: Complete documentation
-- **Status**: `QA_TESTING` → `DOCUMENTATION` → `READY_FOR_RELEASE` → `DONE`
+- **Status**: `QA_TESTING` → `DOCUMENTATION`
+
+### 6. `/reflect` - Review Phase
+- **Main Claude**: Validate implementation accuracy
+- **Review**: All acceptance criteria met
+- **Verify**: Code quality and completeness
+- **Output**: Implementation validation
+
+### 7. `/done` - Completion Phase
+- **Main Claude**: Complete Definition of Done checklist
+- **Update**: PROJECT_PLAN.md ticket status
+- **Verify**: All deliverables complete
+- **Status**: `DOCUMENTATION` → `READY_FOR_RELEASE` → `DONE`
 
 ---
 

@@ -42,9 +42,9 @@ Strategic recipe for documentation improvement and standardization. Focuses on c
 
 ---
 
-## Phase 2: Standards Definition
+## Phase 2: Standards Definition & File Organization
 
-**Goal:** Establish documentation standards and templates
+**Goal:** Establish documentation standards, templates, and file organization
 
 **Agent:** `/agent:architect`
 
@@ -62,8 +62,38 @@ Strategic recipe for documentation improvement and standardization. Focuses on c
 - Versioning approach
 - Media guidelines (screenshots, diagrams)
 - Accessibility requirements
+- **File organization structure**
 
-**Output:** Documentation standards guide with templates
+### Documentation File Organization
+
+**User-Facing Documentation**
+```
+/docs/
+├── features/        # Feature documentation
+├── guides/          # User guides and tutorials
+├── api/            # API reference documentation
+├── tutorials/      # Step-by-step tutorials
+├── integrations/   # Third-party integrations
+└── agents/         # Agent-specific documentation
+```
+
+**Development Documentation**
+```
+/docs/development/
+├── architecture/   # System design and architecture
+├── patterns/       # Code patterns and best practices
+├── testing/        # Testing strategies and guides
+└── deployment/     # Deployment and operations
+```
+
+**File Organization Rules:**
+- ALWAYS use appropriate category folder
+- ALWAYS create inter-links to related docs
+- ALWAYS update index files when adding new docs
+- NEVER create docs in random locations
+- Use `/Project_Management/temp/` for drafts and working files
+
+**Output:** Documentation standards guide with templates and file organization
 
 ---
 
@@ -107,7 +137,7 @@ Strategic recipe for documentation improvement and standardization. Focuses on c
 
 ## Phase 4: Content Creation & Migration
 
-**Goal:** Create new content and update existing documentation
+**Goal:** Create new content and update existing documentation with proper organization
 
 **Agent:** `/agent:documenter`
 
@@ -117,19 +147,46 @@ Strategic recipe for documentation improvement and standardization. Focuses on c
 - Technical specifications
 - Code examples from codebase
 - User feedback
+- File organization structure
 
 **Creation Process:**
-1. **New Content**
+1. **New Content Creation**
    - Follow templates strictly
    - Include practical examples
    - Add troubleshooting sections
    - Provide clear navigation
+   - **Save to correct location based on type**
 
-2. **Content Migration**
-   - Update to new format
-   - Correct inaccuracies
-   - Improve clarity
-   - Add missing sections
+2. **File Placement Guidelines**
+   ```markdown
+   IF user-facing feature:
+     → /docs/features/[feature-name].md
+   
+   IF developer guide:
+     → /docs/development/[category]/[topic].md
+   
+   IF API documentation:
+     → /docs/api/[module]-api.md
+   
+   IF integration guide:
+     → /docs/integrations/[service].md
+   
+   IF agent documentation:
+     → /docs/agents/[agent-name].md
+   ```
+
+3. **Inter-linking Requirements**
+   - Link to related features
+   - Link to prerequisite guides
+   - Link to API references
+   - Create "See Also" sections
+   - Update parent index files
+
+4. **Temporary File Usage**
+   - Draft documents → `/Project_Management/temp/docs-draft/`
+   - Screenshots/media → `/Project_Management/temp/media/`
+   - Review versions → `/Project_Management/temp/review/`
+   - Never commit temp files
 
 **Quality Criteria:**
 - Clear and concise language
@@ -137,8 +194,10 @@ Strategic recipe for documentation improvement and standardization. Focuses on c
 - Working code examples
 - Helpful visuals
 - Logical organization
+- Proper file location
+- Complete inter-links
 
-**Output:** Standardized documentation content
+**Output:** Standardized, well-organized documentation
 
 ---
 

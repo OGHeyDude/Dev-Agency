@@ -5,10 +5,526 @@ type: guide
 category: commands
 tags: [commands, automation, recipes, workflow]
 created: 2025-08-09
-updated: 2025-08-09
+updated: 2025-08-10
 ---
 
 # Custom Slash Commands
+
+## Table of Contents
+- [Sprint Management Commands](#sprint-management-commands)
+- [Auto-fix Commands](#auto-fix-commands)
+- [Development Workflow Commands](#development-workflow-commands)
+- [Quality & Testing Commands](#quality--testing-commands)
+- [Infrastructure Commands](#infrastructure-commands)
+- [Documentation Commands](#documentation-commands)
+- [Recipe Execution Commands](#recipe-execution-commands)
+- [Command Aliases](#command-aliases)
+- [Integration Patterns](#integration-patterns)
+
+## Sprint Management Commands
+
+### `/sprint-themed` - Strategic Sprint Management (TEST)
+**Purpose:** Complete themed sprint workflow with automated planning and execution  
+**Recipe:** `/recipes/test/sprint_management_recipe.md`  
+**Agents Used:** `architect`, `documenter`, multi-agent execution library  
+**Status:** Testing - Next-generation sprint system
+
+#### Basic Usage
+```bash
+/sprint-themed                   # Interactive theme selection and execution
+```
+
+#### Sprint Themes Available
+```bash
+/sprint-themed --development     # Feature development (70%) + critical bugs (30%)
+/sprint-themed --bug-bash        # Focused bug resolution sprint
+/sprint-themed --refactoring     # Technical debt reduction sprint
+/sprint-themed --database        # Schema changes and migration sprint
+/sprint-themed --documentation   # Documentation improvement sprint
+```
+
+#### Advanced Options
+```bash
+/sprint-themed --auto-execute    # Skip user approval, execute automatically
+/sprint-themed --max-agents 4   # Limit concurrent agents (default: varies by theme)
+/sprint-themed --points 35       # Custom story point target
+/sprint-themed --preview         # Show execution plan without running
+```
+
+#### What It Does
+1. **Theme Selection & Context Loading:**
+   - Interactive theme selection or direct specification
+   - Loads complete project context and constraints
+   - Establishes theme-specific success criteria
+
+2. **Intelligent Ticket Selection:**
+   - Curates tickets matching theme and team capacity
+   - Applies theme-specific filtering and prioritization
+   - Balances business value with technical considerations
+
+3. **Comprehensive Spec Validation:**
+   - Ensures all tickets have complete specifications
+   - Generates missing specs using established patterns
+   - Validates acceptance criteria and success metrics
+
+4. **Strategic Implementation Planning:**
+   - Creates optimal execution sequence with parallelization
+   - Assigns appropriate agents to each ticket
+   - Plans resource allocation and dependency management
+
+5. **User Approval Checkpoint:**
+   - Presents complete execution plan for review
+   - Shows resource allocation and timeline estimates
+   - Allows modifications before automated execution
+
+6. **Automated Sprint Execution:**
+   - Executes entire sprint with no manual intervention
+   - Manages agent orchestration and quality gates
+   - Provides real-time progress tracking and reporting
+
+#### Example Output
+```
+🎯 SPRINT THEME SELECTION
+=====================================
+Available Themes:
+1. Development Sprint (Standard feature/bug mix)
+2. Bug Bash Sprint (Stability focus) 
+3. Refactoring Sprint (Technical debt)
+4. Database Sprint (Schema/migration work)
+5. Documentation Sprint (Doc improvement)
+
+Selected: Development Sprint
+
+📋 TICKET CURATION (Development Theme)
+=====================================
+Target: 33 story points | Theme: 70% features, 30% bugs
+
+Selected Tickets:
+• FEATURE-045: User dashboard v2 (8 pts) - High business value
+• FEATURE-047: API rate limiting (5 pts) - Infrastructure improvement  
+• BUG-023: Memory leak in auth service (5 pts) - Critical stability
+• FEATURE-046: Mobile responsive design (8 pts) - User experience
+• BUG-024: Race condition in payment flow (3 pts) - Critical bug
+• ENHANCEMENT-012: Logging standardization (2 pts) - Operational
+• BUG-025: Timeout handling improvements (2 pts) - Reliability
+
+Total: 33 points | Features: 23 pts (70%) | Bugs: 8 pts (24%) | Ops: 2 pts (6%)
+
+🏗️ EXECUTION PLAN GENERATED
+=====================================
+Phase 1 (Days 1-3): Foundation
+• BUG-023 (critical) → FEATURE-045 (dashboard core)
+• Agents: architect + coder + tester (2 parallel streams)
+
+Phase 2 (Days 4-7): Core Development  
+• FEATURE-047 (API) || FEATURE-046 (mobile) || BUG-024 (payments)
+• Agents: 3 parallel streams, 4-5 agents total
+
+Phase 3 (Days 8-10): Polish & Integration
+• ENHANCEMENT-012 → BUG-025 → Integration testing
+• Agents: coder + tester + documenter
+
+Quality Gates: Enabled for all phases
+Memory Sync: After each ticket completion
+Progress Tracking: Real-time dashboard
+
+⏰ ESTIMATED COMPLETION: 10 working days
+🎯 SUCCESS PROBABILITY: 94% (based on team velocity and complexity analysis)
+
+Proceed with execution? [y/N]
+```
+
+### `/sprint-status` - Active Sprint Monitoring
+**Purpose:** Monitor ongoing sprint progress and health  
+**Integration:** Works with `/sprint-themed` and `/sprint-execute`
+
+#### Usage
+```bash
+/sprint-status                   # Show current sprint status
+/sprint-status --detailed        # Include per-ticket breakdown
+/sprint-status --velocity        # Show velocity tracking
+/sprint-status --blockers        # Focus on current blockers
+/sprint-status --agents          # Show active agent assignments
+```
+
+#### Example Output
+```
+📊 ACTIVE SPRINT STATUS
+=====================================
+Sprint: Development Sprint (Theme) | Day 6 of 10
+Progress: 18/33 points completed (55%)
+Velocity: On track (slightly ahead)
+
+🎯 TICKET STATUS
+• ✅ BUG-023: DONE (5 pts) - Completed Day 2
+• ✅ FEATURE-045: DONE (8 pts) - Completed Day 4  
+• ⚡ FEATURE-047: IN_PROGRESS (5 pts) - Agent: coder, 80% complete
+• ⚡ FEATURE-046: IN_PROGRESS (8 pts) - Agent: architect+coder, 45% complete
+• ⏳ BUG-024: READY_TO_START (3 pts) - Waiting for FEATURE-047
+• ⏳ ENHANCEMENT-012: QUEUED (2 pts)
+• ⏳ BUG-025: QUEUED (2 pts)
+
+🤖 ACTIVE AGENTS (3/4 capacity)
+• architect: Working on FEATURE-046 (mobile design)
+• coder: Working on FEATURE-047 (API rate limiting) 
+• tester: Available (testing completed features)
+
+📈 VELOCITY TRACKING
+• Target: 3.3 pts/day | Actual: 3.6 pts/day (+9%)
+• Completion ETA: Day 9 (1 day ahead of schedule)
+• Confidence: 96% on-time delivery
+
+⚠️ BLOCKERS & RISKS
+• None currently blocking progress
+• Low risk: FEATURE-046 complexity may extend timeline by 0.5 days
+```
+
+### `/sprint-plan` - Automated Sprint Planning
+
+## Auto-fix Commands
+
+### `/auto-fix` - Intelligent Issue Detection and Resolution
+**Purpose:** Automatically detect, analyze, and resolve development issues with predictive capabilities  
+**Agent:** `auto-fix` (AGENT-027)  
+**Integration:** Real-time monitoring with health systems and learning framework
+
+#### Basic Usage
+```bash
+/auto-fix                    # Start auto-fix monitoring
+/auto-fix [issue-id]        # Fix specific issue
+/auto-fix --stop            # Stop auto-fix monitoring  
+```
+
+#### Advanced Options
+```bash
+/auto-fix --status          # Show monitoring status and metrics
+/auto-fix --insights        # Show predictive insights
+/auto-fix --history [limit] # Show fix history (default: 10)
+/auto-fix --config          # Show current configuration
+```
+
+#### Configuration
+```bash
+/auto-fix --threshold 0.8   # Set auto-apply confidence threshold
+/auto-fix --risk low        # Set risk tolerance (low/medium/high)
+/auto-fix --types "compilation,test,lint" # Enable specific issue types
+/auto-fix --dry-run         # Preview fixes without applying
+```
+
+#### Issue-specific Commands
+```bash
+/auto-fix --compilation     # Focus on compilation issues only
+/auto-fix --tests           # Focus on test failures only  
+/auto-fix --dependencies    # Focus on dependency issues only
+/auto-fix --lint            # Focus on code quality issues only
+/auto-fix --security        # Focus on security vulnerabilities only
+```
+
+#### What It Does
+1. **Detection Phase:**
+   - Monitors compilation, tests, dependencies, and code quality
+   - Uses pattern recognition for common error types
+   - Integrates with health monitoring systems
+   - Provides real-time issue alerts
+
+2. **Analysis Phase:**
+   - Performs automated root cause analysis
+   - Correlates with historical fix data  
+   - Assesses fix complexity and risk
+   - Generates confidence scores
+
+3. **Prediction Phase:**
+   - Predicts issues 24-48 hours before occurrence
+   - Analyzes code change patterns and trends
+   - Provides early warnings and prevention suggestions
+   - Learns from successful and failed fixes
+
+4. **Resolution Phase:**
+   - Generates multiple context-aware fix strategies
+   - Applies fixes automatically for high-confidence scenarios
+   - Validates fixes through comprehensive testing
+   - Provides rollback capability for failed fixes
+
+#### Example Outputs
+```
+🤖 Auto-fix Agent Status
+━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Monitoring: ACTIVE
+📊 Issues Detected: 12 (last 24h)
+🔧 Fixes Applied: 10 (83% success rate)
+⚡ Avg Fix Time: 1.2 minutes
+🔮 Active Predictions: 3
+
+Recent Activity:
+• TS2304: Fixed missing React import in component.tsx
+• Test failure: Updated assertion in user.test.ts  
+• Vulnerability: Updated lodash to v4.17.21
+• ESLint: Auto-fixed 5 semicolon violations
+
+Upcoming Predictions:
+• High probability of test failures after next dependency update
+• Potential TypeScript errors in auth module (72h window)
+• Performance regression risk in data processing (48h window)
+```
+
+## Development Workflow Commands
+
+### `/api-feature` - API Development Workflow  
+**Purpose:** Complete REST API development with testing, documentation, and integration  
+**Recipe:** `/recipes/api_feature_recipe.md`  
+**Agents Used:** `architect`, `coder`, `tester`, `documenter`, `security`
+
+#### Basic Usage
+```bash
+/api-feature [endpoint-name]     # Create new API endpoint
+/api-feature --resource users    # REST resource endpoint
+/api-feature --crud              # Full CRUD operations
+```
+
+#### Advanced Options
+```bash
+/api-feature --auth required     # Add authentication/authorization
+/api-feature --validate strict   # Input validation and sanitization
+/api-feature --cache redis       # Add caching layer
+/api-feature --rate-limit        # Add rate limiting
+/api-feature --async             # Asynchronous operation support
+/api-feature --docs swagger      # Generate Swagger/OpenAPI docs
+```
+
+#### What It Does
+1. **Architecture Phase:** API design with REST principles, authentication, and data modeling
+2. **Implementation Phase:** Route handlers, middleware, validation, and error handling
+3. **Testing Phase:** Unit tests, integration tests, and API contract testing
+4. **Security Review:** Input validation, authorization checks, and vulnerability scanning
+5. **Documentation:** API documentation, examples, and integration guides
+
+### `/full-stack-feature` - Complete Feature Development
+**Purpose:** End-to-end feature development including frontend, backend, and database  
+**Recipe:** `/recipes/full_stack_feature_recipe.md`  
+**Agents Used:** `architect`, `coder`, `tester`, `documenter`, `memory-sync`
+
+#### Basic Usage
+```bash
+/full-stack-feature [feature-name]  # Complete feature development
+/full-stack-feature --ui-first      # Start with UI/UX design
+/full-stack-feature --api-first     # Start with backend API
+```
+
+#### Options
+```bash
+/full-stack-feature --frontend react    # Specify frontend framework
+/full-stack-feature --backend nodejs    # Specify backend technology
+/full-stack-feature --database postgres # Database requirements
+/full-stack-feature --mobile            # Include mobile responsiveness
+/full-stack-feature --realtime          # WebSocket/real-time features
+```
+
+#### What It Does
+1. **System Design:** Architecture planning with frontend, backend, and database components
+2. **Database Schema:** Entity modeling, migrations, and relationship design
+3. **Backend Development:** APIs, business logic, and data access layers
+4. **Frontend Implementation:** UI components, state management, and API integration
+5. **Integration Testing:** End-to-end testing and cross-component validation
+6. **Documentation:** User guides, technical documentation, and deployment instructions
+
+### `/mcp-server` - MCP Implementation Workflow
+**Purpose:** Model Context Protocol server development with tools and prompts  
+**Recipe:** `/recipes/mcp_server_recipe.md`  
+**Agents Used:** `mcp-dev`, `architect`, `coder`, `tester`, `documenter`
+
+#### Basic Usage
+```bash
+/mcp-server [server-name]        # Create new MCP server
+/mcp-server --tools              # Focus on tool implementations
+/mcp-server --prompts            # Focus on prompt libraries
+```
+
+#### Options
+```bash
+/mcp-server --transport stdio    # Standard I/O transport
+/mcp-server --transport http     # HTTP transport protocol
+/mcp-server --config yaml        # Configuration format
+/mcp-server --auth token         # Authentication mechanism
+/mcp-server --logging detailed   # Logging configuration
+```
+
+#### What It Does
+1. **Protocol Design:** MCP specification compliance and transport setup
+2. **Tool Implementation:** Custom tools with proper schemas and handlers
+3. **Prompt Development:** Reusable prompt templates and libraries
+4. **Testing Framework:** MCP protocol testing and validation
+5. **Integration:** Claude Code integration and deployment setup
+
+## Quality & Testing Commands
+
+### `/bug-fix` - Systematic Bug Resolution
+**Purpose:** Root cause analysis and comprehensive bug resolution workflow  
+**Recipe:** `/recipes/bug_fix_recipe.md`  
+**Agents Used:** `tester`, `architect`, `coder`
+
+#### Basic Usage  
+```bash
+/bug-fix [bug-id]               # Fix specific bug ticket
+/bug-fix --severity critical    # Focus on critical bugs
+/bug-fix --reproduce-first      # Ensure reproducibility
+```
+
+#### Options
+```bash
+/bug-fix --root-cause           # Deep root cause analysis
+/bug-fix --regression-test      # Add regression testing
+/bug-fix --hotfix              # Emergency production fix
+/bug-fix --batch               # Fix multiple related bugs
+```
+
+#### What It Does
+1. **Pre-condition Validation:** Ensure bug report completeness and reproducibility
+2. **Root Cause Analysis:** Identify true source with execution tracing
+3. **Fix Design:** Minimal, robust solution that addresses root cause
+4. **Implementation:** Fix with comprehensive testing and validation
+5. **Regression Prevention:** Tests to prevent future occurrences
+
+### `/tdd-workflow` - Test-Driven Development
+**Purpose:** Test-first development workflow with quality gates  
+**Recipe:** `/recipes/tdd_workflow_recipe.md`  
+**Agents Used:** `tester`, `coder`, `architect`
+
+#### Basic Usage
+```bash
+/tdd-workflow [feature-name]    # TDD workflow for feature
+/tdd-workflow --red-green       # Classic Red-Green-Refactor
+```
+
+#### Options  
+```bash
+/tdd-workflow --unit            # Focus on unit testing
+/tdd-workflow --integration     # Include integration tests
+/tdd-workflow --coverage 90     # Target test coverage
+/tdd-workflow --bdd             # Behavior-driven development
+```
+
+#### What It Does
+1. **Test Design:** Define test scenarios before implementation
+2. **Red Phase:** Write failing tests that define requirements
+3. **Green Phase:** Implement minimal code to pass tests
+4. **Refactor Phase:** Improve code quality while maintaining tests
+5. **Validation:** Ensure comprehensive coverage and quality
+
+### `/security-audit` - Security Review Workflow
+**Purpose:** Comprehensive security analysis and vulnerability assessment  
+**Recipe:** `/recipes/security_audit_recipe.md`  
+**Agents Used:** `security`, `architect`, `tester`
+
+#### Basic Usage
+```bash
+/security-audit                 # Full security audit
+/security-audit --dependencies  # Dependency vulnerabilities only
+/security-audit --code          # Code security analysis
+```
+
+#### Options
+```bash
+/security-audit --deep          # Deep security analysis
+/security-audit --compliance    # Compliance checking
+/security-audit --pen-test      # Penetration testing approach
+/security-audit --report        # Generate security report
+```
+
+#### What It Does
+1. **Threat Modeling:** Identify security threats and attack vectors
+2. **Vulnerability Scanning:** Automated and manual security testing
+3. **Code Analysis:** Static analysis for security patterns
+4. **Dependency Audit:** Third-party security vulnerabilities  
+5. **Remediation:** Security fixes and hardening recommendations
+
+### `/performance` - Performance Optimization
+**Purpose:** Performance bottleneck identification and optimization  
+**Recipe:** `/recipes/performance_optimization_recipe.md`  
+**Agents Used:** `performance`, `architect`, `coder`
+
+#### Basic Usage
+```bash
+/performance                    # Performance analysis and optimization
+/performance --profile          # Performance profiling first
+/performance --memory           # Focus on memory optimization
+```
+
+#### Options
+```bash
+/performance --database         # Database query optimization
+/performance --frontend         # Frontend performance
+/performance --api             # API response optimization
+/performance --load-test       # Load testing and scaling
+```
+
+#### What It Does  
+1. **Performance Profiling:** Identify bottlenecks and resource usage
+2. **Analysis:** Root cause analysis of performance issues
+3. **Optimization:** Code, query, and architecture optimizations
+4. **Validation:** Performance testing and benchmarking
+5. **Monitoring:** Performance monitoring setup and alerting
+
+## Infrastructure Commands
+
+### `/memory-sync` - Knowledge Graph Synchronization
+**Purpose:** Sync code changes to knowledge graph for enhanced context  
+**Recipe:** `/recipes/memory_sync_recipe.md`  
+**Agents Used:** `memory-sync`
+
+#### Basic Usage
+```bash
+/memory-sync                    # Sync all changes
+/memory-sync [path]            # Sync specific directory
+/memory-sync --types "py,ts"   # Sync specific file types
+```
+
+#### Options
+```bash
+/memory-sync --force           # Force full resync
+/memory-sync --incremental     # Only sync changes
+/memory-sync --analyze         # Analyze before syncing
+/memory-sync --cleanup         # Remove obsolete entries
+```
+
+### `/database-migrate` - Database Migration Workflow
+**Purpose:** Zero-downtime database schema changes and data migrations  
+**Recipe:** `/recipes/database_migration_workflow.md`  
+**Agents Used:** `architect`, `coder`, `tester`
+
+#### Basic Usage
+```bash
+/database-migrate [migration-name]  # Create and run migration
+/database-migrate --rollback        # Rollback last migration
+/database-migrate --preview         # Preview migration changes
+```
+
+#### Options
+```bash
+/database-migrate --zero-downtime   # Zero-downtime migration strategy
+/database-migrate --data-migration  # Include data transformation
+/database-migrate --backup-first    # Create backup before migration
+/database-migrate --validate        # Validate migration integrity
+```
+
+### `/refactor` - Code Refactoring Workflow  
+**Purpose:** Large-scale code refactoring with safety and testing  
+**Recipe:** `/recipes/complex_refactoring_workflow.md`  
+**Agents Used:** `architect`, `coder`, `tester`
+
+#### Basic Usage
+```bash
+/refactor [component-name]      # Refactor specific component
+/refactor --extract-service     # Extract microservice
+/refactor --modernize          # Modernize legacy code
+```
+
+#### Options
+```bash
+/refactor --safe               # Extra safety checks and validation
+/refactor --preserve-behavior  # Ensure behavior preservation
+/refactor --step-by-step       # Incremental refactoring approach
+/refactor --performance        # Performance-focused refactoring
+```
 
 ## Sprint Planning Commands
 
@@ -395,7 +911,7 @@ These commands integrate with the standard workflow:
 
 ```bash
 # Standard workflow with documentation audit
-/cmd → /research → /plan → /build → /test → /doc-audit → /document → /done
+/cmd → /research → /plan → /build → /test → /doc-audit → /document → /reflect → /done
 
 # Quick documentation cleanup
 /doc-audit --audit-only → /doc-audit --dry-run → /doc-audit
@@ -428,17 +944,147 @@ To add a new slash command:
 
 For convenience, these aliases are available:
 
+### Sprint Management
 ```bash
-/sp     → /sprint-plan
-/spr    → /sprint-predict
-/se     → /sprint-execute
-/da     → /doc-audit
-/dt     → /doc-template
-/ds     → /doc-split
-/rc     → /recipe
-/rcc    → /recipe-chain
+/st     → /sprint-themed          # Strategic sprint system
+/ss     → /sprint-status          # Sprint monitoring
+/sp     → /sprint-plan           # Classic sprint planning
+/spr    → /sprint-predict        # Predictive analysis
+/se     → /sprint-execute        # Sprint execution
+```
+
+### Development & Quality
+```bash
+/af     → /auto-fix              # Auto-fix agent
+/api    → /api-feature           # API development
+/fs     → /full-stack-feature    # Full-stack development  
+/mcp    → /mcp-server           # MCP implementation
+/bf     → /bug-fix              # Bug resolution
+/tdd    → /tdd-workflow         # Test-driven development
+/sec    → /security-audit       # Security audit
+/perf   → /performance          # Performance optimization
+```
+
+### Infrastructure
+```bash
+/ms     → /memory-sync          # Knowledge graph sync
+/db     → /database-migrate     # Database migration
+/ref    → /refactor             # Code refactoring
+```
+
+### Documentation  
+```bash
+/da     → /doc-audit            # Documentation audit
+/dt     → /doc-template         # Apply template
+/ds     → /doc-split            # Split document
+```
+
+### Recipe Execution
+```bash
+/rc     → /recipe               # Execute recipe
+/rcc    → /recipe-chain         # Chain recipes
+```
+
+## Integration Patterns
+
+### Standard Development Workflow
+```bash
+# Classic 5-step development cycle
+/cmd → /research → /plan → /build → /test → /document → /reflect → /done
+
+# Enhanced with specialized commands
+/cmd → /research → /plan → /api-feature → /security-audit → /doc-audit → /done
+```
+
+### Sprint-Driven Development
+```bash
+# Strategic sprint workflow (recommended)  
+/sprint-themed → [User Approval] → [Automated Execution] → /sprint-status
+
+# Classic sprint workflow
+/sprint-plan → /sprint-execute → /sprint-status
+
+# Predictive-driven planning
+/sprint-predict → /sprint-plan → /sprint-execute
+```
+
+### Quality-First Workflows
+```bash
+# TDD approach
+/tdd-workflow → /security-audit → /performance → /doc-audit
+
+# Bug resolution workflow  
+/auto-fix → /bug-fix → /tdd-workflow → /regression-test
+
+# Security-first development
+/security-audit → /api-feature → /security-audit → /penetration-test
+```
+
+### Infrastructure & Maintenance
+```bash
+# Database evolution
+/database-migrate → /performance → /security-audit → /doc-audit
+
+# Legacy modernization
+/refactor → /tdd-workflow → /performance → /security-audit
+
+# Knowledge management
+/memory-sync → /doc-audit → /doc-standardization
+```
+
+### Multi-Agent Orchestration
+```bash
+# Parallel development streams
+/sprint-execute --max-agents 5
+# Runs multiple agents simultaneously:
+# - architect + coder (Feature A)
+# - tester + security (Feature B) 
+# - documenter (Documentation)
+# - memory-sync (Background sync)
+```
+
+### Emergency Response Workflows
+```bash
+# Production issue resolution
+/auto-fix --security → /bug-fix --hotfix → /security-audit → /deploy
+
+# Critical bug workflow
+/bug-fix --reproduce-first → /root-cause → /hotfix → /regression-test
+```
+
+### Documentation Maintenance  
+```bash
+# Comprehensive documentation audit
+/doc-audit → /doc-template → /doc-split → /memory-sync
+
+# Quick documentation updates
+/doc-template [file] → /doc-audit --path [dir] → /memory-sync
 ```
 
 ---
 
-*Note: Commands are implemented through Claude's interpretation of recipes and agent invocations. Actual execution depends on the current project context and available tools.*
+## Command Implementation Pattern
+
+Each slash command follows this standard pattern:
+
+1. **Parse Arguments:** Extract options and parameters from command line
+2. **Load Recipe:** Read the corresponding recipe file from `/recipes/`
+3. **Prepare Context:** Gather necessary project information and constraints
+4. **Agent Selection:** Choose and configure appropriate agents for the workflow
+5. **Execute Workflow:** Run agents in the specified sequence with quality gates
+6. **Report Results:** Provide summary, next steps, and integration points
+
+## Adding New Commands
+
+To add a new slash command:
+
+1. **Create Recipe:** Add recipe file in `/recipes/[recipe_name].md` following established patterns
+2. **Define Command:** Add command definition in this file (`/prompts/slash_commands.md`)
+3. **Document Integration:** Include usage examples, options, and workflow integration
+4. **Test Functionality:** Validate with sample data and edge cases
+5. **Update References:** Add to main CLAUDE.md and relevant documentation
+6. **Add Aliases:** Include convenient short-form aliases in the aliases section
+
+---
+
+*Commands are implemented through Claude's interpretation of recipes and agent invocations. Actual execution depends on current project context, available tools, and system capabilities.*

@@ -146,7 +146,7 @@ This is the master list of all work to be done. Tickets are pulled from here int
 | AGENT-024 | GitHub/GitLab integration agent | Integration Expansion | [Spec](./Specs/AGENT-024_spec.md) | 5 | `DONE` |
 | AGENT-025 | VS Code extension for Dev-Agency | Developer Experience | [Spec](./Specs/AGENT-025_spec.md) | 8 | `DONE` |
 | AGENT-026 | Production health checks and graceful degradation | Production Readiness | [Spec](./Specs/AGENT-026_spec.md) | 3 | `DONE` |
-| AGENT-027 | Auto-fix agent with predictive capabilities | Advanced Automation | - | 13 | `BACKLOG` |
+| AGENT-027 | Auto-fix agent with predictive capabilities | Advanced Automation | [Spec](./Specs/AGENT-027_spec.md) | 13 | `DONE` |
 | AGENT-028 | Slack/Teams integration for notifications | Integration Expansion | [Spec](./Specs/AGENT-028_spec.md) | 2 | `DONE` |
 | AGENT-029 | Enhanced CLI with interactive mode | Developer Experience | [Spec](./Specs/AGENT-029_spec.md) | 3 | `DONE` |
 | AGENT-030 | Predictive sprint planning assistant | Advanced Automation | [Spec](./Specs/AGENT-030_spec.md) | 2 | `DONE` |
@@ -187,6 +187,7 @@ This is the master list of all work to be done. Tickets are pulled from here int
 | AGENT-012 | TDD workflow with agents | Recipe Library | 08-10-2025 |
 | AGENT-006 | Agent performance dashboard | Performance Tracking | 08-10-2025 |
 | AGENT-014 | Performance benchmarking suite | Performance Tracking | 08-10-2025 |
+| AGENT-027 | Auto-fix agent with predictive capabilities | Advanced Automation | 08-10-2025 |
 | AGENT-011 | Agent selection assistant | Integration Framework | 08-10-2025 |
 | AGENT-013 | Agent invocation CLI tool | Integration Framework | 08-10-2025 |
 | AGENT-018 | Documentation standardization recipe | Recipe Library | 08-10-2025 |

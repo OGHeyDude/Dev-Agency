@@ -21,7 +21,7 @@ case "$COMMAND" in
       WORKTREE_PATH="$WORKTREE_BASE/${PROJECT_NAME}-batch-$i"
       if [ ! -d "$WORKTREE_PATH" ]; then
         echo "  Creating worktree: batch-$i"
-        git worktree add "$WORKTREE_PATH" "$FEATURE_BRANCH"
+        git worktree add "$WORKTREE_PATH" -b "batch-$i/$FEATURE_BRANCH" "$FEATURE_BRANCH"
       else
         echo "  Worktree batch-$i already exists"
       fi

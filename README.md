@@ -31,7 +31,7 @@ Enterprise-grade system providing specialized AI agents, proven workflows, and d
 ### Development Workflow
 ```bash
 /cmd                           # Initialize session and check project status
-/research → /plan → /build → /test → /document → /done  # Standard workflow
+/research → /plan → /build → /test → /document → /reflect → /done  # Standard workflow
 /agent:architect               # System design and architecture
 /agent:coder                   # Implementation with best practices
 /agent:tester                  # Quality assurance and testing
