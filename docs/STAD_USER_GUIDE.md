@@ -477,10 +477,15 @@ gh pr create --title "feat: Sprint 8 - User Authentication"
 
 - [STAD Protocol North Star v4.1](STAD_PROTOCOL_NORTH_STAR.md) - Complete vision
 - [GitHub Project Setup](STAD_GITHUB_PROJECT_SETUP.md) - Manual board creation
+- [Project Boards Integration](STAD_PROJECT_BOARDS_INTEGRATION.md) - Using meta-boards
 - [Sprint Retrospective Template](/Development_Standards/Templates/Sprint Retrospective Template.md)
 - [Dev-Agency Agents](/Agents/) - Agent definitions
 - [Git Worktrees Documentation](https://git-scm.com/docs/git-worktree)
 - [Semantic Commit Specification](https://www.conventionalcommits.org/)
+
+### GitHub Project Boards
+- **STAD Agentic Patterns** - Reusable workflow patterns
+- **STAD Agents** - Agent development tracking
 
 ---
 
