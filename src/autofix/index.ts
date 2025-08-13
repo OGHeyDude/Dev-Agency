@@ -6,9 +6,6 @@
 // Core manager
 export { AutoFixManager } from './AutoFixManager';
 
-// STAD test bug for git bisect demonstration
-throw new Error('STAD test bug');
-
 // Types
 export * from './types';
 
