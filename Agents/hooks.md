@@ -285,6 +285,215 @@ class PluginSystem:
         return value
 ```
 
+### Observability Hook System (Claude Code Integration)
+```python
+#!/usr/bin/env python3
+import json
+import sys
+import requests
+import asyncio
+from datetime import datetime
+from typing import Dict, Any, Optional
+
+class ObservabilityHook:
+    """Base class for Claude Code observability hooks"""
+    
+    def __init__(self, server_url: str = "http://localhost:4000"):
+        self.server_url = server_url
+        self.session_id = None
+        self.batch = []
+        self.batch_size = 10
+        self.batch_timeout = 0.5
+        
+    def process_event(self, event_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Process raw event data into observability format"""
+        # Extract common fields
+        processed = {
+            'source_app': 'claude_code',
+            'session_id': event_data.get('session_id'),
+            'hook_event_type': event_data.get('event_type'),
+            'timestamp': int(datetime.now().timestamp() * 1000),
+            'payload': json.dumps(event_data)
+        }
+        
+        # Extract tool-specific data
+        if 'tool' in event_data:
+            processed.update({
+                'tool_name': event_data['tool'].get('name'),
+                'tool_input': json.dumps(event_data['tool'].get('params')),
+                'tool_duration_ms': event_data.get('duration_ms')
+            })
+        
+        # Extract agent context
+        if 'agent' in event_data:
+            processed.update({
+                'agent_type': event_data['agent'].get('type'),
+                'agent_version': event_data['agent'].get('version'),
+                'agent_id': event_data['agent'].get('id'),
+                'parent_agent_id': event_data['agent'].get('parent_id')
+            })
+        
+        # Extract task management
+        if 'task' in event_data:
+            processed.update({
+                'task_id': event_data['task'].get('id'),
+                'task_title': event_data['task'].get('title'),
+                'task_status': event_data['task'].get('status'),
+                'task_priority': event_data['task'].get('priority')
+            })
+        
+        # Extract performance metrics
+        if 'metrics' in event_data:
+            processed.update({
+                'cpu_usage': event_data['metrics'].get('cpu'),
+                'memory_usage': event_data['metrics'].get('memory'),
+                'token_consumption': event_data['metrics'].get('tokens'),
+                'response_time_ms': event_data['metrics'].get('response_time')
+            })
+        
+        return processed
+    
+    def send_event(self, event: Dict[str, Any], immediate: bool = False):
+        """Send event to observability server"""
+        if immediate:
+            self._flush_batch([event])
+        else:
+            self.batch.append(event)
+            if len(self.batch) >= self.batch_size:
+                self._flush_batch()
+    
+    def _flush_batch(self, events: Optional[list] = None):
+        """Flush batched events to server"""
+        events_to_send = events or self.batch
+        if not events_to_send:
+            return
+            
+        try:
+            for event in events_to_send:
+                response = requests.post(
+                    f"{self.server_url}/events",
+                    json=event,
+                    headers={'Content-Type': 'application/json'},
+                    timeout=2
+                )
+                response.raise_for_status()
+            
+            if not events:
+                self.batch.clear()
+                
+        except Exception as e:
+            print(f"Failed to send events: {e}", file=sys.stderr)
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Flush remaining events on exit"""
+        self._flush_batch()
+
+
+class ClaudeCodeHooks:
+    """Claude Code specific hook implementations"""
+    
+    @staticmethod
+    def pre_tool_use_hook(stdin_data: str) -> str:
+        """Hook for pre-tool-use events"""
+        try:
+            data = json.loads(stdin_data)
+            
+            with ObservabilityHook() as hook:
+                event = hook.process_event({
+                    'event_type': 'pre_tool_use',
+                    'session_id': data.get('sessionId'),
+                    'tool': {
+                        'name': data.get('toolName'),
+                        'params': data.get('params')
+                    },
+                    'agent': {
+                        'type': data.get('agentType'),
+                        'id': data.get('agentId')
+                    }
+                })
+                
+                # Add custom fields for tool analysis
+                event['tool_category'] = ClaudeCodeHooks._categorize_tool(
+                    data.get('toolName')
+                )
+                
+                hook.send_event(event, immediate=True)
+                
+        except Exception as e:
+            print(f"Hook error: {e}", file=sys.stderr)
+        
+        return stdin_data
+    
+    @staticmethod
+    def post_tool_use_hook(stdin_data: str) -> str:
+        """Hook for post-tool-use events"""
+        try:
+            data = json.loads(stdin_data)
+            
+            with ObservabilityHook() as hook:
+                event = hook.process_event({
+                    'event_type': 'post_tool_use',
+                    'session_id': data.get('sessionId'),
+                    'tool': {
+                        'name': data.get('toolName'),
+                        'params': data.get('params'),
+                        'output': data.get('output'),
+                        'error': data.get('error')
+                    },
+                    'metrics': {
+                        'response_time': data.get('duration_ms'),
+                        'tokens': data.get('tokens_used')
+                    }
+                })
+                
+                # Determine success/failure
+                event['tool_success'] = data.get('error') is None
+                event['tool_output'] = json.dumps(data.get('output', ''))[:1000]
+                
+                hook.send_event(event, immediate=True)
+                
+        except Exception as e:
+            print(f"Hook error: {e}", file=sys.stderr)
+        
+        return stdin_data
+    
+    @staticmethod
+    def _categorize_tool(tool_name: str) -> str:
+        """Categorize tools for analysis"""
+        categories = {
+            'read': ['Read', 'Grep', 'Glob', 'LS'],
+            'write': ['Write', 'Edit', 'MultiEdit'],
+            'execute': ['Bash', 'Task'],
+            'web': ['WebFetch', 'WebSearch'],
+            'memory': ['mcp__memory', 'TodoWrite'],
+            'filesystem': ['mcp__filesystem']
+        }
+        
+        for category, tools in categories.items():
+            if any(tool in tool_name for tool in tools):
+                return category
+        
+        return 'other'
+
+
+# Main hook entry point
+if __name__ == "__main__":
+    hook_type = sys.argv[1] if len(sys.argv) > 1 else 'unknown'
+    stdin_data = sys.stdin.read()
+    
+    if hook_type == 'pre_tool_use':
+        result = ClaudeCodeHooks.pre_tool_use_hook(stdin_data)
+    elif hook_type == 'post_tool_use':
+        result = ClaudeCodeHooks.post_tool_use_hook(stdin_data)
+    else:
+        result = stdin_data
+    
+    print(result)
+```
+
 ### Lifecycle Hooks
 ```javascript
 class LifecycleHooks {

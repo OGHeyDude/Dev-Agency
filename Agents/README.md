@@ -5,7 +5,7 @@ type: guide
 category: documentation
 tags: [agents, definitions, specialization, system-design, development]
 created: 2025-08-09
-updated: 2025-08-09
+updated: 2025-08-10
 version: 1.0
 status: stable
 ---
@@ -44,6 +44,7 @@ Only create a new agent when:
 | `integration.md` | Integration | System coordination |
 | `hooks.md` | Hooks/middleware | Event systems |
 | `clutter-detector.md` | Clean code | Anti-redundancy |
+| `vue-ui.md` | Vue.js debugging | Frontend/UI specialist |
 
 ## File Naming Convention
 - **Format**: `[agent-name].md`
