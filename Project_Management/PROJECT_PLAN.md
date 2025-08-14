@@ -1,6 +1,6 @@
 # **Dev-Agency - Project Plan**
 
-**Last Updated:** 08-10-2025
+**Last Updated:** 08-12-2025
 
 This document is the central source of truth for the Dev-Agency project. It contains the high-level roadmap, a detailed backlog of work, and the plan for the current sprint.
 
@@ -19,20 +19,40 @@ This document is the central source of truth for the Dev-Agency project. It cont
 
 ## **2. Current Sprint**
 
-* **Sprint Dates:** 08-11-2025 – 08-25-2025 (2-week sprint)
-* **Sprint Goal:** Transform Dev-Agency into intelligent, self-improving development ecosystem
+* **Sprint Dates:** 08-13-2025 – 08-27-2025 (2-week sprint)
+* **Sprint Goal:** Align agents with STAD Protocol 7-stage development process
 
-### **Sprint 6 Tickets (In Progress):**
+### **Sprint 8 Tickets (Planning):**
 
 | ID | Ticket | Points | Status |
 | --- | --- | --- | --- |
-| AGENT-033 | Developer Productivity Analytics | 2 | `DONE` |
-| AGENT-032 | Advanced Code Intelligence Agent | 3 | `DONE` |
-| AGENT-031 | Agent Collaboration Orchestrator | 5 | `DONE` |
-| AGENT-022 | Self-improving agent with learning capabilities | 8 | `DONE` |
-| **SPRINT 6 TOTAL** |  | **18** | **100% COMPLETE** (18/18) ✅ |
+| STAD-001 | Align Architect Agent with Stage 2 (Plan) responsibilities | 3 | `TODO` |
+| STAD-002 | Align Coder Agent with Stage 3 (Build) responsibilities | 3 | `TODO` |
+| STAD-003 | Align Tester Agent with Stage 4 (Test) responsibilities | 3 | `TODO` |
+| STAD-004 | Align Documenter Agent with Stage 5 (Document) responsibilities | 3 | `TODO` |
+| STAD-005 | Create stage-specific output templates with micro-reflections | 5 | `TODO` |
+| STAD-006 | Implement folder organization rules and archive policy | 5 | `TODO` |
+| STAD-007 | Create Research Agent for Stage 1 alignment | 5 | `BACKLOG` |
+| STAD-008 | Create Reflection Agent for Stage 6 alignment | 5 | `BACKLOG` |
+| STAD-009 | Build sprint planning template with 7-stage breakdown | 3 | `BACKLOG` |
+| STAD-010 | Document agent alignment and integration guide | 2 | `BACKLOG` |
+| **SPRINT 8 TOTAL** |  | **37** | **0% COMPLETE** (0/37) |
 
 ### **Previous Sprints (Completed)**
+
+* **Sprint 7:** 08-10-2025 – 08-12-2025 (STAD Protocol Implementation - 3 days) ✅
+  - Validated STAD Protocol v4.1 Git-native workflow
+  - Created automation scripts and documentation
+  - Established semantic commit format
+  - Proved core concepts with known constraints
+
+* **Sprint 6:** 08-11-2025 – 08-12-2025 (18/18 points completed - 100%) ✅ **EXCEPTIONAL**
+  - AGENT-033: Developer Productivity Analytics ✅ (2 pts)
+  - AGENT-032: Advanced Code Intelligence Agent ✅ (3 pts)
+  - AGENT-031: Agent Collaboration Orchestrator ✅ (5 pts)
+  - AGENT-022: Self-improving agent with learning capabilities ✅ (8 pts)
+  - **Achievements**: Intelligent automation complete
+  - **Impact**: Self-improving ecosystem established
 
 * **Sprint 5:** 08-10-2025 (31/31 points completed - 100%) ✅ **EXCEPTIONAL**
 
@@ -156,6 +176,16 @@ This is the master list of all work to be done. Tickets are pulled from here int
 | SECURITY-001 | Fix CLI tool security vulnerabilities | Integration Framework | [Spec](./Specs/SECURITY-001_spec.md) | 5 | `DONE` |
 | BUILD-001 | Resolve TypeScript compilation errors | Integration Framework | [Spec](./Specs/BUILD-001_spec.md) | 2 | `DONE` |
 | PERF-001 | Implement performance optimizations | Performance Tracking | [Spec](./Specs/PERF-001_spec.md) | 3 | `DONE` |
+| STAD-001 | Align Architect Agent with Stage 2 (Plan) responsibilities | Prompt Engineering | [Spec](./Specs/STAD-001_spec.md) | 3 | `TODO` |
+| STAD-002 | Align Coder Agent with Stage 3 (Build) responsibilities | Prompt Engineering | [Spec](./Specs/STAD-002_spec.md) | 3 | `TODO` |
+| STAD-003 | Align Tester Agent with Stage 4 (Test) responsibilities | Prompt Engineering | [Spec](./Specs/STAD-003_spec.md) | 3 | `TODO` |
+| STAD-004 | Align Documenter Agent with Stage 5 (Document) responsibilities | Prompt Engineering | [Spec](./Specs/STAD-004_spec.md) | 3 | `TODO` |
+| STAD-005 | Create stage-specific output templates with micro-reflections | System Foundation | [Spec](./Specs/STAD-005_spec.md) | 5 | `TODO` |
+| STAD-006 | Implement folder organization rules and archive policy | System Foundation | [Spec](./Specs/STAD-006_spec.md) | 5 | `TODO` |
+| STAD-007 | Create Research Agent for Stage 1 alignment | Agent Intelligence | [Spec](./Specs/STAD-007_spec.md) | 5 | `BACKLOG` |
+| STAD-008 | Create Reflection Agent for Stage 6 alignment | Agent Intelligence | [Spec](./Specs/STAD-008_spec.md) | 5 | `BACKLOG` |
+| STAD-009 | Build sprint planning template with 7-stage breakdown | Recipe Library | [Spec](./Specs/STAD-009_spec.md) | 3 | `BACKLOG` |
+| STAD-010 | Document agent alignment and integration guide | Documentation | [Spec](./Specs/STAD-010_spec.md) | 2 | `BACKLOG` |
 
 ## **5. Completed Work**
 
