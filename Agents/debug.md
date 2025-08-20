@@ -66,7 +66,7 @@ This provides core STAD rules, workspace locations, and communication protocols.
 ### Handoff Requirements
 
 #### Input Sources
-**From:** Coder/Tester/Backend QA agents
+**From:** Coder/Tester/QA Validator agents
 **Location:** `/Project_Management/Bug_Reports/[SPRINT]/[TICKET]_bug.md`
 
 #### Output Handoff
@@ -625,7 +625,7 @@ console.log('CPU time:', end.user + end.system);
 ## Related Agents
 - `/agent:coder` - Implementing fixes
 - `/agent:tester` - Verifying fixes
-- `/agent:backend-qa` - Validation
+- `/agent:qa-validator` - Validation
 - `/agent:performance` - Performance issues
 
 ---

@@ -352,7 +352,7 @@ TRACKING: Add to compliance report
 - `/agent:architect` - Stage 1 validation
 - `/agent:coder` - Stage 2 validation
 - `/agent:tester` - Stage 2 validation
-- `/agent:backend-qa` - Stage 3 validation
+- `/agent:qa-validator` - Stage 3 validation
 - `/agent:retrospective` - Stage 4 validation
 
 ## Notes

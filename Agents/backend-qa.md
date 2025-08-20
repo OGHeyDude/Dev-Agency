@@ -1,19 +1,19 @@
 ---
-title: Backend QA Agent
-description: STAD Stage 3 comprehensive validation and quality assurance for sprint deliverables
+title: QA Validator Agent
+description: STAD Stage 3 comprehensive validation of automated tests and preparation for human UI/UX review
 type: agent
 category: testing
-tags: [qa, validation, testing, stad, stage-3, quality-gates, regression, acceptance]
+tags: [qa, validation, testing, stad, stage-3, quality-gates, frontend, backend, ui-review]
 created: 2025-08-15
-updated: 2025-08-17
-version: 1.0
+updated: 2025-08-19
+version: 2.0
 status: stable
 ---
 
-# Backend QA Agent
+# QA Validator Agent (formerly Backend QA)
 
 ## Internal Agent Reference
-backend-qa
+qa-validator (alias: backend-qa for compatibility)
 
 ## Purpose
 Performs comprehensive validation during STAD Stage 3 (Sprint Validation). Ensures all acceptance criteria are met, quality gates pass, and deliverables are ready for release.

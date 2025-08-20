@@ -38,11 +38,11 @@ Single source of truth = Edit once in Dev-Agency, applies everywhere instantly.
 **Stage 0:** Strategic Planning → Define epics and roadmap  
 **Stage 1:** Sprint Preparation → `/sprint-plan` with Architect Agent  
 **Stage 2:** Sprint Execution → `/execute` with implementation agents  
-**Stage 3:** Sprint Validation → `/validate` with Backend QA  
+**Stage 3:** Sprint Validation → `/validate` with QA Validator  
 **Stage 4:** Release & Retrospective → `/sprint-approved` and retrospective
 
 ### Agent-Enhanced STAD Process
-**With Agents:** Stage 1: `/agent:architect` → Stage 2: `/agent:coder` + `/agent:tester` → Stage 3: `/agent:backend-qa` → Stage 4: `/agent:retrospective`
+**With Agents:** Stage 1: `/agent:architect` → Stage 2: `/agent:coder` + `/agent:tester` → Stage 3: `/agent:qa-validator` → Stage 4: `/agent:retrospective`
 
 ### STAD Sprint Commands (4 commands)
 1. **`/sprint-plan <additional instructions>`** - Stage 1: Sprint Planning
@@ -248,7 +248,7 @@ mkdir -p src
 - **Zero-intervention**: All decisions from Stage 1
 
 ### Stage 3: Sprint Validation (`/validate`)
-- **Required**: `/agent:backend-qa` for validation
+- **Required**: `/agent:qa-validator` for validation
 - Test data collection accuracy
 - Validate alerting thresholds
 - Performance benchmarking

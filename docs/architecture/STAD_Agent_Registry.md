@@ -190,8 +190,8 @@ Required sections:
 /agent:tester "Create tests for [TICKET]"
 
 # Stage 3: Sprint Validation
-/validate-stage 3         # Invokes Backend QA
-/agent:backend-qa "Validate Sprint [N]"
+/validate-stage 3         # Invokes QA Validator
+/agent:qa-validator "Validate Sprint [N]"
 /agent:debug "Fix [issue] found in validation"
 
 # Stage 4: Release & Retrospective

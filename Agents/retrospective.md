@@ -433,7 +433,7 @@ Recommend: No adjustment needed
 - `/agent:scrum_master` - Sprint facilitation
 - `/agent:architect` - Process improvements
 - `/agent:documenter` - Knowledge capture
-- `/agent:backend-qa` - Quality metrics
+- `/agent:qa-validator` - Quality metrics
 
 ---
 

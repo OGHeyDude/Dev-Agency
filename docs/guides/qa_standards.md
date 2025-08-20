@@ -12,7 +12,7 @@ updated: 2025-08-15
 
 ## Overview
 
-This guide defines quality assurance standards for the Backend QA Agent during Stage 3 (Sprint Validation) of the STAD Protocol. It covers API validation, database integrity, performance benchmarking, and security verification.
+This guide defines quality assurance standards for the QA Validator Agent during Stage 3 (Sprint Validation) of the STAD Protocol. It covers frontend test validation, backend test validation, API validation, database integrity, performance benchmarking, and preparation for human UI/UX review.
 
 ## Core Principles
 
