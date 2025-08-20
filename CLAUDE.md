@@ -1,427 +1,409 @@
-# CLAUDE.md - Dev-Agency Central System
+# STAD_CLAUDE.md - STAD Protocol Implementation Guide
 
-**Project:** Dev-Agency - Centralized Agentic Development System  
-**Type:** Central Development Infrastructure (Single Source of Truth)  
-**Status:** Production - Serving All Projects
-
-## 🎯 CRITICAL: This is the CENTRAL SYSTEM
-
-**Dev-Agency is the single source of truth for ALL development projects.**
-
-### How It Works:
-1. **All agents live HERE** - Never copy to projects
-2. **All templates live HERE** - Projects reference them
-3. **All standards live HERE** - One place to manage
-
-### For Other Projects:
-1. **DO NOT COPY files from here**
-2. **Use the template:** `PROJECT_CLAUDE_TEMPLATE.md`
-3. **Projects reference this location:** `/home/hd/Desktop/LAB/Dev-Agency/`
-
-### Central System Documentation:
-- **Architecture:** See `CENTRAL_SYSTEM.md`
-- **Integration:** See `INTEGRATION_GUIDE.md` (v2.0 - Reference Only)
-- **Template:** See `PROJECT_CLAUDE_TEMPLATE.md`
-
-**This Location:** `/home/hd/Desktop/LAB/Dev-Agency/`
+**Version:** 1.0  
+**Created:** 08-16-2025  
+**Status:** Active  
+**Purpose:** Operational rules and best practices for STAD Protocol execution
 
 ---
 
-## Quick Commands
+## 📂 Project Context
 
-### Themed Sprint Management (TEST)
+### Dynamic State Detection
 ```bash
-# New strategic sprint system - currently in test
-/sprint-themed           # Complete sprint workflow (planning + execution)
-  → Uses: /recipes/test/sprint_management_recipe.md
-  → Select theme: Development|Bug Bash|Refactoring|Database|Documentation
-  → Phases 1-5: Planning & preparation
-  → User approval checkpoint
-  → Phase 6: Automatic execution of entire sprint
-  → No manual intervention needed
-  
-/sprint-execute [TICKET] # Ad-hoc single ticket execution (outside sprint scope)
-  → For urgent fixes or unplanned work
-  → Auto-selects recipe from /recipes/test/execution_library/
-  → Standalone execution
+# Load static configuration
+if [ -f "./CLAUDE.env" ]; then
+    source ./CLAUDE.env
+fi
 
-/sprint-status           # Monitor active sprint progress
-  → Shows completed/in-progress/blocked tickets
-  → Displays velocity and points tracking
-  → Lists remaining work in sprint
+# Detect dynamic project state from PROJECT_PLAN.md
+if [ -f "./scripts/detect-project-state.sh" ]; then
+    source ./scripts/detect-project-state.sh --export
+    echo "✅ Dynamic state loaded:"
+    echo "   Sprint: $ACTIVE_SPRINT"
+    echo "   Epic: $CURRENT_EPIC"
+    echo "   Ticket: $CURRENT_TICKET"
+fi
 ```
 
-### Production Sprint Commands
+### Current Project: Dev-Agency (Central System)
+- **Project Root:** `/home/hd/Desktop/LAB/Dev-Agency`
+- **Git Repository:** `https://github.com/OGHeyDude/Dev-Agency.git`
+- **Project Type:** Central Development Infrastructure
+- **Special Note:** This IS the central system - all paths are local
+- **Sprint Detection:** Automatic from PROJECT_PLAN.md
+
+### Path Resolution for Dev-Agency
+When working IN Dev-Agency itself:
+- **Agents:** `./Agents/` (local)
+- **Templates:** `./docs/reference/templates/` (local)
+- **Standards:** `./Development_Standards/Guides/` (local)
+- **Project Management:** `./Project_Management/` (local)
+
+---
+
+## 🎯 Universal Mandates (ALL Agents)
+
+### Core Philosophy
+**"Quality, Efficiency, Security, Documentation OVER Speed"**
+- Document the "why" not just the "what"
+- Enterprise-grade code ready for production
+- Take the time to do it RIGHT the first time
+- **Archive, Don't Delete** - Preserve history
+- **Quality over Speed** - Better to be right than fast
+
+### Non-Negotiable Rules
+1. **Never Delete** - Archive to `/Archive/` with reason file
+2. **Never Guess Dates** - Always run `date +"%m-%d-%Y"`
+3. **Never Duplicate** - Search → Update → Create (in that order)
+4. **Never Skip Handoffs** - Create at `/Project_Management/Sprint_Execution/Sprint_[N]/agent_handoffs/`
+5. **Never Hardcode Paths** - Use environment variables/configs
+
+### Required Actions
 ```bash
-/sprint-execute --max-agents 4   # Execute sprint with current system
-  → Uses: /recipes/sprint_execution_recipe.md
+# Before ANY work
+date +"%m-%d-%Y"              # Get real date
+gh project list                # Check board status
+mcp__memory__search_nodes()    # Query knowledge graph
 
-/sprint-plan                      # Plan sprint with current system
-  → Uses: /recipes/sprint_planning_recipe.md
-
-/doc-audit                        # Audit documentation
-  → Uses: /recipes/documentation_standardization_recipe.md
-```
-
-### Standard Workflow
-**Workflow:** `/cmd` → select ticket → `/research` → `/plan` → `/build` → `/test` → `/document` → `/reflect` → `/done`
-
-### Agent-Enhanced Workflow
-**With Agents:** `/cmd` → `/research` → `/plan` + `/agent:architect` → `/build` + `/agent:coder` → `/test` + `/agent:tester` → `/document` + `/agent:documenter` → `/reflect` → `/done`
-
-### Additional Commends
-If you encounter a slash commend you are not familiar with follow: `/home/hd/Desktop/LAB/Dev-Agency/prompts/slash_commands.md`
-
-### Agent Invocation Commands
-```bash
-# Core Development Agents
-/agent:architect     # System design and architecture
-/agent:coder        # General code implementation  
-/agent:tester       # QA testing and debugging
-/agent:security     # Security review
-/agent:documenter   # User-facing documentation
-/agent:memory-sync  # Sync code changes to knowledge graph
-
-# Specialist Agents  
-/agent:mcp-dev      # MCP protocol specialist
-/agent:performance  # Performance optimization
-/agent:integration  # Service integration
-/agent:hooks        # Hooks and middleware
-```
-
-### Memory Sync Commands
-```bash
-# Manual sync commands
-/sync-memory                    # Sync all changed files
-/sync-memory [path]            # Sync specific directory
-/sync-memory --types "py,ts"   # Sync specific file types
-/sync-memory --force           # Force full resync
-
-# Status commands
-/sync-memory --status          # Show sync status
-/sync-memory --pending         # Show pending changes
-```
-
-### Process Enforcement Commands (NEW)
-```bash
-# Validation Commands - Block progress until requirements met
-/validate-done [TICKET]         # Ultimate validation before marking DONE
-/validate-phase [PHASE] [TICKET] # Validate specific development phase
-/commit-checkpoint [PHASE] [TICKET] # Enforce commit at checkpoints
-/sprint-closure-validation      # Validate entire sprint before completion
-
-# Documentation Enforcement
-/doc-required [TYPE] [TICKET]   # Create required documentation by ticket type
-/validate-docs [TICKET]         # Ensure all required docs exist
-
-# Quality Gates
-/quality-gate [PHASE] [TICKET]  # Run quality checks for phase
-/test-gate [TICKET]            # Validate all tests pass before proceeding
+# After EVERY change
+git commit -m "type(scope): message [TICKET-ID]"
+# type: feat|fix|docs|style|refactor|test|chore
+# scope: component/module affected  
+# TICKET-ID: GitHub issue or board item
+gh project item-edit           # Update board
+mcp__memory__add_observations() # Update knowledge
 ```
 
 ---
 
-## Reference Shortcuts
+## 📁 Project Structure
 
-### Standard Guides
-- `$STANDARDS` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Guides/Development Standards Guide.md`
-- `$WORKFLOW` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Guides/Development Workflow Guide.md`
-- `$DOCS_GUIDE` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Guides/Documentation Guide.md`
-- `$DONE` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Guides/Definition of Done.md`
-- `$GUIDES_DIR` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Guides/`
+### Required Folder Organization
+Every project MUST maintain the following documentation structure:
 
-### Agent System Documentation
-- `$AGENT_SYSTEM` = `/home/hd/Desktop/LAB/Dev-Agency/AGENT_SYSTEM.md`
-- `$AGENT_PROMPTS` = `/home/hd/Desktop/LAB/Dev-Agency/AGENT_PROMPTS.md`
-- `$WORKFLOW_INT` = `/home/hd/Desktop/LAB/Dev-Agency/WORKFLOW_INTEGRATION.md`
-- `$AGENTS_DIR` = `/home/hd/Desktop/LAB/Dev-Agency/Agents/`
-
-### Agent Recipes
-- `$RECIPES` = `/home/hd/Desktop/LAB/Dev-Agency/recipes/`
-- `$PROMPTS` = `/home/hd/Desktop/LAB/Dev-Agency/prompts/`
-- `$METRICS` = `/home/hd/Desktop/LAB/Dev-Agency/metrics/`
-
-### Templates
-- `$PROJECT_PLAN` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Templates/PROJECT_PLAN_Template.md`
-- `$SPEC` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Templates/SPECS_Template.md`
-- `$CHANGELOG` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Templates/CHANGELOG_Template.md`
-- `$BUG_REPORT` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Templates/Persistent Bug Report.md`
-- `$HANDOFF` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Templates/Handoff report.md`
-- `$NOTES` = `/home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Templates/Release_Notes_Template.md`
-- `$FEEDBACK` = `/home/hd/Desktop/LAB/Dev-Agency/feedback/agent_feedback_form.md`
-
----
-
-## Session Management with Agents
-
-### Standard Commands (Enhanced)
-- `/cmd` - Initialize session, read CLAUDE.md, check Project_Management/PROJECT_PLAN.md
-- `/standards` - Review standards + agent guidelines
-- `/reflect` - Review implementation with agent output analysis
-- `/done` - Complete checklist including agent performance review
-
-### Agent-Specific Commands
-- `/agent-status` - Show current agent invocations and results
-- `/agent-metrics` - Display agent performance metrics
-- `/agent-recipe [name]` - Load proven agent combination recipe
-- `/agent-feedback` - Record feedback for agent improvement
-
----
-
-## 7-Step Development Process with Agents
-
-### 1. `/research` - Discovery Phase
-- **Main Claude**: Search codebase, analyze patterns
-- **Optional**: `/agent:architect` for complex system questions
-- **Output**: Research findings for planning context
-
-### 2. `/plan` - Planning Phase  
-- **Main Claude**: Read `$WORKFLOW`, prepare context
-- **Required**: `/agent:architect` for system design
-- **Output**: Technical specification in `$SPEC`
-- **Status**: `BACKLOG` → `TODO`
-
-### 3. `/build` - Implementation Phase
-- **Main Claude**: Read `$STANDARDS`, orchestrate implementation
-- **Required**: Select appropriate agent(s):
-  - `/agent:coder` - Standard features
-  - `/agent:mcp-dev` - MCP implementations
-  - `/agent:hooks` - Middleware/plugins
-  - `/agent:integration` - Service connections
-- **Status**: `TODO` → `IN_PROGRESS` → `CODE_REVIEW`
-
-### 4. `/test` - Validation Phase
-- **Main Claude**: Coordinate testing
-- **Required**: `/agent:tester` for test creation/execution
-- **Optional**: 
-  - `/agent:security` for security review
-  - `/agent:performance` for optimization
-- **Status**: `CODE_REVIEW` → `QA_TESTING`
-
-### 5. `/document` - Documentation Phase
-- **Main Claude**: Update technical docs
-- **Optional**: `/agent:documenter` for user-facing docs
-- **Output**: Complete documentation
-- **Status**: `QA_TESTING` → `DOCUMENTATION`
-
-### 6. `/reflect` - Review Phase
-- **Main Claude**: Validate implementation accuracy
-- **Review**: All acceptance criteria met
-- **Verify**: Code quality and completeness
-- **Output**: Implementation validation
-
-### 7. `/done` - Completion Phase
-- **Main Claude**: Complete Definition of Done checklist
-- **Update**: PROJECT_PLAN.md ticket status
-- **Verify**: All deliverables complete
-- **Status**: `DOCUMENTATION` → `READY_FOR_RELEASE` → `DONE`
-
----
-
-## Agent Usage Guidelines
-
-### Context Preparation Rules
-1. **Always pre-process standards** into agent prompts
-2. **Include relevant code examples** from codebase
-3. **Provide clear success criteria**
-4. **Never reference external files** (embed content directly)
-
-### Agent Selection Matrix
-
-| Task Type | Primary Agent | Support Agents |
-|-----------|--------------|----------------|
-| System Design | `/agent:architect` | `/agent:integration` |
-| API Development | `/agent:coder` | `/agent:tester`, `/agent:documenter` |
-| MCP Implementation | `/agent:mcp-dev` | `/agent:integration` |
-| Bug Fix | `/agent:tester` → `/agent:coder` | `/agent:security` |
-| Performance Issue | `/agent:performance` | `/agent:coder` |
-| Security Audit | `/agent:security` | `/agent:coder` for fixes |
-
-### Parallel Agent Execution
-When tasks are independent, run agents in parallel:
-```
-- Security review + Performance analysis
-- Multiple component implementations
-- Different documentation types
-```
-
----
-
-## Project Management Structure
-
-### Required Folders
-```
-/Dev-Agency/
-├── CLAUDE.md                    # This file
-├── PROJECT_PLAN.md              # Central planning
+```markdown
+[PROJECT_ROOT]/
+├── CLAUDE.env                # Project configuration (in .gitignore)
+├── CLAUDE.md                 # Project-specific context
+├── PROJECT_PLAN.md           # Central source of truth for all tickets
 ├── /Project_Management/
-│   ├── PROJECT_PLAN.md         # Tickets and epics
-│   ├── /Specs/                 # Ticket specifications
-│   ├── /Bug_Reports/           # Bug tracking
-│   └── /Releases/              # Release docs
-├── /Agents/                     # Agent definitions
-├── /metrics/                    # Performance tracking
-├── /recipes/                    # Agent combinations
-├── /prompts/                    # Prompt libraries
-└── /feedback/                   # Improvement tracking
+│   ├── /Specs/               # All ticket specifications
+│   ├── /Sprint_Execution/    # Sprint execution artifacts (STAD)
+│   │   └── /Sprint_[N]/
+│   │       ├── /agent_handoffs/  # Agent context passing
+│   │       └── /work_reports/    # Agent work reports
+│   ├── /Sprint_Plans/        # Sprint planning documents
+│   ├── /Sprint_Retrospectives/ # Stage 4 retrospectives
+│   ├── /Stage_Gates/         # Gate validation criteria
+│   ├── /Bug_Reports/         # Bug tracking
+│   ├── /TEMP/                # Temporary working files
+│   └── /Releases/            # Release documentation
+│       ├── CHANGELOG.md
+│       └── Release_Notes.md
+└── /Archive/                 # Archived files (never delete)
+
+
+/docs/                        # All documentation (NEW)
+├── /features/                # Feature documentation
+├── /guides/                  # User guides and tutorials
+├── /api/                     # API reference documentation
+├── /tutorials/               # Step-by-step tutorials
+├── /integrations/            # Third-party integrations
+├── /agents/                  # Agent-specific documentation
+└── /development/             # Development documentation
+   ├── /architecture/        # System design and architecture
+   ├── /patterns/           # Code patterns and best practices
+   ├── /testing/            # Testing strategies and guides
+   └── /deployment/         # Deployment and operations
+
+
+/src/                         # Source code
+└── /[module]/__tests__/     # Test files (MANDATORY)
 ```
 
 ---
 
-## Critical Principles (Agent-Enhanced)
+## 🔄 STAD 5-Stage Lifecycle
 
-### 🎯 CORE VALUES
-**"Quality, Efficiency, Security, and Documentation OVER Speed"**
-- We build enterprise-grade software worthy of production
-- Every line of code should be secure and maintainable
-- Documentation is NOT optional - it's part of the deliverable
-- Take the time needed to do it RIGHT the first time
+### Stage 0: Strategic Planning
+**Command:** Human-driven (no specific command)
+✅ Epic defined with clear requirements  
+✅ Story points estimated (rough: 13, 21, 34+ points)  
+✅ Strategic alignment confirmed  
+✅ Roadmap created in GitHub Project board
 
-### 📋 PLANNING & TRACKING PHILOSOPHY
-**"The better you plan, the better the outcome"**
-- ALWAYS read documentation before starting
-- ALWAYS write detailed plans before coding
-- ALWAYS track progress against plans
-- ALWAYS update plans based on learnings
-- Tracking progress is the KEY to achieving goals
+### Stage 1: Sprint Preparation  
+**Command:** `/sprint-plan <additional instructions>`
+✅ Technical specification complete  
+✅ All tickets ≤5 story points (split if >5 points automatically)
+✅ Dependencies mapped (DAG)  
+✅ Edge cases documented  
+✅ Fallback strategies defined  
 
-### System Principles
-1. **Hub-and-Spoke Architecture** - Main Claude orchestrates all agents
-2. **No Agent-to-Agent Communication** - All coordination through main
-3. **Stateless Agent Invocations** - Each call is independent
-4. **Complete Context Required** - Agents receive self-contained prompts
-5. **Track Agent Performance** - Log metrics for continuous improvement
+### Stage 2: Sprint Execution
+**Command:** `/execute`
+✅ All automated tests passing (frontend + backend)
+✅ Frontend tests: Components, integration, UI logic
+✅ Backend tests: API, database, services
+✅ Lint/typecheck clean  
+✅ Coverage targets met (>80%)
+✅ Handoffs created  
+✅ Knowledge graph updated  
 
-### Agent-Specific Principles
-1. **Quality First** - Use multiple agents to ensure excellence
-2. **Plan Thoroughly** - `/agent:architect` creates detailed plans BEFORE coding
-3. **Security Always** - `/agent:security` reviews ALL production code
-4. **Document Everything** - `/agent:documenter` for comprehensive docs
-5. **Track Meticulously** - Update metrics and progress after EVERY step
-6. **Use specialists for complex domains** (MCP, security, performance)
-7. **Version control successful prompts** for reuse
-8. **Continuously refine** based on feedback
+### Stage 3: Sprint Validation
+**Command:** `/execute`
+✅ Automated test validation complete
+✅ Human UI/UX review complete  
+✅ No critical bugs  
+✅ Performance validated  
+✅ Security checked
+
+### Stage 4: Release & Retrospective
+**Command:** `/sprint-approved`
+✅ Feature merged to main
+✅ Deployment successful
+✅ Retrospective completed
+✅ Knowledge captured
+✅ Metrics analyzed  
 
 ---
 
-## 🚫 ANTI-CLUTTER DIRECTIVES (MANDATORY)
+## 👥 Agent-Specific Mandates
 
-### Before ANY Action
-1. **Search First, Create Second**
-   - ALWAYS search for existing implementations
-   - NEVER create without checking for duplicates
-   - ALWAYS reuse before recreating
+### Scrum Master
+- **ENFORCE** protocol compliance
+- **VALIDATE** every handoff
+- **BLOCK** stage transitions if gates not met
+- **TRACK** velocity and blockers
 
-2. **Single Source of Truth**
-   - ONE file per concept
-   - ONE location per type of content
-   - ONE documentation per feature
+### Architect
+- **SEARCH** for existing patterns first
+- **PLAN** with "why" as first-class citizen
+- **SPLIT** any ticket >5 points
+- **DOCUMENT** all edge cases and fallbacks
 
-3. **DRY Enforcement**
-   - Don't Repeat Yourself
-   - Extract common patterns
-   - Create reusable components
+### Coder
+- **FOLLOW** `/docs/guides/coding_standards.md`
+- **RUN** `npm run lint && npm run typecheck` before complete
+- **COMMIT** semantically with ticket IDs
+- **UPDATE** board after each component
+- **SUBMIT** work report to `/Project_Management/Sprint_Execution/Sprint_[N]/work_reports/coder_[TICKET]_report.md`
+- **DOCUMENT** bugs found and fixed (NO WORKAROUNDS)
 
-### Agent Responsibilities
-- `/agent:architect` - MUST check for existing designs
-- `/agent:coder` - MUST search for reusable code
-- `/agent:documenter` - MUST update existing docs (not create new)
-- `/agent:tester` - MUST check for existing test patterns
-- `/agent:clutter-detector` - MUST run periodically for cleanup
+### Tester
+- **ACHIEVE** coverage targets (no exceptions)
+- **ELIMINATE** flaky tests
+- **VALIDATE** requirements, not just code
+- **DOCUMENT** test patterns for reuse
 
-### Mandatory Pre-Implementation Checks
+### Documenter
+- **UPDATE** existing docs (don't create new)
+- **MAINTAIN** single source of truth
+- **INCLUDE** complete frontmatter
+- **EXPLAIN** "why" not just "how"
+
+### Backend QA
+- **VERIFY** API contracts
+- **VALIDATE** security (mandatory)
+- **CHECK** performance SLAs
+- **ENSURE** database integrity
+
+### Debug Agent
+- **USE** `git bisect` to find root cause
+- **ADD** regression tests
+- **DOCUMENT** why bug occurred
+- **UPDATE** knowledge graph with findings
+
+### Retrospective
+- **MEASURE** everything (velocity, bugs, blockers)
+- **IDENTIFY** patterns in failures AND successes
+- **DOCUMENT** bugs, root causes, and FIXES (no workarounds)
+- **TRACK** tool issues and resolve them
+- **CONSOLIDATE** agent retrospectives from `/Retrospectives/`
+- **FEED** improvements back to process
+
+---
+
+## 📊 Status Transitions
+
+```
+BACKLOG → TODO → IN_PROGRESS → CODE_REVIEW → 
+QA_TESTING → DOCUMENTATION → READY_FOR_RELEASE → DONE
+
+Any state can → BLOCKED (must document reason)
+```
+
+---
+
+## 📝 Agent Work Reports
+
+**Every agent MUST submit work reports to:** `/Project_Management/Sprint_Execution/Sprint_[N]/work_reports/[agent]_[TICKET]_report.md`
+
+### Work Report Template
+```markdown
+# Work Report: [Agent] - [Ticket ID]
+Date: [Run date command]
+Stage: [Current STAD Stage]
+
+## Work Completed
+- [What was done]
+- [Files modified/created]
+- [Decisions made]
+
+## Issues Encountered
+
+### Bugs/Tool Failures (Fixed)
+- Issue: [Description of what broke]
+  - Root Cause: [Why it happened]
+  - Fix Applied: [Proper fix, NO WORKAROUND]
+  - Prevention: [How to avoid in future]
+
+### Architecture/Design Blockers (Escalated)
+- Unknown: [What needs decision]
+  - Context: [Why decision is needed]
+  - Options: [Possible approaches]
+  - Status: BLOCKED - Awaiting decision
+  - Resolution: [Decision made by User + Claude]
+
+## Improvements Suggested
+- [Process improvements]
+- [Tool improvements]
+- [Documentation gaps]
+
+## Time Tracking
+- Estimated: [Story points]
+- Actual: [Time taken]
+- Blockers: [Time lost to blockers]
+```
+
+---
+
+## 🚧 Blocker Handling Protocol
+
+### Two Types of Blockers
+
+#### Type 1: Bugs and Tool Failures
+**Resolution:** FIX immediately, NO WORKAROUNDS
+- Debug using git bisect if needed
+- Activate Debug Agent for complex issues
+- Fix the root cause, not symptoms
+- Add regression test for the bug
+- Document fix in work report
+
+#### Type 2: Design Decision Required
+**Resolution:** BLOCKED, escalate to human
+- Unknown Architecture: escalate for decision
+- Document what decision is needed
+- Provide context and options
+- Set ticket status to BLOCKED
+- Wait for human decision
+- Resume after decision made
+
+### Ticket Management Rules
+
+#### Story Point Limits
+- **Maximum ticket size:** 5 story points
+- **Tickets >5 points:** Automatically split into subtasks
+- **Epic breakdown:** 13, 21, 34+ points → multiple 1-5 point tickets
+- **Splitting criteria:** Logical boundaries, independent deliverables
+
+#### Ticket Status Flow
+```
+BACKLOG → TODO → IN_PROGRESS → CODE_REVIEW → 
+QA_TESTING → DOCUMENTATION → READY_FOR_RELEASE → DONE
+```
+- **BLOCKED state:** Can occur from any active state
+- **Return path:** BLOCKED → previous state when unblocked
+
+---
+
+## ✅ Definition of Done
+
+**No ticket is DONE until:**
+- [ ] All sub tasks are 100% completed
+- [ ] All acceptance criteria met
+- [ ] Tests written and passing
+- [ ] Lint/typecheck clean
+- [ ] Documentation updated
+- [ ] Handoff created for next agent
+- [ ] Knowledge graph updated
+- [ ] Board status current
+- [ ] Security validated
+- [ ] Performance verified
+
+---
+
+## 🚀 Quick Commands
+
 ```bash
-# Before creating ANY file:
-ls [target_directory]  # Check what exists
-Grep "similar_function" # Search for existing implementations
-Read existing_files    # Understand current structure
-```
+# STAD Sprint Commands (4 commands)
+/sprint-plan <additional instructions>  # Stage 1: Planning
+/execute                                # Stage 2: Execution
+/validate                              # Stage 3: Validation
+/sprint-approved                       # Stage 4: Release & Retrospective
 
-### Quality Gates
-- Pre-implementation: Duplicate check REQUIRED
-- Post-implementation: Consolidation review REQUIRED
-- Weekly: Clutter detection scan REQUIRED
-
-### File Creation Rules
-1. **Check First**: Does this file/function already exist?
-2. **Location Verify**: Is this the CORRECT directory?
-3. **Consolidate**: Can this be added to an existing file?
-4. **Justify**: Is this separation truly necessary?
-
----
-
-## ⏰ Date and Time Accuracy (MANDATORY)
-
-### Before Writing ANY Date
-```bash
-# ALWAYS run these commands - NEVER guess dates:
-date +"%m-%d-%Y"        # For US format: 08-09-2025
-date +"%Y-%m-%d"        # For ISO/frontmatter: 2025-08-09
-date +"%Y-%m-%d %H:%M"  # With time: 2025-08-09 14:30
-```
-
-### Date Usage Rules
-- **Documentation text**: Use `MM-DD-YYYY` format (08-09-2025)
-- **Frontmatter fields**: Use `YYYY-MM-DD` format (2025-08-09)
-- **File names**: Use `YYYYMMDD` or `YYYY-MM-DD`
-- **NEVER write dates without checking actual system time**
-- **ALWAYS update the 'updated' field in frontmatter when modifying docs**
-
----
-
-## Ticket Status Transitions with Agents
-
-```
-BACKLOG 
-  ↓ (research phase)
-TODO (after /agent:architect in planning)
-  ↓
-IN_PROGRESS (with /agent:coder or specialists)
-  ↓
-CODE_REVIEW (main Claude review)
-  ↓
-QA_TESTING (with /agent:tester)
-  ↓
-DOCUMENTATION (with /agent:documenter if needed)
-  ↓
-READY_FOR_RELEASE
-  ↓
-DONE (with metrics recorded)
+# Utility Commands (4 commands)
+/cmd                                   # Initialize Session
+/standards <Subject>                   # Read Standards
+/sync-memory                           # Knowledge Graph Sync
+/sprint-status                         # Progress Report
 ```
 
 ---
 
-## Performance Tracking
+## 🔐 Security First
 
-After each agent invocation, record:
-- Agent used
-- Token count (input/output)
-- Success/failure
-- Time taken
-- Quality of output
-- Context improvements needed
-
-Store in: `/Dev-Agency/metrics/agent_performance_log.md`
+- Zero exposed secrets/keys
+- Input validation always
+- Security review for production code
+- Principle of least privilege
+- Audit trail via git history
 
 ---
 
-## Continuous Improvement
+## 📈 Tracking is KEY
 
-1. **After each sprint**: Review agent performance metrics
-2. **Identify patterns**: Which contexts work best
-3. **Update prompts**: Refine based on successes
-4. **Share recipes**: Document winning combinations
-5. **Evolve system**: Adjust based on real usage
+**"Tracking progress is the KEY to achieving goals"**
 
----
-
-## Project Context
-
-- **Project Type**: Development Infrastructure / Agent System
-- **Primary Language**: Markdown (Documentation), Multi-language (Examples)
-- **Key Components**: Agent definitions, Prompt templates, Workflow integration
-- **Goal**: Build enterprise-grade agentic development system
+Track:
+- Story points (1,2,3,5,8,13)
+- Velocity per sprint
+- Bug rates
+- Coverage metrics
+- Time per stage
 
 ---
 
-*This CLAUDE.md extends the master system with agent-specific enhancements for the Dev-Agency project.*
+## 🆘 When Blocked
+
+### Two Types of Blockers
+
+#### Type 1: Bugs/Tool Failures (NO WORKAROUNDS)
+**When:** Something that SHOULD work doesn't work
+- Example: Test framework failing, linter broken, API returning errors
+- **Action:** FIX the root cause properly
+- **Never:** Apply band-aid solutions or workarounds
+
+#### Type 2: Unknowns/Architecture Decisions (ESCALATE)
+**When:** Missing requirements, unclear approach, or design decisions needed
+- Example: Which library to use, how to handle edge case, API design choice
+- **Action:** Mark ticket as BLOCKED → Human review required
+- **Process:**
+  1. Document the unknown/decision needed
+  2. Update ticket status to BLOCKED
+  3. Create handoff with context
+  4. Wait for User + Claude decision
+  5. Implement agreed solution
+
+### Blocked Process
+1. Document blocker type and details in ticket
+2. Update status to BLOCKED with reason
+3. Create handoff with full context
+4. For Type 1: Fix it properly
+5. For Type 2: Escalate for decision
+6. Switch to unblocked work while waiting
+
+---
+
+**Remember: The STAD Protocol is our constitution. This document is our operational manual. Follow both.**

@@ -1,30 +1,32 @@
 ---
 title: Sprint Preparation Recipe
-description: Research-Plan-Specs workflow for comprehensive sprint preparation including ticket selection, dependency validation, spec writing, and agent assignment
+description: STAD Stage 1 comprehensive sprint preparation with spec writing, decision documentation, and edge case planning for zero-intervention execution
 type: recipe
 category: planning
-tags: [sprint, preparation, research, planning, specs, dependencies, agent-assignment]
+tags: [sprint, preparation, research, planning, specs, dependencies, agent-assignment, stad, stage-1]
 created: 2025-08-09
-updated: 2025-08-10
-version: 2.0
+updated: 2025-08-16
+version: 3.0
 status: stable
+stad_stage: 1
 ---
 
-# Recipe: Sprint Preparation (Research-Plan-Specs)
+# Recipe: Sprint Preparation (STAD Stage 1)
 
 ## Overview
-Comprehensive sprint preparation workflow focusing on Research-Plan-Specs phases. Ensures tickets are properly selected, dependencies validated, specs written, and specialized agents assigned BEFORE any implementation begins.
+STAD Stage 1 comprehensive sprint preparation workflow. Creates complete specifications with all design decisions documented, enabling Stage 2 zero-intervention execution.
 
 ## Philosophy
-"The better you plan, the better the outcome" - Thorough preparation with complete specs and context ensures smooth execution without implementation guesswork.
+"Make all decisions upfront" - Comprehensive planning with complete specs, edge case strategies, and pre-made decisions ensures autonomous Stage 2 execution.
 
 ## Focus Areas
 1. **Ticket Selection & Validation** - Ensure no blockers, all dependencies fulfilled
-2. **Story Point Validation** - Break down any ticket over 5 points
-3. **Comprehensive Spec Writing** - Complete specs for each ticket
-4. **Agent Assignment** - Map specialized agents to appropriate tickets
-5. **Documentation Discovery** - Link existing guides and research to tickets
-6. **Progress Tracking** - Update PROJECT_PLAN.md with all preparation work
+2. **Story Point Validation** - Break down any ticket over 5 points (STAD requirement)
+3. **Comprehensive Spec Writing** - Complete specs with ALL design decisions
+4. **Edge Case Planning** - Document strategies for all potential issues
+5. **Agent Assignment** - Map specialized agents to appropriate tickets
+6. **Decision Documentation** - Pre-make all architectural and design choices
+7. **Handoff Preparation** - Create templates for agent handoffs
 
 ## Use Case
 - Sprint preparation sessions (before sprint execution)
@@ -568,14 +570,11 @@ All context packages prepared in: `/sprint-[N]-context/`
 /sprint-plan
 ```
 
-### Options
+### With Additional Instructions
 ```bash
-/sprint-plan --points 40        # Custom point target
-/sprint-plan --priority security # Focus on specific epic
-/sprint-plan --continue         # Include in-progress work
-/sprint-plan --team-size 3      # Adjust for team capacity
-/sprint-plan --duration 1-week  # Shorter sprint
-/sprint-plan --max-agents 3     # Limit parallel planning agents (default: 5)
+/sprint-plan "Focus on security epics this sprint"
+/sprint-plan "Include performance optimization tickets"
+/sprint-plan "Continue previous sprint work first"
 ```
 
 ## Recipe Variations
@@ -602,10 +601,10 @@ All context packages prepared in: `/sprint-[N]-context/`
 
 ```bash
 # Full sprint planning workflow
-/sprint-plan → Review → Adjust → Commit → Start Sprint
+/sprint-plan → Review → Adjust → /execute
 
 # With team review
-/sprint-plan → Export → Team Review → Adjust → /sprint-plan --continue → Commit
+/sprint-plan → Export → Team Review → Adjust → /sprint-plan → /execute
 ```
 
 ## Parallel Agent Configuration

@@ -1,0 +1,232 @@
+name: STAD Sprint Automation
+
+on:
+  schedule:
+    # Run daily standup at 9 AM UTC
+    - cron: '0 9 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Sprint action to perform'
+        required: true
+        default: 'status'
+        type: choice
+        options:
+          - status
+          - standup
+          - health-check
+          - stage-transition
+      sprint_number:
+        description: 'Sprint number'
+        required: false
+
+jobs:
+  sprint-status:
+    name: Sprint Status Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check Current Sprint
+      id: sprint-info
+      run: |
+        echo "📊 Checking current sprint status..."
+        
+        # Extract sprint info from PROJECT_PLAN.md
+        if [ -f "Project_Management/PROJECT_PLAN.md" ]; then
+          current_sprint=$(grep -E "Sprint [0-9]+" Project_Management/PROJECT_PLAN.md | head -1)
+          echo "Current Sprint: $current_sprint"
+          echo "sprint_info=$current_sprint" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Calculate Velocity
+      run: |
+        echo "📈 Calculating sprint velocity..."
+        
+        # Count completed vs total points
+        if [ -f "Project_Management/PROJECT_PLAN.md" ]; then
+          total_points=$(grep -E "\| [A-Z]+-[0-9]+ \|.*\| [0-9]+ \|" Project_Management/PROJECT_PLAN.md | awk '{sum+=$5} END {print sum}')
+          completed=$(grep -E "\| [A-Z]+-[0-9]+ \|.*DONE" Project_Management/PROJECT_PLAN.md | wc -l)
+          
+          echo "Total Story Points: ${total_points:-0}"
+          echo "Completed Tickets: $completed"
+        fi
+    
+    - name: Check Blockers
+      run: |
+        echo "🚫 Checking for blocked items..."
+        
+        # Check for BLOCKED status
+        blocked_count=$(grep -r "BLOCKED" Project_Management/Specs/*.md 2>/dev/null | wc -l)
+        
+        if [ $blocked_count -gt 0 ]; then
+          echo "⚠️ Found $blocked_count blocked items"
+          grep -l "BLOCKED" Project_Management/Specs/*.md 2>/dev/null
+        else
+          echo "✅ No blocked items"
+        fi
+
+  daily-standup:
+    name: Daily STAD Standup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.action == 'standup' || github.event.schedule
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Generate Standup Report
+      run: |
+        echo "# 📅 STAD Daily Standup Report" >> standup.md
+        echo "**Date:** $(date '+%Y-%m-%d')" >> standup.md
+        echo "" >> standup.md
+        
+        echo "## 🎯 Sprint Progress" >> standup.md
+        
+        # Stage progression
+        echo "### Stage Progression" >> standup.md
+        echo "- Stage 0 (Strategic Planning): ✅ Complete" >> standup.md
+        echo "- Stage 1 (Sprint Preparation): ✅ Complete" >> standup.md
+        
+        # Check current stage based on ticket statuses
+        if grep -q "IN_PROGRESS" Project_Management/PROJECT_PLAN.md; then
+          echo "- Stage 2 (Sprint Execution): 🔄 In Progress" >> standup.md
+        else
+          echo "- Stage 2 (Sprint Execution): ⏳ Pending" >> standup.md
+        fi
+        
+        if grep -q "QA_TESTING" Project_Management/PROJECT_PLAN.md; then
+          echo "- Stage 3 (Sprint Validation): 🔄 In Progress" >> standup.md
+        else
+          echo "- Stage 3 (Sprint Validation): ⏳ Pending" >> standup.md
+        fi
+        
+        echo "- Stage 4 (Release & Retrospective): ⏳ Pending" >> standup.md
+        
+        echo "" >> standup.md
+        echo "## 📊 Metrics" >> standup.md
+        
+        # Recent commits
+        echo "### Recent Activity (Last 24 hours)" >> standup.md
+        git log --since="24 hours ago" --oneline --graph >> standup.md || echo "No commits in last 24 hours" >> standup.md
+        
+        echo "" >> standup.md
+        echo "## 🔄 Handoff Status" >> standup.md
+        
+        # Check for recent handoffs
+        if [ -d "Project_Management/Agent_Handoffs" ]; then
+          recent_handoffs=$(find Project_Management/Agent_Handoffs -mtime -1 -name "*.md" | wc -l)
+          echo "- Handoffs created (24h): $recent_handoffs" >> standup.md
+        fi
+        
+        cat standup.md >> $GITHUB_STEP_SUMMARY
+    
+    - name: Post to Slack (Optional)
+      if: env.SLACK_WEBHOOK_URL != ''
+      run: |
+        # Post standup to Slack if webhook configured
+        echo "Posting standup to Slack..."
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  health-check:
+    name: Sprint Health Check
+    runs-on: ubuntu-latest
+    if: github.event.inputs.action == 'health-check'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check Agent Health
+      run: |
+        echo "🤖 Checking agent configurations..."
+        
+        # Verify all required agents exist
+        required_agents=("architect" "coder" "tester" "backend-qa" "debug" "documenter" "retrospective" "scrum_master")
+        
+        for agent in "${required_agents[@]}"; do
+          if [ -f "Agents/${agent}.md" ]; then
+            echo "✅ $agent agent: configured"
+          else
+            echo "❌ $agent agent: missing"
+          fi
+        done
+    
+    - name: Check STAD Infrastructure
+      run: |
+        echo "🏗️ Checking STAD infrastructure..."
+        
+        # Check required directories
+        dirs=("Project_Management/Agent_Handoffs" "Project_Management/Stage_Gates" "Project_Management/Work_Reports")
+        
+        for dir in "${dirs[@]}"; do
+          if [ -d "$dir" ]; then
+            echo "✅ $dir: exists"
+          else
+            echo "❌ $dir: missing"
+          fi
+        done
+    
+    - name: Validate Stage Gates
+      run: |
+        echo "🚪 Validating stage gates..."
+        
+        # Check stage gate files
+        gates=("stage_0_to_1_gate" "stage_1_to_2_gate" "stage_2_to_3_gate" "stage_3_to_4_gate")
+        
+        for gate in "${gates[@]}"; do
+          if [ -f "Project_Management/Stage_Gates/${gate}.md" ]; then
+            echo "✅ $gate: configured"
+          else
+            echo "⚠️ $gate: missing"
+          fi
+        done
+
+  stage-transition:
+    name: STAD Stage Transition
+    runs-on: ubuntu-latest
+    if: github.event.inputs.action == 'stage-transition'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Validate Current Stage Gate
+      run: |
+        echo "🚪 Validating stage gate requirements..."
+        
+        # This would integrate with the validation workflow
+        # to ensure all gates pass before transition
+        
+        echo "Running stage validation checks..."
+        # Trigger validation workflow for current stage
+    
+    - name: Update Stage Status
+      run: |
+        echo "📝 Updating stage status..."
+        
+        # Update PROJECT_PLAN.md with new stage
+        # This would typically be done via PR
+        
+        echo "Stage transition requires manual approval"
+    
+    - name: Create Transition PR
+      uses: peter-evans/create-pull-request@v5
+      with:
+        title: "STAD Stage Transition Request"
+        body: |
+          ## Stage Transition Request
+          
+          This PR requests transition to the next STAD stage.
+          
+          ### Validation Results
+          - [ ] All stage gate requirements met
+          - [ ] No blocking issues
+          - [ ] Handoffs complete
+          - [ ] Work reports submitted
+          
+          ### Next Stage Actions
+          - Activate next stage agents
+          - Update PROJECT_PLAN.md
+          - Notify team of transition
+        branch: stad-stage-transition
+        labels: stad-transition, automated

@@ -355,7 +355,7 @@ export DEBUG_AGENTS=true
 #### For New Projects
 1. Copy the project template:
    ```bash
-   cp /home/hd/Desktop/LAB/Dev-Agency/Development_Standards/Templates/PROJECT_CLAUDE_TEMPLATE.md /your-project/CLAUDE.md
+   cp /home/hd/Desktop/LAB/Dev-Agency/docs/reference/templates/PROJECT_CLAUDE_TEMPLATE.md /your-project/CLAUDE.md
    ```
 
 2. Edit the project CLAUDE.md to reference Dev-Agency:
@@ -379,8 +379,8 @@ export DEBUG_AGENTS=true
 
 ### For Development Teams
 1. **Review Architecture**: [System design principles](../architecture/README.md)
-2. **Setup Standards**: [Development standards guide](../../Development_Standards/Guides/Development%20Standards%20Guide.md)
-3. **Configure Templates**: Use [project templates](../../Development_Standards/Templates/)
+2. **Setup Standards**: [Development standards guide](../../docs/guides/standards/Development%20Standards%20Guide.md)
+3. **Configure Templates**: Use [project templates](../../docs/reference/templates/)
 
 ### For Advanced Users
 1. **Tool Development**: Explore [tool development guides](../tools/)
@@ -401,9 +401,9 @@ export DEBUG_AGENTS=true
 - **Tools**: [Developer tools documentation](../tools/)
 
 ### Community and Support
-- **Bug Reports**: Use [bug report template](../../Development_Standards/Templates/Persistent%20Bug%20Report.md)
+- **Bug Reports**: Use [bug report template](../../docs/reference/templates/Persistent%20Bug%20Report.md)
 - **Feature Requests**: Follow [project planning process](../../Project_Management/PROJECT_PLAN.md)
-- **Documentation Issues**: Update using [documentation standards](../../Development_Standards/Guides/Documentation%20Guide.md)
+- **Documentation Issues**: Update using [documentation standards](../../docs/guides/standards/Documentation%20Guide.md)
 
 ---
 

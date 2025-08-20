@@ -21,15 +21,37 @@ env/
 
 # Node
 node_modules/
+**/node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
+**/package-lock.json
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+**/*.log
+
+# Temp
+**/temp/*
+!**/temp/.gitkeep
+**/TEMP/
+
+# Build
+dist/
+build/
+*.pyc
 *~
 
 # OS

@@ -60,31 +60,39 @@ Stage 4: /sprint-approved - Release & learn
 **MUST DO:**
 1. Follow specs EXACTLY (no new decisions)
 2. Implement in dependency order
-3. Write tests (>85% coverage)
+3. Write ALL automated tests:
+   - Frontend: Components, integration, UI logic (Jest, RTL)
+   - Backend: API, database, services
+   - Coverage >85% for both
 4. Update documentation continuously
 5. Semantic commits: `type(scope): message | Sprint:[N] | Ticket:[ID]`
 6. Create handoffs between agents
 
 **OUTPUT REQUIRED:**
 - Implemented code
-- Tests passing
+- Frontend tests passing (components, integration)
+- Backend tests passing (API, database)
 - `/Project_Management/Sprint_Execution/Sprint_[N]/work_reports/[agent]_[TICKET]_report.md`
 - `/Project_Management/Sprint_Execution/Sprint_[N]/agent_handoffs/[from]_to_[to]_[TICKET].md`
 
 ### Stage 3: Sprint Validation
-**Command:** `/validate`  
+**Command:** `/execute` (continues from Stage 2)  
 **Recipe:** Embedded in sprint_execution_recipe.md
 
 **MUST DO:**
-1. Run ALL tests
-2. Check coverage (>85%)
+1. Validate ALL automated tests passed:
+   - Frontend: Component, integration, UI logic tests
+   - Backend: API, database, service tests
+2. Check coverage (>85% both frontend & backend)
 3. Validate against acceptance criteria
-4. Fix any bugs (NO WORKAROUNDS)
-5. Update documentation
+4. Human performs UI/UX review (visual, interaction)
+5. Fix any bugs found (NO WORKAROUNDS)
+6. Update documentation
 
 **OUTPUT REQUIRED:**
-- All tests passing
-- Coverage report
+- All automated tests validated
+- Human UI/UX review complete
+- Coverage reports (frontend + backend)
 - `/Project_Management/Sprint_Validation/Sprint_[N]_validation.md`
 
 ### Stage 4: Release & Retrospective
@@ -208,7 +216,8 @@ Is it a bug/tool failure?
 - [ ] Status updates in PROJECT_PLAN.md
 - [ ] Work report from each agent
 - [ ] Handoff documents between agents
-- [ ] Tests with >85% coverage
+- [ ] Frontend tests with >85% coverage
+- [ ] Backend tests with >85% coverage
 - [ ] Documentation updates
 - [ ] Semantic commits with metadata
 

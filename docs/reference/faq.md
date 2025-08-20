@@ -34,7 +34,7 @@ updated: 2025-08-10
 **A:** 
 1. Follow the installation guide at `/docs/getting-started/installation.md`
 2. Set up your first project using `/docs/getting-started/first-project.md`
-3. Learn the basic workflow with `/docs/getting-started/basic-workflow.md`
+3. Learn the STAD workflow with `/docs/getting-started/stad-workflow.md`
 4. Start with simple commands like `/cmd` and `/research`
 
 ### Q: What's the difference between Dev-Agency and other development tools?
@@ -53,43 +53,37 @@ updated: 2025-08-10
 
 ---
 
-## Agent Usage and Selection
+## Command Usage (Simplified System)
 
-### Q: How do I know which agent to use?
-**A:** Follow this decision matrix:
-- **System design/architecture**: `/agent:architect`
-- **General coding**: `/agent:coder`
-- **MCP protocol work**: `/agent:mcp-dev`
-- **Testing and QA**: `/agent:tester`
-- **Security reviews**: `/agent:security`
-- **Performance optimization**: `/agent:performance`
-- **Documentation**: `/agent:documenter`
-- **Integration work**: `/agent:integration`
+### Q: Which command should I use for what?
+**A:** The system has been simplified to 8 commands only:
 
-### Q: Can I use multiple agents at once?
-**A:** Yes! Use them in sequence or parallel:
-- **Sequence**: `/agent:architect` → `/agent:coder` → `/agent:tester`
-- **Parallel**: `/agent:security` + `/agent:performance` for reviews
+#### STAD Sprint Commands
+- **`/sprint-plan <instructions>`** - Stage 1: Sprint Planning
+- **`/execute`** - Stage 2: Sprint Execution  
+- **`/validate`** - Stage 3: Sprint Validation
+- **`/sprint-approved`** - Stage 4: Release & Retrospective
 
-### Q: What's the difference between Main Claude and agents?
-**A:** 
-- **Main Claude**: Orchestrates the workflow, handles complex decisions, manages context
-- **Agents**: Specialized for specific tasks, receive focused prompts, return targeted outputs
+#### Utility Commands
+- **`/cmd`** - Initialize Session
+- **`/standards <Subject>`** - Read Standards
+- **`/sync-memory`** - Knowledge Graph Sync
+- **`/sprint-status`** - Progress Report
 
-### Q: How do I invoke an agent?
-**A:** Use the slash command format:
-```bash
-/agent:architect    # For system design
-/agent:coder       # For implementation
-/agent:tester      # For testing
+### Q: How do agents work now?
+**A:** You no longer choose agents manually. The system automatically coordinates the right agents for each stage:
+- **During `/sprint-plan`**: Uses architect and planning agents
+- **During `/execute`**: Coordinates coder, tester, security, and other agents
+- **During `/validate`**: Uses QA, security, and validation agents
+- **During `/sprint-approved`**: Uses retrospective and documentation agents
 ```
 
-### Q: What if an agent doesn't give me what I need?
+### Q: What if the system doesn't give me what I need?
 **A:** 
-1. Check if you're using the right agent for the task
-2. Provide more specific context in your request
-3. Try combining agents (e.g., `/agent:architect` then `/agent:coder`)
-4. Use `/agent-feedback` to report issues for improvement
+1. Provide more specific context in your request
+2. Try breaking down complex tasks into smaller pieces
+3. Use `/standards` to check if you're following the right approach
+4. Create feedback through normal project channels
 
 ### Q: Are there pre-made agent combinations?
 **A:** Yes! Use `/agent-recipe [name]` to load proven combinations from `/recipes/`. Popular recipes include:
@@ -201,7 +195,7 @@ docker run -v $(pwd):/workspace dev-agency
 **A:** 
 1. Use `/tools/ci-cd/` configurations
 2. Add Dev-Agency commands to your pipeline scripts
-3. Use `/agent:tester` for automated testing phases
+3. Testing is handled automatically during `/execute` and `/validate`
 4. Generate reports with `/metrics/` data
 
 ### Q: Does Dev-Agency work with GitHub/GitLab?
@@ -314,8 +308,8 @@ Use: `/sprint-execute --max-agents 4` for controlled parallelization
 1. **Check agent selection** - using the right agent for the task?
 2. **Provide better context** - include relevant code/specs
 3. **Be more specific** in your request
-4. **Try different agents** - maybe `/agent:architect` before `/agent:coder`
-5. **Use `/agent-feedback`** to report issues
+4. **Try `/sprint-plan`** to get better upfront planning
+5. **Use project feedback channels** to report issues
 
 ### Q: Ticket status not updating
 **A:** 
@@ -356,7 +350,7 @@ Use: `/sprint-execute --max-agents 4` for controlled parallelization
 **A:** 
 1. **Check template paths** - verify `$SPEC`, `$PROJECT_PLAN` paths
 2. **File permissions** - can create/update documentation files?
-3. **Agent selection** - use `/agent:documenter` for user docs
+3. **Documentation** - handled automatically during `/execute`
 4. **Content validation** - ensure source material exists
 
 ---
@@ -409,21 +403,13 @@ Use: `/sprint-execute --max-agents 4` for controlled parallelization
 - Completing documentation (`QA_TESTING` → `DOCUMENTATION`)
 - Ready for release (`DOCUMENTATION` → `READY_FOR_RELEASE`)
 
-### Q: Should I use multiple agents for one ticket?
-**A:** Yes, for comprehensive coverage:
-- `/agent:architect` for design
-- `/agent:coder` for implementation
-- `/agent:tester` for testing
-- `/agent:security` for security review
-- `/agent:documenter` for documentation
-
 ### Q: How do I maintain code quality?
 **A:** 
-1. **Always use `/agent:architect`** for design decisions
-2. **Run `/agent:tester`** for every code change
-3. **Use `/agent:security`** for sensitive code
+1. **Use `/sprint-plan`** for thorough upfront planning
+2. **Let `/execute`** handle implementation with automatic testing
+3. **Run `/validate`** for comprehensive quality checks
 4. **Follow `/standards`** consistently
-5. **Review with `/reflect`** before completion
+5. **Complete with `/sprint-approved`** for final validation
 
 ---
 
@@ -473,7 +459,7 @@ Use: `/sprint-execute --max-agents 4` for controlled parallelization
 - **Documentation**: `/docs/` directory has comprehensive guides
 - **Examples**: `/examples/` directory for real-world usage
 - **Community**: Check project repository for discussions
-- **Support**: Use `/bug-report` for issues
+- **Support**: Use standard project channels for issues
 
 ### Q: How do I contribute to Dev-Agency?
 **A:** 
@@ -491,7 +477,7 @@ Use: `/sprint-execute --max-agents 4` for controlled parallelization
 
 ### Q: Can I get training on Dev-Agency?
 **A:** Start with:
-1. **Basic workflow tutorial**: `/docs/getting-started/basic-workflow.md`
+1. **STAD workflow tutorial**: `/docs/getting-started/stad-workflow.md`
 2. **Hands-on examples**: `/docs/tutorials/`
 3. **Team collaboration guide**: `/docs/tutorials/team-collaboration.md`
 4. **Advanced patterns**: `/docs/development/patterns/`

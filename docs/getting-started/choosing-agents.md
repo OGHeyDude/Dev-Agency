@@ -1,299 +1,319 @@
 ---
-title: Choosing the Right Agent - Decision Guide
-description: Comprehensive guide for selecting optimal agents based on task type, complexity, and project phase
+title: Agent System Overview
+description: Understanding how agents work automatically within STAD Protocol
 type: guide
 category: getting-started
-tags: [agents, selection, decision-tree, workflow, optimization, best-practices]
+tags: [agents, automation, workflow, stad]
 created: 2025-08-10
-updated: 2025-08-10
-version: 1.0
+updated: 2025-08-19
+version: 2.0
 status: stable
 ---
 
-# Choosing the Right Agent - Decision Guide
+# Agent System Overview
 
-## Quick Decision Flowchart
+## Automated Agent Coordination
 
-```
-Task Type? 
-├── Planning/Design → `/agent:architect`
-├── Code Implementation → See "Implementation Decision Tree"
-├── Testing/QA → `/agent:tester`
-├── Security Review → `/agent:security`
-├── Documentation → `/agent:documenter`
-├── Performance Issues → `/agent:performance`
-├── System Integration → `/agent:integration`
-└── Code Cleanup → `/agent:clutter-detector`
-```
+The Dev-Agency system uses 9 essential commands that automatically coordinate specialized agents behind the scenes. Users no longer manually invoke agents—the system intelligently selects and coordinates them based on your tasks.
 
-## Agent Capability Matrix
+### Available Commands
 
-| Agent | Primary Purpose | Complexity | Best For | Token Usage | Parallel Safe |
-|-------|----------------|------------|----------|-------------|---------------|
-| **`/agent:architect`** | System design & planning | High | Architecture, ADRs, Sprint planning | High | Yes (design phase) |
-| **`/agent:coder`** | General implementation | Medium | Standard features, refactoring | Medium | Yes (different modules) |
-| **`/agent:mcp-dev`** | MCP protocol specialist | High | MCP servers, protocol impl. | High | No (protocol specific) |
-| **`/agent:tester`** | Quality assurance | Medium | Test writing, debugging | Medium | Yes (test suites) |
-| **`/agent:security`** | Security assessment | Medium | Vuln scanning, compliance | Medium | Yes (different areas) |
-| **`/agent:performance`** | Optimization | Medium-High | Speed, memory, scaling | Medium-High | Yes (different metrics) |
-| **`/agent:documenter`** | Documentation | Low-Medium | User docs, guides | Low-Medium | Yes (different docs) |
-| **`/agent:integration`** | Service coordination | Medium-High | APIs, microservices | Medium-High | Yes (different services) |
-| **`/agent:hooks`** | Middleware/events | Medium | Event systems, plugins | Medium | Yes (different hooks) |
-| **`/agent:memory-sync`** | Knowledge graph sync | Low | Code changes tracking | Low | No (sequential only) |
-| **`/agent:clutter-detector`** | Code cleanup | Low-Medium | Redundancy removal | Medium | No (global analysis) |
-
-## Implementation Decision Tree
-
-```
-Need to implement code?
-├── Is it MCP-related?
-│   ├── Yes → `/agent:mcp-dev`
-│   └── No → Continue
-├── Is it middleware/hooks?
-│   ├── Yes → `/agent:hooks`
-│   └── No → Continue
-├── Is it service integration?
-│   ├── Yes → `/agent:integration`
-│   └── No → Continue
-├── Is it performance-critical?
-│   ├── Yes → `/agent:performance` + `/agent:coder`
-│   └── No → `/agent:coder`
+#### STAD Sprint Commands
+```bash
+/sprint-plan <additional instructions>  # Stage 1: Sprint Planning
+/execute                                # Stage 2: Sprint Execution  
+/validate                               # Stage 3: Sprint Validation
+/sprint-approved                        # Stage 4: Release & Retrospective
 ```
 
-## Scenario-Based Agent Selection
+#### Utility Commands
+```bash
+/cmd                                    # Initialize Session
+/standards <Subject>                    # Read Standards
+/sync-memory                            # Knowledge Graph Sync
+/sprint-status                          # Progress Report
+```
+
+## How Agents Work Automatically
+
+**Agents work behind the scenes without manual selection:**
+
+1. **During `/sprint-plan`**: System uses architect and planning agents automatically
+2. **During `/execute`**: System coordinates coder, tester, security, and other agents as needed
+3. **During `/validate`**: System uses QA, security, and validation agents automatically
+4. **During `/sprint-approved`**: System uses retrospective and documentation agents automatically
+
+## Agent Capabilities (Automated)
+
+| Agent Type | Primary Purpose | Automatically Used For | Complexity |
+|------------|----------------|----------------------|------------|
+| **Architect** | System design & planning | Architecture decisions, Sprint planning | High |
+| **Coder** | General implementation | Standard features, refactoring | Medium |
+| **MCP Dev** | MCP protocol specialist | MCP servers, protocol implementation | High |
+| **Tester** | Quality assurance | Test writing, debugging | Medium |
+| **Security** | Security assessment | Vulnerability scanning, compliance | Medium |
+| **Performance** | Optimization | Speed, memory, scaling optimizations | Medium-High |
+| **Documenter** | Documentation | User docs, guides, API documentation | Low-Medium |
+| **Integration** | Service coordination | APIs, microservices, external integrations | Medium-High |
+| **Backend QA** | Validation testing | Stage 3 validation, quality gates | Medium |
+| **Debug** | Issue resolution | Bug fixing, troubleshooting | Medium |
+| **Memory Sync** | Knowledge graph sync | Code changes tracking | Low |
+
+## Automatic Agent Selection
+
+```
+When you run commands, the system automatically selects agents:
+
+/sprint-plan → Architect agent designs system
+/execute → Coder, Tester, and specialist agents work in parallel
+/validate → QA, Security, Performance agents validate work
+/sprint-approved → Retrospective and Documenter agents finalize
+
+Specialist agents are chosen based on:
+├── MCP-related work → MCP Dev agent
+├── Middleware/hooks → Hooks agent  
+├── Service integration → Integration agent
+├── Performance-critical → Performance agent
+└── Standard features → Coder agent
+```
+
+## Automatic Workflows by Scenario
 
 ### 🐛 "I need to fix a bug"
-**Recommended Flow:**
-1. **`/agent:tester`** - Reproduce and isolate the bug
-2. **`/agent:coder`** - Implement the fix
-3. **`/agent:tester`** - Validate the fix and prevent regression
+**Use:** Add bug to backlog, then execute
+```bash
+# Add to PROJECT_PLAN.md: Fix login timeout bug - users getting logged out after 5 minutes
+/execute  # System automatically uses Debug and Tester agents
+```
 
-**Why this sequence:**
-- Tester identifies root cause and creates failing test
-- Coder fixes with test-driven approach
-- Tester ensures comprehensive validation
+**What happens automatically:**
+- Debug agent reproduces and isolates the bug
+- Coder agent implements the fix
+- Tester agent validates and prevents regression
 
 ### 🚀 "I'm building a new feature"
-**Recommended Flow:**
-1. **`/agent:architect`** - Design system architecture
-2. **Specialist Agent** - Implementation (see matrix)
-3. **`/agent:tester`** - Comprehensive testing
-4. **`/agent:documenter`** - User documentation
-5. **`/agent:security`** - Security review (if handling data)
+**Use:** Plan and execute sprint
+```bash
+/sprint-plan "User dashboard with real-time notifications"
+/execute  # System coordinates all needed agents automatically
+```
 
-**Agent Selection for Implementation:**
-- Standard feature → `/agent:coder`
-- MCP integration → `/agent:mcp-dev`
-- Performance-critical → `/agent:performance`
-- External API → `/agent:integration`
+**What happens automatically:**
+- Architect agent designs system architecture
+- Specialist agents handle implementation (MCP, Integration, etc.)
+- Tester agent creates comprehensive tests
+- Documenter agent updates documentation
+- Security agent reviews if handling sensitive data
 
 ### 🔒 "I need a security review"
-**Recommended Combinations:**
-- **Full audit:** `/agent:security` + `/agent:coder` (for fixes)
-- **Pre-release:** `/agent:security` + `/agent:tester` (validation)
-- **Compliance:** `/agent:security` + `/agent:documenter` (reports)
+**Use:** Validation command
+```bash
+/validate  # Security agent automatically performs audit
+```
+
+**What happens automatically:**
+- Security agent performs vulnerability scan
+- Coder agent fixes any issues found
+- Tester agent validates security fixes
 
 ### ⚡ "I want to optimize performance"
-**Recommended Flow:**
-1. **`/agent:performance`** - Profile and identify bottlenecks
-2. **`/agent:coder`** - Implement optimizations
-3. **`/agent:tester`** - Benchmark and validate
-4. **`/agent:memory-sync`** - Update knowledge graph
+**Use:** Include in sprint plan
+```bash
+/sprint-plan "Optimize API response times - target <100ms"
+/execute  # Performance agent automatically handles optimization
+```
+
+**What happens automatically:**
+- Performance agent profiles and identifies bottlenecks
+- Coder agent implements optimizations
+- Tester agent benchmarks and validates improvements
 
 ### 🏗️ "I'm planning a sprint"
-**Sprint Planning Flow:**
-1. **`/agent:architect`** - Ticket selection and dependency analysis
-2. **Main Claude** - Resource allocation and timeline
-3. **`/agent:architect`** - Parallelization strategy
-
-## Multi-Agent Coordination Patterns
-
-### Parallel Execution (Safe Combinations)
-**Can run simultaneously:**
+**Use:** Sprint planning command
 ```bash
-# Different modules
-/agent:coder (Module A) + /agent:coder (Module B)
-
-# Different aspects
-/agent:security (Auth) + /agent:performance (Database)
-
-# Different phases
-/agent:tester (Unit tests) + /agent:documenter (API docs)
+/sprint-plan "Sprint 8: User authentication system"
 ```
 
-### Sequential Dependencies (Required Order)
-**Must run in sequence:**
+**What happens automatically:**
+- Architect agent analyzes tickets and dependencies
+- System allocates resources and creates timeline
+- Architect agent creates parallelization strategy
+
+## Automatic Agent Coordination
+
+### Parallel Execution (Handled Automatically)
+**During `/execute`, the system runs agents simultaneously when safe:**
+- Different modules: Multiple coder agents work on separate components
+- Different aspects: Security and Performance agents work in parallel
+- Different phases: Testing and Documentation happen concurrently
+
+### Sequential Dependencies (Managed Automatically)
+**The system ensures proper order:**
+- Design → Implementation → Testing (Architecture leads, others follow)
+- Architecture → Security Review (Security validates design decisions)
+- Implementation → Memory Sync (Knowledge graph updated after changes)
+
+### Feedback Loops (Built into Commands)
+**Common patterns handled automatically:**
+- Bug fixes: Debug → Code → Test cycle repeats until resolved
+- Security: Security scan → Fix → Re-scan until clean
+- Performance: Profile → Optimize → Benchmark until targets met
+
+## System Resource Management
+
+### Resource Optimization (Automatic)
+The system automatically optimizes resource usage:
+
+**High-resource agents** (Architecture, MCP Dev, Performance):
+- Used strategically at sprint start
+- Batch similar work together
+- Results cached for reuse
+
+**Medium-resource agents** (Coder, Tester, Integration):
+- Core workflow agents used regularly
+- Parallel execution when possible
+- Context sharing between agents
+
+**Low-resource agents** (Documenter, Memory Sync, Cleanup):
+- Run frequently for maintenance
+- Continuous operation during sprints
+- Minimal impact on overall performance
+
+## Optimizing System Performance
+
+### Better Results Through Clear Communication
+1. **Provide specific requirements** in sprint plans
+2. **Include relevant examples** and context
+3. **Set clear success criteria** for features
+4. **Reference existing patterns** in your codebase
+
+### Efficient Sprint Execution
+1. **Batch related work** in sprint plans
+2. **Use descriptive sprint goals** for better agent coordination
+3. **Let the system handle** agent selection and coordination
+4. **Trust the automation** - agents optimize themselves
+
+## Task Complexity (Automatic Handling)
+
+### Simple Tasks
+**How to handle:** Add to backlog
 ```bash
-# Design → Implementation → Testing
-/agent:architect → /agent:coder → /agent:tester
-
-# Architecture → Security Review
-/agent:architect → /agent:security
-
-# Implementation → Memory Sync
-/agent:coder → /agent:memory-sync
+# Add to PROJECT_PLAN.md: Fix login validation bug
+/execute  # System uses appropriate agents automatically
 ```
 
-### Feedback Loops (Common Patterns)
+### Moderate Tasks
+**How to handle:** Include in sprint planning
 ```bash
-# Bug Fix Loop
-/agent:tester → /agent:coder → /agent:tester
-
-# Security Hardening Loop
-/agent:security → /agent:coder → /agent:security
-
-# Performance Optimization Loop
-/agent:performance → /agent:coder → /agent:performance
+/sprint-plan "Add user profile API endpoint"
+/execute  # System coordinates architect, coder, and tester
 ```
 
-## Agent Performance Characteristics
+### Complex Tasks
+**How to handle:** Comprehensive sprint planning
+```bash
+/sprint-plan "Complete user authentication system with OAuth, 2FA, and audit logging"
+/execute  # System coordinates all needed specialist agents
+```
 
-### High Token Usage (Use Strategically)
-- **`/agent:architect`** - Complex system design
-- **`/agent:mcp-dev`** - Protocol implementation
-- **`/agent:performance`** - Deep optimization analysis
-
-**Strategy:** Use early in sprint, batch similar work
-
-### Medium Token Usage (Regular Use)
-- **`/agent:coder`** - Standard implementation
-- **`/agent:tester`** - Test creation and debugging
-- **`/agent:integration`** - Service coordination
-
-**Strategy:** Core development workflow agents
-
-### Low Token Usage (Frequent Use)
-- **`/agent:documenter`** - Documentation updates
-- **`/agent:memory-sync`** - Knowledge tracking
-- **`/agent:clutter-detector`** - Code cleanup
-
-**Strategy:** Use frequently for maintenance
-
-## Context Optimization Tips
-
-### Maximize Agent Effectiveness
-1. **Pre-process standards** into agent prompts
-2. **Include relevant examples** from codebase
-3. **Provide clear success criteria**
-4. **Never reference external files** - embed content
-
-### Minimize Token Usage
-1. **Extract only relevant code** for context
-2. **Use focused prompts** not generic requests
-3. **Batch similar work** when possible
-4. **Cache agent outputs** for reuse
-
-## Task Complexity Assessment
-
-### Simple Tasks (Single Agent)
-- Bug fix in isolated function → `/agent:coder`
-- Write unit test → `/agent:tester`
-- Update documentation → `/agent:documenter`
-- Security scan → `/agent:security`
-
-### Moderate Tasks (2-3 Agents)
-- New API endpoint → `/agent:architect` + `/agent:coder` + `/agent:tester`
-- Performance issue → `/agent:performance` + `/agent:coder`
-- Integration task → `/agent:integration` + `/agent:tester`
-
-### Complex Tasks (Multiple Agents)
-- New feature → `/agent:architect` + specialist + `/agent:tester` + `/agent:security` + `/agent:documenter`
-- System refactoring → `/agent:architect` + `/agent:coder` + `/agent:tester` + `/agent:clutter-detector`
-- MCP server → `/agent:architect` + `/agent:mcp-dev` + `/agent:integration` + `/agent:tester`
+**Note:** The system automatically determines complexity and coordinates the appropriate number of agents.
 
 ## Common Anti-Patterns
 
-### ❌ Agent Misuse
-- Using `/agent:architect` for simple functions
-- Using `/agent:coder` for system design
-- Skipping `/agent:tester` for complex features
-- Using multiple agents for trivial tasks
+### ❌ Poor Planning
+- Vague sprint goals without specific requirements
+- Skipping sprint planning for complex work
+- Not defining clear success criteria
+- Ignoring existing project constraints
 
-### ❌ Poor Sequencing
-- Implementing before designing
-- Testing without proper requirements
-- Security review after deployment
-- Documentation as an afterthought
+### ❌ Workflow Issues
+- Trying to manually control agent selection
+- Skipping validation before sprint approval
+- Not providing enough context in sprint plans
+- Rushing through STAD stages
 
-### ❌ Context Issues
-- Referencing files instead of embedding content
-- Providing incomplete requirements
-- Missing existing code patterns
-- Ignoring project constraints
+### ❌ Communication Problems
+- Unclear or incomplete requirements
+- Missing business context in plans
+- Not specifying technical constraints
+- Ignoring existing code patterns
 
 ## Success Patterns
 
 ### ✅ Optimal Workflows
-- **Design-first:** Always start with `/agent:architect` for complex work
-- **Test-driven:** Include `/agent:tester` early and often
-- **Security-conscious:** Run `/agent:security` before production
-- **Documentation-complete:** Use `/agent:documenter` for user-facing features
+- **Plan comprehensively:** Use `/sprint-plan` with detailed requirements
+- **Execute systematically:** Trust `/execute` to coordinate agents properly
+- **Validate thoroughly:** Use `/validate` before considering work complete
+- **Complete properly:** Use `/sprint-approved` for clean sprint closure
 
-### ✅ Efficient Coordination
-- **Parallel execution** for independent tasks
-- **Clear handoffs** between agents
-- **Feedback integration** from agent outputs
-- **Context reuse** across similar tasks
+### ✅ Efficient Practices
+- **Clear communication:** Provide specific, detailed sprint goals
+- **Trust automation:** Let the system handle agent coordination
+- **Follow STAD stages:** Don't skip validation or retrospective phases
+- **Document decisions:** Include context and reasoning in sprint plans
 
 ## Quick Reference Commands
 
-### Agent Status and Metrics
+### System Status
 ```bash
-/agent-status           # Current agent invocations
-/agent-metrics         # Performance data
-/agent-feedback        # Improvement tracking
+/sprint-status          # Current sprint progress
+/cmd                    # Initialize session with context
+/sync-memory           # Update knowledge graph
 ```
 
-### Common Combinations
+### Development Workflows
 ```bash
 # Full feature development
-/agent:architect + /agent:coder + /agent:tester + /agent:documenter
+/sprint-plan "Feature description with requirements"
+/execute  # Coordinates architect, coder, tester, documenter automatically
 
 # Bug fix workflow
-/agent:tester + /agent:coder + /agent:tester
+# Add to PROJECT_PLAN.md: Bug description
+/execute  # Coordinates debug, coder, tester automatically
 
-# Security hardening
-/agent:security + /agent:coder + /agent:security
+# Security review
+/validate  # Runs security audit automatically
 
 # Performance optimization
-/agent:performance + /agent:coder + /agent:tester
+/sprint-plan "Performance improvement goals"
+/execute  # Coordinates performance, coder, tester automatically
 ```
 
-## Decision Support Questions
+## Planning Support Questions
 
-Before selecting an agent, ask:
+Before planning a sprint, ask:
 
-1. **What's the primary goal?** (Design, implement, test, secure, document)
-2. **What's the complexity level?** (Simple, moderate, complex)
-3. **Are there dependencies?** (What must happen first)
-4. **What's the performance impact?** (Token usage, execution time)
-5. **Can tasks run in parallel?** (Independent work streams)
-6. **What context is needed?** (Code, specs, examples)
-7. **What's the success criteria?** (How to measure completion)
+1. **What's the primary goal?** (Feature, fix, optimization, security)
+2. **What's the complexity level?** (Story points, time estimate)
+3. **What are the dependencies?** (External APIs, other features)
+4. **What are the constraints?** (Performance, security, compliance)
+5. **What's the success criteria?** (Acceptance criteria, metrics)
+6. **What context exists?** (Related code, design decisions)
+7. **What's the timeline?** (Sprint length, milestones)
 
-## Agent Evolution and Feedback
+## System Evolution and Feedback
 
 ### Continuous Improvement
-- Track agent performance metrics after each use
-- Record successful patterns and combinations
-- Identify context improvements needed
-- Update selection criteria based on results
+- System tracks performance metrics automatically
+- Successful patterns are learned and reused
+- Context improvements happen transparently
+- Agent coordination improves over time
 
-### When to Create New Agents
-Only create new agents when:
-- Specialized expertise is required repeatedly
-- Existing agents cannot handle the domain
-- Significant complexity warrants isolation
-- Clear differentiation from existing agents
+### System Enhancement
+The system evolves through:
+- Automated learning from sprint outcomes
+- Pattern recognition in successful workflows
+- Optimization of agent coordination
+- Integration of new agent capabilities
 
 ---
 
 ## Related Documentation
 
-- [Agent System Overview](/docs/agents/) - Complete agent documentation
-- [Basic Workflow Guide](/docs/getting-started/basic-workflow.md) - Standard development process
-- [Agent Recipes](/recipes/) - Proven agent combinations
-- [Performance Metrics](/feedback/) - Agent optimization tracking
+- [STAD Workflow Guide](/docs/getting-started/stad-workflow.md) - Complete STAD Protocol process
+- [Agent System Overview](/Agents/README.md) - How agents work behind the scenes
+- [Sprint Management Recipes](/recipes/) - Proven sprint patterns
+- [Installation Guide](/docs/getting-started/installation.md) - Getting started
 
 ---
 

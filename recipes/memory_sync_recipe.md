@@ -15,7 +15,7 @@ Automatically maintain an up-to-date knowledge graph of your codebase in the MCP
 
 ## When to Use
 - After significant code changes
-- During `/done` workflow phase
+- After sprint completion (integrated into `/sprint-approved`)
 - Before major refactoring (to capture current state)
 - When onboarding new team members (knowledge transfer)
 - Regular scheduled syncs (weekly/daily)
@@ -60,18 +60,18 @@ Automatically maintain an up-to-date knowledge graph of your codebase in the MCP
 
 ## Integration Patterns
 
-### Pattern A: Development Workflow Integration
+### Pattern A: STAD Workflow Integration
 ```
-/plan → /build → /test → /document → /sync-memory → /done
+/sprint-plan → /execute → /validate → /sprint-approved (includes /sync-memory)
 ```
 
-### Pattern B: Automated in Done Workflow
+### Pattern B: Automated in Sprint Approved
 ```
-/done
-  ├── Review spec completion
-  ├── Update documentation
+/sprint-approved
+  ├── Generate retrospective
+  ├── Verify tickets status
   ├── /sync-memory (automatic)
-  └── Mark ticket complete
+  └── Commit everything
 ```
 
 ### Pattern C: Pre-Refactoring Snapshot
@@ -80,7 +80,7 @@ Automatically maintain an up-to-date knowledge graph of your codebase in the MCP
 /sync-memory --force
 
 # Perform refactoring
-/build + /agent:coder
+# (Use appropriate recipe for refactoring)
 
 # Sync new structure
 /sync-memory

@@ -5,18 +5,40 @@ type: agent
 category: integration
 tags: [github, gitlab, vcs, pr-automation, ci-cd, conflict-resolution, issue-management]
 created: 2025-08-10
-updated: 2025-08-10
+updated: 2025-08-17
 version: 1.0
 status: stable
 ---
 
 # VCS Integration Agent
 
-## Agent ID
-`/agent:vcs-integration`
+## Internal Agent Reference
+vcs-integration
 
 ## Purpose
 Automated GitHub/GitLab integration with PR management, issue sync, CI/CD monitoring, and intelligent conflict resolution.
+
+## STAD Protocol Awareness
+
+This is a tool agent that supports version control operations across all STAD stages.
+
+### Universal Context
+**Reference:** `/prompts/agent_contexts/universal_context.md` for STAD rules and workspace locations.
+
+### MCP Tools Integration
+- `mcp__memory__search_nodes({ query })` - Search for commit patterns
+- `mcp__memory__add_observations([{ entityName, contents }])` - Document VCS patterns
+
+### Semantic Commit Patterns
+Follow STAD semantic commit format:
+```
+type(scope): message [TICKET-ID]
+```
+Types: feat|fix|docs|style|refactor|test|chore
+
+### Blocker Handling
+- Complex issues → Escalate to specialist agent
+- Missing context → Request from user
 
 ## Specialization
 - Pull request automation and templating
@@ -151,43 +173,60 @@ VCS integration results go to:
 
 ## VCS Platform Support
 
-### GitHub Integration
+### GitHub Integration (via CLI)
+
+**Important:** We use GitHub CLI (`gh`), NOT MCP, for all GitHub operations.
+
+```bash
+# GitHub CLI Configuration
+# Ensure GITHUB_TOKEN is set with required scopes: repo, project, workflow
+export GITHUB_TOKEN="your_token_here"
+
+# Create Pull Request via CLI
+gh pr create \
+  --repo owner/repo \
+  --title "PR Title" \
+  --body "PR Description" \
+  --head source-branch \
+  --base target-branch \
+  --draft
+
+# Auto-assign reviewers
+gh pr edit <pr-number> \
+  --add-reviewer user1,user2
+
+# Example TypeScript wrapper for GitHub CLI
+```
+
 ```typescript
-interface GitHubConfig {
+interface GitHubCLIConfig {
   token: string;
-  organization?: string;
-  repository: string;
-  apiVersion: 'v3' | 'v4';
-  webhookSecret?: string;
-  appId?: number;
-  privateKey?: string;
+  owner: string;
+  repo: string;
 }
 
-class GitHubAdapter implements VCSAdapter {
-  private octokit: Octokit;
-  
+class GitHubCLIAdapter implements VCSAdapter {
   async createPullRequest(config: PRConfig): Promise<PullRequest> {
-    const pr = await this.octokit.rest.pulls.create({
-      owner: config.owner,
-      repo: config.repo,
-      title: config.title,
-      head: config.sourceBranch,
-      base: config.targetBranch,
-      body: await this.renderTemplate(config.template, config.context),
-      draft: config.draft
-    });
+    // Execute gh CLI command
+    const command = `gh pr create \
+      --repo ${config.owner}/${config.repo} \
+      --title "${config.title}" \
+      --body "${await this.renderTemplate(config.template, config.context)}" \
+      --head ${config.sourceBranch} \
+      --base ${config.targetBranch} \
+      ${config.draft ? '--draft' : ''}`;
     
-    // Auto-assign reviewers
+    const result = await exec(command);
+    const prNumber = this.extractPRNumber(result.stdout);
+    
+    // Auto-assign reviewers if specified
     if (config.reviewers.length > 0) {
-      await this.octokit.rest.pulls.requestReviewers({
-        owner: config.owner,
-        repo: config.repo,
-        pull_number: pr.data.number,
-        reviewers: config.reviewers
-      });
+      await exec(`gh pr edit ${prNumber} \
+        --repo ${config.owner}/${config.repo} \
+        --add-reviewer ${config.reviewers.join(',')}`);
     }
     
-    return this.mapPullRequest(pr.data);
+    return this.fetchPullRequest(prNumber);
   }
 }
 ```

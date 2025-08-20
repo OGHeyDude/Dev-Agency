@@ -14,19 +14,25 @@ updated: 2025-08-09
 
 ## 🚨 Quick Fixes
 
-### Agent Invocation Issues
+### Command Issues (9-Command System)
 
-**Problem**: Agent not responding or giving unexpected results  
+**Problem**: Command not responding or giving unexpected results  
 **Solution**: 
-1. Check that you're in the Dev-Agency directory: `/home/hd/Desktop/LAB/Dev-Agency/`
-2. Verify agent name spelling - use exact names from [Agent Catalog](../../quick-start/AGENT_CATALOG.md)
-3. Ensure you have sufficient context in your request
+1. Verify you're using one of the 9 valid commands:
+   - `/sprint-plan <instructions>`
+   - `/execute`
+   - `/validate`  
+   - `/sprint-approved`
+   - `/cmd`
+   - `/standards <Subject>`
+   - `/sync-memory`
+   - `/sprint-status`
+2. Ensure you have sufficient context in your request
+3. Check that you're in a properly configured project directory
 
-**Problem**: "Agent not found" error  
+**Problem**: "Command not found" or old agent commands not working  
 **Solution**:
-1. Check available agents: `ls /home/hd/Desktop/LAB/Dev-Agency/Agents/`
-2. Use exact agent names: `/agent:architect`, `/agent:coder`, etc.
-3. Verify you're using the Task tool correctly
+The system has been simplified to 8 commands only. Old `/agent:*` commands are no longer available to users. Use the new command structure instead.
 
 ### CLI Tool Issues
 
@@ -120,9 +126,9 @@ chmod +x /home/hd/Desktop/LAB/Dev-Agency/tools/agent-cli/dist/cli.js
 
 **Problem**: Cannot find project planning templates  
 **Solution**: Templates located at:
-- Project Plan: `Development_Standards/Templates/PROJECT_PLAN_Template.md`
-- Specs: `Development_Standards/Templates/SPECS_Template.md`
-- Bug Reports: `Development_Standards/Templates/Persistent Bug Report.md`
+- Project Plan: `docs/reference/templates/PROJECT_PLAN_Template.md`
+- Specs: `docs/reference/templates/SPECS_Template.md`
+- Bug Reports: `docs/reference/templates/Persistent Bug Report.md`
 
 ### Documentation Issues
 

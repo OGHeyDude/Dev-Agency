@@ -1,7 +1,6 @@
 {
   "allowedDirectories": [
-    "/home/hd/Desktop/LAB/Dev-Agency",
-    "/home/hd/Desktop/LAB/Development_Standards"
+    "/home/hd/Desktop/LAB/Dev-Agency"
   ],
   "excludePatterns": [
     "**/node_modules/**",

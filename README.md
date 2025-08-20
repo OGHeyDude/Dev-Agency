@@ -1,43 +1,60 @@
 ---
-title: Dev-Agency - Centralized Agentic Development System
-description: Single source of truth for AI-powered enterprise development
+title: Dev-Agency - STAD Protocol Development System
+description: Enterprise-grade agentic development with STAD Protocol v5.1
 type: overview
 category: system
-tags: [dev-agency, agents, enterprise, development]
+tags: [dev-agency, agents, enterprise, stad-protocol, development]
 created: 2025-08-09
-updated: 2025-08-10
+updated: 2025-08-20
+version: 2.0
 ---
 
-# Dev-Agency: Centralized Agentic Development System
+# Dev-Agency: STAD Protocol Development System
 
-**Single source of truth for AI-powered enterprise development.**
+**Enterprise-grade agentic development with STAD Protocol v5.1**
 
-Enterprise-grade system providing specialized AI agents, proven workflows, and development standards. All projects reference Dev-Agency directly—no copying, no duplication, just centralized excellence.
+🎯 **100% STAD Compliant** | 🔒 **Security Hardened** | 📦 **Template Ready** | 🚀 **Open Source Ready**
 
-## 🚀 Quick Start (5 Minutes)
-- **New to Dev-Agency?** → [5-Minute Success Guide](quick-start/5_MINUTE_SUCCESS.md)
-- **Choose an Agent** → [Agent Catalog](quick-start/AGENT_CATALOG.md)
+Enterprise system implementing the STAD Protocol (Stateful & Traceable Agentic Development) with 23 specialized AI agents, proven workflows, and comprehensive development standards. All projects reference Dev-Agency directly—no copying, no duplication, just centralized excellence.
+
+## 🚀 Quick Start
+
+### For New Projects
+```bash
+# 1. Copy template to your project
+cp -r /home/hd/Desktop/LAB/Dev-Agency/TEMPLATE_PACKAGE/* /your/project/
+
+# 2. Run setup
+cd /your/project && ./setup.sh
+
+# 3. Configure environment
+cp .env.example .env && nano .env
+```
+
+### Quick Links
+- **Project Template** → [TEMPLATE_PACKAGE/](TEMPLATE_PACKAGE/)
+- **STAD Protocol** → [Architecture Docs](docs/architecture/STAD_PROTOCOL_NORTH_STAR.md)
+- **Agent Catalog** → [23 Specialized Agents](docs/architecture/STAD_Agent_Registry.md)
 - **Need Help?** → [Troubleshooting](docs/reference/troubleshooting.md)
 
-## ⚡ Quick Commands
+## ⚡ Quick Commands (8 Commands Only)
 
-### Sprint Management
+### STAD Protocol 5-Stage Sprint Lifecycle
 ```bash
-/sprint-execute --max-agents 4  # Execute current sprint with parallel agents
-/sprint-plan                    # Plan next sprint with agent coordination  
-/doc-audit                      # Comprehensive documentation standardization
+# STAD Sprint Commands
+/sprint-plan <additional instructions>  # Stage 1: Sprint Planning
+/execute                                # Stage 2: Sprint Execution  
+/validate                               # Stage 3: Sprint Validation
+/sprint-approved                        # Stage 4: Release & Retrospective
+
+# Utility Commands
+/cmd                                    # Initialize Session
+/standards <Subject>                    # Read Standards
+/sync-memory                            # Knowledge Graph Sync
+/sprint-status                          # Progress Report
 ```
 
-### Development Workflow
-```bash
-/cmd                           # Initialize session and check project status
-/research → /plan → /build → /test → /document → /reflect → /done  # Standard workflow
-/agent:architect               # System design and architecture
-/agent:coder                   # Implementation with best practices
-/agent:tester                  # Quality assurance and testing
-```
-
-**Additional Commands**: See [slash commands reference](prompts/slash_commands.md)
+**Note**: The system automatically coordinates appropriate agents for each stage. See [complete command reference](prompts/slash_commands.md)
 
 ## 📚 Documentation Hub
 | Section | Purpose | Key Resources |
@@ -56,11 +73,11 @@ Enterprise-grade system providing specialized AI agents, proven workflows, and d
 **"Single Source of Truth - No Clutter, No Redundancy"**
 
 ### Recent Achievements
-✅ **Sprint 3 Success** - 16/16 points completed with 100% success rate  
-✅ **Production Tools** - CLI and Context Optimizer fully operational  
-✅ **Parallel Agent Execution** - 5-agent coordination with 40%+ time savings  
-✅ **Enterprise CLI Tool** - TypeScript architecture with comprehensive automation  
-✅ **Multi-Agent QA** - Comprehensive parallel quality assurance process  
+✅ **100% STAD Migration** - Complete transformation from 7-step to 5-stage lifecycle  
+✅ **23 Agents STAD-Aligned** - All agents mapped to specific stages with handoffs  
+✅ **Security Hardened** - No exposed secrets, comprehensive .gitignore  
+✅ **Template Package Ready** - Complete project template for instant setup  
+✅ **Zero 7-Stage References** - Clean migration with full backward compatibility archived  
 
 ## 🏗️ System Architecture
 
@@ -74,20 +91,18 @@ Enterprise-grade system providing specialized AI agents, proven workflows, and d
 
 ## 🤖 Available Agents
 
-### Core Development
-- **`/agent:architect`** - System design and planning
-- **`/agent:coder`** - Code implementation
-- **`/agent:tester`** - Quality assurance
-- **`/agent:security`** - Security review
-- **`/agent:documenter`** - Documentation
+**Agents work automatically behind the scenes through the 8 essential commands. No direct agent invocation needed.**
 
-### Specialists
-- **`/agent:mcp-dev`** - MCP protocol development
-- **`/agent:performance`** - Performance optimization
-- **`/agent:integration`** - System integration
-- **`/agent:memory-sync`** - Knowledge synchronization
-- **`/agent:hooks`** - Hooks and middleware development
-- **`/agent:clutter-detector`** - Code cleanup and deduplication
+### How Agents Work
+- **Automatic Coordination**: Agents are automatically selected and coordinated based on the command used
+- **Stage-Based Activation**: Different agents activate during different STAD Protocol stages
+- **Zero Manual Invocation**: Users only need the 8 commands - agents work internally
+- **Parallel Execution**: Multiple agents can work simultaneously for efficiency
+
+### Agent Categories
+- **Core Development**: Architect, Coder, Tester, Security, Documenter
+- **Specialists**: MCP-Dev, Performance, Integration, Memory-Sync, Hooks, Clutter-Detector
+- **Quality Assurance**: Backend QA, Debug, Retrospective
 
 [Complete agent catalog →](quick-start/AGENT_CATALOG.md)
 
@@ -156,7 +171,7 @@ Enterprise-grade system providing specialized AI agents, proven workflows, and d
 
 **Location**: `/home/hd/Desktop/LAB/Dev-Agency/`
 
-For project integration, use the [PROJECT_CLAUDE_TEMPLATE.md](Development_Standards/Templates/PROJECT_CLAUDE_TEMPLATE.md) to reference this central system.
+For project integration, use the [PROJECT_CLAUDE_TEMPLATE.md](docs/reference/templates/PROJECT_CLAUDE_TEMPLATE.md) to reference this central system.
 
 ---
 

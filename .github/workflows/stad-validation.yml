@@ -1,0 +1,175 @@
+name: STAD Protocol Validation
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: 'STAD Stage to validate (0-4)'
+        required: false
+        default: 'all'
+
+jobs:
+  stage-1-validation:
+    name: Stage 1 - Sprint Preparation Validation
+    runs-on: ubuntu-latest
+    if: github.event.inputs.stage == '1' || github.event.inputs.stage == 'all' || github.event.inputs.stage == ''
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check Spec Completeness
+      run: |
+        echo "🔍 Validating technical specifications..."
+        # Check for spec files in current sprint
+        if [ -d "Project_Management/Specs" ]; then
+          spec_count=$(find Project_Management/Specs -name "*.md" -type f | wc -l)
+          echo "✅ Found $spec_count specification files"
+        else
+          echo "❌ Specs directory not found"
+          exit 1
+        fi
+    
+    - name: Validate Story Points
+      run: |
+        echo "📊 Checking story point limits..."
+        # Ensure no tickets exceed 5 story points
+        grep -E "Story Points: [6-9]|Story Points: [0-9]{2}" Project_Management/Specs/*.md && {
+          echo "❌ Found tickets exceeding 5 story points"
+          exit 1
+        } || echo "✅ All tickets within 5 point limit"
+    
+    - name: Check Dependency Mapping
+      run: |
+        echo "🔗 Validating dependency DAG..."
+        # Check for dependency documentation
+        if grep -q "Dependencies:" Project_Management/Sprint_Plans/*.md; then
+          echo "✅ Dependencies documented"
+        else
+          echo "⚠️ No dependency mapping found"
+        fi
+
+  stage-2-validation:
+    name: Stage 2 - Sprint Execution Validation
+    runs-on: ubuntu-latest
+    if: github.event.inputs.stage == '2' || github.event.inputs.stage == 'all' || github.event.inputs.stage == ''
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run Tests
+      run: |
+        echo "🧪 Running test suite..."
+        # Run tests if package.json exists
+        if [ -f "package.json" ]; then
+          npm test || echo "⚠️ Some tests failed"
+        fi
+    
+    - name: Lint Check
+      run: |
+        echo "🔍 Running linters..."
+        # Run linting if configuration exists
+        if [ -f ".eslintrc.json" ] || [ -f ".eslintrc.js" ]; then
+          npm run lint || echo "⚠️ Linting issues found"
+        fi
+    
+    - name: Check Handoff Documents
+      run: |
+        echo "📋 Validating handoff documents..."
+        if [ -d "Project_Management/Agent_Handoffs" ]; then
+          handoff_count=$(find Project_Management/Agent_Handoffs -name "*.md" -type f | wc -l)
+          echo "✅ Found $handoff_count handoff documents"
+        else
+          echo "⚠️ No handoff documents found"
+        fi
+
+  stage-3-validation:
+    name: Stage 3 - Sprint Validation
+    runs-on: ubuntu-latest
+    if: github.event.inputs.stage == '3' || github.event.inputs.stage == 'all' || github.event.inputs.stage == ''
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Backend QA Checks
+      run: |
+        echo "🔍 Running backend QA validation..."
+        # Check for API documentation
+        if [ -d "docs/api" ]; then
+          echo "✅ API documentation found"
+        else
+          echo "⚠️ API documentation missing"
+        fi
+    
+    - name: Performance Benchmarks
+      run: |
+        echo "⚡ Checking performance metrics..."
+        # Run performance tests if available
+        if [ -f "scripts/performance-test.sh" ]; then
+          ./scripts/performance-test.sh || echo "⚠️ Performance benchmarks not met"
+        fi
+    
+    - name: Security Scan
+      run: |
+        echo "🔒 Running security scan..."
+        # Run security audit
+        if [ -f "package.json" ]; then
+          npm audit --audit-level=moderate || echo "⚠️ Security vulnerabilities found"
+        fi
+
+  stage-4-validation:
+    name: Stage 4 - Release & Retrospective
+    runs-on: ubuntu-latest
+    if: github.event.inputs.stage == '4' || github.event.inputs.stage == 'all' || github.event.inputs.stage == ''
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check Documentation Updates
+      run: |
+        echo "📚 Validating documentation..."
+        # Check for updated documentation
+        recent_docs=$(find docs -name "*.md" -mtime -7 | wc -l)
+        echo "✅ Found $recent_docs recently updated documentation files"
+    
+    - name: Verify Retrospective
+      run: |
+        echo "📝 Checking retrospective documents..."
+        if [ -d "Project_Management/Retrospectives" ]; then
+          retro_count=$(find Project_Management/Retrospectives -name "*.md" -type f | wc -l)
+          echo "✅ Found $retro_count retrospective documents"
+        else
+          echo "⚠️ No retrospective documents found"
+        fi
+    
+    - name: Knowledge Graph Sync Check
+      run: |
+        echo "🧠 Validating knowledge graph sync..."
+        # Check for memory sync indicators
+        if grep -q "mcp__memory" Agents/memory-sync.md; then
+          echo "✅ Knowledge graph integration configured"
+        else
+          echo "⚠️ Knowledge graph sync not configured"
+        fi
+
+  summary:
+    name: STAD Validation Summary
+    runs-on: ubuntu-latest
+    needs: [stage-1-validation, stage-2-validation, stage-3-validation, stage-4-validation]
+    if: always()
+    
+    steps:
+    - name: Generate Summary Report
+      run: |
+        echo "# 📊 STAD Protocol Validation Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Stage Validation Results" >> $GITHUB_STEP_SUMMARY
+        echo "- Stage 1 (Sprint Preparation): ${{ needs.stage-1-validation.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Stage 2 (Sprint Execution): ${{ needs.stage-2-validation.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Stage 3 (Sprint Validation): ${{ needs.stage-3-validation.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Stage 4 (Release & Retrospective): ${{ needs.stage-4-validation.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Overall Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY

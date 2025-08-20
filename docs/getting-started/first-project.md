@@ -112,10 +112,10 @@ Open Claude Code in your project directory and run:
 
 ### Step 5: Create Your PROJECT_PLAN.md
 
-Run the planning initialization:
+Run the session initialization:
 
 ```bash
-/standards
+/cmd
 ```
 
 Then create your project plan:
@@ -189,9 +189,9 @@ updated: 2025-08-10
 
 ### Next Actions
 1. Start with TASK-001 (Express server setup)
-2. Use `/agent:architect` for system design
-3. Use `/agent:coder` for implementation
-4. Use `/agent:tester` for testing
+2. Use `/sprint-plan` for comprehensive planning
+3. Use `/execute` for automated implementation
+4. Use `/validate` for quality assurance
 
 ## Notes
 - Following 5-step Dev-Agency process for each ticket
@@ -206,37 +206,31 @@ EOF
 
 ## Part 3: Your First Agent-Enhanced Development Session
 
-### Step 6: Select Your First Ticket
+### Step 6: Plan Your First Sprint
 
 Let's start with TASK-001. In Claude, run:
 
 ```bash
-/research
+/sprint-plan "Express server setup with middleware, error handling, logging, and CORS"
 ```
 
-**What Claude will do:**
-- Search for existing Express server patterns
-- Look for middleware examples
-- Check for similar implementations
-- Prepare context for planning
+**What System will do:**
+- Search for existing Express server patterns automatically
+- Look for middleware examples automatically
+- Check for similar implementations automatically
+- Create comprehensive specifications automatically
 
-**Expected output**: Research findings about Express server setup, middleware patterns, and best practices.
+**Expected output**: Complete specifications and implementation plan for Express server setup.
 
-### Step 7: Create Your First Spec with Architecture Agent
+### Step 7: Create Your First Spec with System Planning
 
 Run the planning phase:
 
 ```bash
-/plan
+/sprint-plan "TASK-001: Express server setup with middleware, error handling, and logging"
 ```
 
-Then invoke the architect agent:
-
-```bash
-/agent:architect
-```
-
-**Agent Input Context** (Claude will prepare this automatically):
+**System Input Context** (automatically gathered):
 ```
 PROJECT: Task Manager API - Express server setup
 REQUIREMENTS: 
@@ -247,11 +241,11 @@ REQUIREMENTS:
 - JSON parsing
 - Production-ready structure
 
-STANDARDS: [Dev-Agency standards will be embedded]
-EXISTING CODE: [Research findings will be included]
+STANDARDS: [Dev-Agency standards automatically included]
+EXISTING CODE: [Research findings automatically included]
 ```
 
-**Expected Agent Output**:
+**Expected System Output**:
 ```
 ## System Architecture for Express Server Setup
 
@@ -295,23 +289,19 @@ src/
 - All requests logged properly
 ```
 
-**What happens next**: Claude creates a detailed spec file at `Project_Management/Specs/TASK-001_spec.md` using this architecture.
+**What happens next**: System creates a detailed spec file at `Project_Management/Specs/TASK-001_spec.md` using this architecture automatically.
 
-### Step 8: Implement with Coder Agent
+### Step 8: Execute Implementation
 
 Move to implementation phase:
 
 ```bash
-/build
+/execute
 ```
 
-Claude will update the ticket status to `IN_PROGRESS`, then invoke:
+System will update the ticket status to `IN_PROGRESS`, then automatically coordinate coder agents:
 
-```bash
-/agent:coder
-```
-
-**Expected Agent Output** (abbreviated):
+**Expected System Output** (abbreviated):
 ```javascript
 // src/app.js - Express application configuration
 const express = require('express');
@@ -351,21 +341,17 @@ const server = app.listen(PORT, () => {
 module.exports = server;
 ```
 
-### Step 9: Test with Tester Agent
+### Step 9: Automatic Testing
 
-Move to testing phase:
-
-```bash
-/test
-```
-
-Claude will invoke the tester agent:
+Testing happens automatically during `/execute`, but you can also run validation:
 
 ```bash
-/agent:tester
+/validate
 ```
 
-**Expected Agent Output**:
+System automatically coordinates tester agents:
+
+**Expected System Output**:
 ```javascript
 // tests/app.test.js - Basic server tests
 const request = require('supertest');
@@ -397,19 +383,15 @@ describe('Express Server', () => {
 
 **Testing Results**: All tests pass, server starts correctly, middleware functions properly.
 
-### Step 10: Document and Complete
+### Step 10: Complete Sprint
 
-Run the documentation phase:
-
-```bash
-/document
-```
-
-Claude updates the spec with implementation details and runs:
+Once implementation and testing are complete:
 
 ```bash
-/done
+/sprint-approved
 ```
+
+System automatically updates documentation and completes the work:
 
 **Expected output**: 
 - Ticket TASK-001 marked as `DONE`
@@ -423,20 +405,20 @@ Claude updates the spec with implementation details and runs:
 
 ### What Just Happened?
 
-You successfully completed your first agent-enhanced development cycle:
+You successfully completed your first automated development cycle:
 
-1. **Research Phase**: Claude searched for patterns and best practices
-2. **Planning Phase**: `/agent:architect` designed the system structure
-3. **Implementation Phase**: `/agent:coder` wrote production-ready code
-4. **Testing Phase**: `/agent:tester` created comprehensive tests
+1. **Planning Phase**: System designed the system structure automatically
+2. **Implementation Phase**: System wrote production-ready code automatically
+3. **Testing Phase**: System created comprehensive tests automatically
+4. **Validation Phase**: System validated all requirements automatically
 5. **Documentation Phase**: All documentation updated automatically
 
 ### Key Benefits You Experienced
 
-- **Quality**: Each agent specializes in their domain
-- **Consistency**: All code follows Dev-Agency standards
+- **Quality**: System automatically applies specialized expertise
+- **Consistency**: All code follows Dev-Agency standards automatically
 - **Completeness**: Nothing gets forgotten (tests, docs, validation)
-- **Speed**: Agents handle boilerplate, you focus on decisions
+- **Speed**: System handles complexity, you focus on requirements
 
 ### Your Project Now Has
 
@@ -481,14 +463,9 @@ curl http://localhost:3000/health
 
 1. **Continue with TASK-002**: Database setup
 ```bash
-# In Claude
-/research  # Research SQLite patterns
-/plan      # Plan database structure  
-/agent:architect  # Design schema
-/build     # Implement with /agent:coder
-/test      # Validate with /agent:tester
-/document  # Update documentation
-/done      # Complete the cycle
+# Add to sprint backlog and execute
+# Add TASK-002 manually to PROJECT_PLAN.md: SQLite database setup with user table schema
+/execute  # System automatically handles design, implementation, and testing
 ```
 
 2. **Track Your Progress**: Watch your PROJECT_PLAN.md update automatically
@@ -497,20 +474,20 @@ curl http://localhost:3000/health
 
 ### Advanced Features to Explore
 
-- **Agent Recipes**: Use `/agent-recipe [name]` for proven combinations
-- **Performance Optimization**: Add `/agent:performance` for optimization
-- **Security Review**: Include `/agent:security` for security audits
-- **Integration Testing**: Use `/agent:integration` for complex integrations
+- **Sprint Planning**: Use detailed requirements in `/sprint-plan` for better outcomes
+- **Performance Optimization**: Include performance goals in sprint plans
+- **Security Review**: Automatic security validation in `/validate` command
+- **Integration Testing**: System automatically handles complex integrations
 
 ### Common Patterns
 
-| Development Task | Recommended Agents |
-|------------------|-------------------|
-| New Feature | `/agent:architect` → `/agent:coder` → `/agent:tester` |
-| Bug Fix | `/agent:tester` → `/agent:coder` → `/agent:tester` |
-| Performance Issue | `/agent:performance` → `/agent:coder` |
-| Security Audit | `/agent:security` → `/agent:coder` (if fixes needed) |
-| Documentation | `/agent:documenter` |
+| Development Task | Recommended Commands |
+|------------------|---------------------|
+| New Feature | `/sprint-plan` → `/execute` → `/validate` |
+| Bug Fix | Add to PROJECT_PLAN.md → `/execute` |
+| Performance Issue | `/sprint-plan` (with performance goals) → `/execute` |
+| Security Audit | `/validate` (includes automatic security review) |
+| Documentation | Automatic during `/execute` and `/sprint-approved` |
 
 ---
 
@@ -545,35 +522,31 @@ mkdir -p Project_Management/{Specs,Bug_Reports,Releases,Archive}
 
 ```bash
 # In Claude, in your existing project
-/research  # Find existing auth patterns in codebase
-/plan      # Create authentication strategy
-/agent:architect  # Design auth system
-/agent:security   # Security review of design
-/build    # Implement with /agent:coder
-/test     # Create tests with /agent:tester
-/document # Update API docs
-/done     # Complete and commit
+/sprint-plan "Add JWT authentication with login/logout endpoints and security validation"
+/execute  # System automatically handles research, design, security review, implementation, and testing
+/validate # System validates security and functionality
+/sprint-approved # Complete and commit
 ```
 
 ---
 
 ## Troubleshooting Common Issues
 
-### Issue: Agent Not Found
-**Problem**: `/agent:architect` returns "not found"
-**Solution**: Ensure Claude Code can access `/home/hd/Desktop/LAB/Dev-Agency/Agents/`
+### Issue: Command Not Recognized
+**Problem**: System doesn't recognize a command
+**Solution**: Use only the 9 approved commands listed in this guide
 
 ### Issue: Context Too Large
-**Problem**: Agent receives truncated context
-**Solution**: Break down tickets into smaller pieces (3 story points max recommended)
+**Problem**: System receives truncated context
+**Solution**: Break down sprint plans into smaller, more specific requirements
 
 ### Issue: Inconsistent Output
-**Problem**: Agent output varies significantly
-**Solution**: Improve context by including more specific requirements and examples
+**Problem**: System output varies significantly
+**Solution**: Provide more specific requirements and clear success criteria in sprint plans
 
 ### Issue: Tests Failing
-**Problem**: `/agent:tester` creates failing tests
-**Solution**: Run `/agent:tester` again with the error output as additional context
+**Problem**: System creates failing tests
+**Solution**: Run `/validate` to identify and fix issues, or refine requirements in sprint plan
 
 ---
 

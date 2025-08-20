@@ -218,7 +218,7 @@ Bash npm test > /Project_Management/temp/[TICKET-ID]/test-red.log
 - [ ] Test failure output saved to temp folder
 - [ ] No syntax errors in test file
 
-**Validation Command:** `/validate-phase test-creation [TICKET-ID]`
+**Validation Command:** Internal validation (no user command)
 
 #### Step 3: Implementation Phase
 ```bash
@@ -246,7 +246,7 @@ WIP: Implementation phase complete"
 - [ ] Implementation committed to git
 - [ ] Commit message follows format
 
-**Validation Command:** `/commit-checkpoint implementation [TICKET-ID]`
+**Validation Command:** Internal validation (no user command)
 
 **Status Update:** IN_PROGRESS → CODE_REVIEW
 
@@ -275,7 +275,7 @@ Bash npm run test:coverage [module]
 
 **If Tests Fail:** Debug and fix until ALL pass - CANNOT proceed with failed tests
 
-**Validation Command:** `/validate-phase test-execution [TICKET-ID]`
+**Validation Command:** Internal validation (no user command)
 
 **Status Update:** CODE_REVIEW → QA_TESTING
 
@@ -303,7 +303,7 @@ echo "Quality checks completed for [TICKET-ID]" > /Project_Management/temp/[TICK
 
 **If Quality Checks Fail:** Fix ALL issues before proceeding - NO exceptions
 
-**Validation Command:** `/validate-phase quality-checks [TICKET-ID]`
+**Validation Command:** Internal validation (no user command)
 
 **Status Update:** QA_TESTING → DOCUMENTATION
 
@@ -361,7 +361,7 @@ IF public API changed:
 - [ ] Release notes updated with key changes
 - [ ] No broken internal links
 
-**Validation Command:** `/validate-phase documentation [TICKET-ID]`
+**Validation Command:** Internal validation (no user command)
 
 **Status Update:** DOCUMENTATION → READY_FOR_RELEASE
 
@@ -430,7 +430,7 @@ Status: READY_FOR_RELEASE → DONE
 "Tests: [Y] passing | Coverage: [Z]% | All docs created | Fully committed"
 ```
 
-**Validation Command:** `/validate-done [TICKET-ID]`
+**Validation Command:** Internal validation (no user command)
 
 ### Progress Tracking Template
 ```markdown
@@ -505,7 +505,7 @@ Status: READY_FOR_RELEASE → DONE
 - [ ] All quality gates passed
 - [ ] All validation commands ran successfully
 
-**Validation Command:** `/sprint-closure-validation`
+**Validation Command:** Internal validation (no user command)
 
 **ONLY after ALL validations pass:** Execute sprint commit and retrospective
 
@@ -543,7 +543,7 @@ Edit /Project_Management/Releases/Release_Notes.md
 ### Generate Retrospective
 ```bash
 # Copy retrospective template
-cp /Development_Standards/Templates/Sprint\ Retrospective\ Template.md \
+cp /docs/reference/templates/Sprint\ Retrospective\ Template.md \
    /Project_Management/Sprint\ Retrospectives/Sprint_[N]_Retrospective.md
 
 # Fill in retrospective with:
@@ -612,27 +612,30 @@ mv /Project_Management/temp/[TICKET-*] \
 ## Usage
 
 ```bash
-/sprint-themed             # Complete sprint workflow
+/sprint-plan <instructions>  # Sprint planning with optional instructions
   → Phases 1-5: Planning & preparation
   → User approval checkpoint
-  → Phase 6: Automatic sprint execution
-  → Continuous progress updates
-  → Sprint completion report
+  → Ready for execution
 
-/sprint-execute [TICKET]   # Ad-hoc ticket execution (outside sprint)
-  → For urgent fixes or unplanned work
-  → Uses same strategic recipes
-  → Standalone execution
+/execute                    # Sprint execution (autonomous)
+  → Automatic sprint execution
+  → Continuous progress updates
+  → Complete until 100% done
 
 /sprint-status             # View current sprint progress
   → Shows completed/in-progress/blocked
   → Displays velocity tracking
   → Lists remaining work
 
-/sprint-complete           # Validate and close sprint
+/validate                  # Sprint validation
+  → Check all tickets against Definition of Done
+  → Complete any unfinished work
+  → Prepare for approval
+
+/sprint-approved           # Release & retrospective
   → Final quality checks
-  → Generate sprint report
-  → Archive sprint artifacts
+  → Generate retrospective
+  → Commit and sync memory
 ```
 
 ---

@@ -1,22 +1,23 @@
 ---
 title: Sprint Execution Recipe
-description: Implement-Test-Document-Commit workflow for executing prepared sprints with optimal implementation order, testing strategies, and documentation plans
+description: STAD Stage 2 autonomous sprint execution with zero-intervention implementation, comprehensive testing, and continuous documentation
 type: recipe
 category: execution
-tags: [sprint, execution, implementation, testing, documentation, commit, workflow]
+tags: [sprint, execution, implementation, testing, documentation, commit, workflow, stad, stage-2]
 created: 2025-08-09
-updated: 2025-08-10
-version: 2.0
+updated: 2025-08-16
+version: 3.0
 status: stable
+stad_stage: 2
 ---
 
-# Recipe: Sprint Execution (Implement-Test-Document-Commit)
+# Recipe: Sprint Execution (STAD Stage 2)
 
 ## Overview
-Comprehensive sprint execution workflow focusing on Implement-Test-Document-Commit phases. Takes prepared tickets with specs and executes them in optimal order with complete development, testing, and documentation plans.
+STAD Stage 2 autonomous sprint execution workflow with zero-intervention implementation. All decisions made in Stage 1, enabling complete automation with comprehensive testing and continuous documentation.
 
 ## Philosophy
-"Plan the work, then work the plan" - Execute prepared tickets systematically with best practices, comprehensive testing, and complete documentation.
+"Zero-intervention execution" - With comprehensive planning from Stage 1, execute the entire sprint autonomously using pre-made decisions and edge case strategies.
 
 ## Focus Areas
 1. **Implementation Order** - Determine optimal ticket execution sequence
@@ -34,11 +35,14 @@ Comprehensive sprint execution workflow focusing on Implement-Test-Document-Comm
 - Completing documentation requirements
 - Sprint closure and commit preparation
 
-## Prerequisites
-- Completed sprint preparation with tickets, specs, and agent assignments
-- All dependencies validated and blockers resolved
-- Dependencies mapped and understood
-- Team ready to begin implementation
+## Prerequisites (From Stage 1)
+- Completed Stage 1 Sprint Preparation
+- All tickets have comprehensive specs
+- No ticket exceeds 5 story points
+- All design decisions documented
+- Edge case strategies defined
+- Handoff templates prepared
+- Stage 1→2 gate validated
 
 ## Agent Sequence
 
@@ -235,9 +239,13 @@ class SprintExecutor {
 - [ ] Code review complete
 - [ ] No code smells detected
 
-### Testing
-- [ ] Unit tests written and passing
-- [ ] Integration tests passing
+### Testing (Frontend & Backend)
+- [ ] Frontend unit tests written and passing (Jest, RTL)
+- [ ] Frontend integration tests passing
+- [ ] Frontend coverage >85%
+- [ ] Backend unit tests written and passing
+- [ ] Backend integration tests passing
+- [ ] Backend coverage >85%
 - [ ] Edge cases covered
 - [ ] Performance benchmarks met
 
@@ -326,9 +334,10 @@ Update PROJECT_PLAN.md status: DONE
 - [x] No TODOs or debug code
 
 ### Testing
-- [x] All tests passing
-- [x] Coverage > 80%
-- [x] Manual testing complete
+- [x] All frontend tests passing (>85% coverage)
+- [x] All backend tests passing (>85% coverage)
+- [x] Integration tests complete
+- [x] Human UI/UX review complete
 
 ### Documentation
 - [x] Code documented
@@ -414,17 +423,14 @@ Status: ✅ DONE
 
 ### Basic Usage
 ```bash
-/sprint-execute
+/execute
 ```
 
-### Options
-```bash
-/sprint-execute --max-agents 3      # Limit parallel agents
-/sprint-execute --tickets AGENT-010 # Execute specific tickets
-/sprint-execute --dry-run          # Preview execution plan
-/sprint-execute --recipe-override  # Use custom recipes
-/sprint-execute --continue          # Resume interrupted execution
-```
+### Command Behavior
+- Executes the planned sprint autonomously
+- Follows dependency order from sprint plan
+- Runs until 100% of tasks complete
+- No additional options needed (follows STAD principles)
 
 ## Recipe Combinations Used
 
@@ -439,10 +445,10 @@ Status: ✅ DONE
 
 ```bash
 # Complete sprint workflow
-/sprint-plan → Review → /sprint-execute → Monitor → Complete
+/sprint-plan → Review → /execute → /validate → /sprint-approved
 
-# With checkpoints
-/sprint-execute --dry-run → Approve → /sprint-execute → Daily standups
+# With monitoring
+/execute → /sprint-status (for progress) → /validate → /sprint-approved
 ```
 
 ## Monitoring & Reporting

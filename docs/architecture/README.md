@@ -5,12 +5,12 @@ type: architecture
 category: system-design
 tags: [architecture, hub-and-spoke, parallel-execution, design]
 created: 2025-08-09
-updated: 2025-08-09
+updated: 2025-01-17
 ---
 
 # Dev-Agency Architecture Overview
 
-**Enterprise-grade agentic development system architecture.**
+**Enterprise-grade agentic development system architecture implementing STAD Protocol v5.1**
 
 ## 🏗️ Core Architecture Pattern
 
@@ -137,6 +137,73 @@ Main Claude Session
 - **Documentation Requirements**: Comprehensive documentation for all features
 - **Change Management**: Proper archival and version control
 
+## 📋 STAD Protocol Architecture
+
+### Core STAD Documents
+
+The STAD Protocol (Stateful & Traceable Agentic Development) defines our complete development lifecycle:
+
+1. **[STAD_PROTOCOL_NORTH_STAR.md](STAD_PROTOCOL_NORTH_STAR.md)** - Vision and philosophy
+2. **[STAD_FILE_STRUCTURE.md](STAD_FILE_STRUCTURE.md)** - **AUTHORITATIVE** file organization guide
+3. **[STAD_CLAUDE.md](STAD_CLAUDE.md)** - Operational rules and mandates
+4. **[STAD_Agent_Playbook.md](STAD_Agent_Playbook.md)** - Agent implementation guide
+5. **[STAD_Agent_Registry.md](STAD_Agent_Registry.md)** - Agent-to-stage mapping
+6. **[CLAUDE_HIERARCHY.md](CLAUDE_HIERARCHY.md)** - CLAUDE.md file relationships
+
+### STAD 5-Stage Lifecycle
+
+```
+Stage 0: Strategic Planning → Epics & Roadmap
+Stage 1: Sprint Preparation → Comprehensive Specs
+Stage 2: Sprint Execution → Parallel Implementation
+Stage 3: Sprint Validation → Quality Gates
+Stage 4: Release & Retrospective → Learning & Improvement
+```
+
+### File Structure Authority
+
+**STAD_FILE_STRUCTURE.md is the SINGLE SOURCE OF TRUTH for all file placement.**
+
+Key locations:
+- Agent handoffs: `/Project_Management/Sprint_Execution/Sprint_[N]/agent_handoffs/`
+- Work reports: `/Project_Management/Sprint_Execution/Sprint_[N]/work_reports/`
+- Sprint retrospectives: `/Project_Management/Sprint_Retrospectives/`
+- Specifications: `/Project_Management/Specs/`
+
+### Recent Alignment (2025-08-17)
+
+✅ **Phase 1: Initial alignment (2025-01-17)**
+- Fixed all structural path conflicts across 20+ documents
+- Resolved logical conflicts (Review Dashboard ownership → Backend QA)
+- Updated all stage context files (stage_0 through stage_4)
+- Created `validate_stad_consistency.sh` for ongoing validation
+- Established clear authority hierarchy with STAD_FILE_STRUCTURE.md
+
+✅ **Phase 2: Comprehensive validation (2025-08-17)**
+- Implemented STAD Protocol Alignment Validation Plan v1.0
+- Created `validate_stad_alignment.sh` with 20 validation checks
+- Documented validation matrix in STAD_VALIDATION_MATRIX.md
+- Fixed all critical alignment issues
+- Added STAD commands to stage documentation
+- Final alignment: 95% (19/20 checks passing)
+- Remaining item: Philosophy differences between North Star and operational docs (intentional)
+
+### Validation & Consistency
+
+Run validation to ensure STAD compliance:
+```bash
+# Full STAD Protocol validation (20 checks)
+./scripts/validation/validate_stad_alignment.sh
+
+# Path consistency validation
+./scripts/validation/validate_stad_consistency.sh
+
+# File structure validation
+./scripts/validation/validate_file_structure.sh
+```
+
+**Current Status:** 95% aligned - See [STAD_VALIDATION_MATRIX.md](STAD_VALIDATION_MATRIX.md) for details
+
 ## 🌐 Integration Patterns
 
 ### Project Integration
@@ -167,7 +234,15 @@ Main Claude Session
 
 ---
 
-**Related Documentation:**
+**STAD Protocol Documentation:**
+- [STAD Protocol North Star](STAD_PROTOCOL_NORTH_STAR.md) - Vision & philosophy
+- [STAD File Structure](STAD_FILE_STRUCTURE.md) - **AUTHORITATIVE** file organization
+- [STAD CLAUDE Rules](STAD_CLAUDE.md) - Operational mandates
+- [STAD Agent Playbook](STAD_Agent_Playbook.md) - Implementation guide
+- [STAD Agent Registry](STAD_Agent_Registry.md) - Stage mapping
+
+**Architecture Documentation:**
+- [CLAUDE Hierarchy](CLAUDE_HIERARCHY.md) - Configuration relationships
 - [Parallel Execution Guide](parallel-execution.md)
 - [Agent System Design](../agents/)
 - [Performance Optimization](../tools/performance.md)
