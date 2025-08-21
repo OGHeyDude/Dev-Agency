@@ -83,9 +83,9 @@ review_dashboard:
 ```mermaid
 graph TD
     Start[Stage 2 Complete] --> Auto[Automated Validation]
-    Auto --> BackendQA[Backend QA Agent]
-    BackendQA -->|Pass| Review[Create Review Issue]
-    BackendQA -->|Fail| Debug[Debug Agent]
+    Auto --> QAValidator[QA Validator Agent]
+    QAValidator -->|Pass| Review[Create Review Issue]
+    QAValidator -->|Fail| Debug[Debug Agent]
     Debug --> Fix[Apply Fix]
     Fix --> Auto
     Review --> Human[Human Review]
@@ -95,7 +95,9 @@ graph TD
     DebugLoop --> Fix
 ```
 
-### Backend QA Checklist
+### QA Validator Checklist
+- [ ] Frontend tests validated (>85% coverage)
+- [ ] Backend tests validated (>85% coverage)
 - [ ] All acceptance criteria validated
 - [ ] Regression tests passing
 - [ ] Integration tests complete
@@ -211,7 +213,7 @@ revision_handling:
 
 ## Agent-Specific Instructions
 
-### For Backend QA Agent (Primary)
+### For QA Validator Agent (Primary)
 In Stage 3, you must:
 1. Run comprehensive validation suite
 2. Verify all acceptance criteria
@@ -292,7 +294,7 @@ Please test the following on [staging URL]:
 ### Quality Gate Passage
 Stage 3 complete when:
 1. All automated gates PASS
-2. Backend QA approval received
+2. QA Validator approval received
 3. Human review completed
 4. All bugs resolved
 5. Documentation current

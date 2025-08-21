@@ -89,7 +89,7 @@ Must include:
 - Recommendation (READY/NOT READY for human review)
 
 ### Work Report Requirements
-**Location:** `/Project_Management/Sprint_Execution/Sprint_[N]/work_reports/backend-qa_[TICKET]_report.md`
+**Location:** `/Project_Management/Sprint_Execution/Sprint_[N]/work_reports/qa-validator_[TICKET]_report.md`
 **Template:** `/docs/reference/templates/work_report_template.md`
 
 Document:

@@ -203,11 +203,13 @@ Every project MUST maintain the following documentation structure:
 - **INCLUDE** complete frontmatter
 - **EXPLAIN** "why" not just "how"
 
-### Backend QA
-- **VERIFY** API contracts
-- **VALIDATE** security (mandatory)
+### QA Validator (formerly Backend QA)
+- **VALIDATE** all automated test suites passed
+- **VERIFY** frontend test coverage (components, integration)
+- **VERIFY** backend test coverage (API, database)
 - **CHECK** performance SLAs
-- **ENSURE** database integrity
+- **VALIDATE** security (mandatory)
+- **PREPARE** for human UI/UX review
 
 ### Debug Agent
 - **USE** `git bisect` to find root cause

@@ -534,6 +534,15 @@ All context packages prepared in: `/sprint-[N]-context/`
 - [External dependencies]
 ```
 
+**Save the sprint plan:**
+```bash
+# Save the generated sprint plan to the Sprint_Plans folder
+Write /Project_Management/Sprint_Plans/Sprint_[N]_Execution_Plan.md
+
+# Update PROJECT_PLAN.md to reference the new sprint plan
+Edit PROJECT_PLAN.md to add reference to sprint plan under current sprint section
+```
+
 ## Success Criteria
 - ✅ 30-35 story points selected
 - ✅ All tickets have complete specs

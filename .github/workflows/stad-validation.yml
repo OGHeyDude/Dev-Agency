@@ -94,9 +94,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Backend QA Checks
+    - name: QA Validator Checks
       run: |
-        echo "🔍 Running backend QA validation..."
+        echo "🔍 Running QA validation (frontend + backend)..."
         # Check for API documentation
         if [ -d "docs/api" ]; then
           echo "✅ API documentation found"

@@ -143,6 +143,7 @@ jobs:
         
         # Verify all required agents exist
         required_agents=("architect" "coder" "tester" "backend-qa" "debug" "documenter" "retrospective" "scrum_master")
+        # Note: backend-qa.md is the file name, but the agent is called qa-validator internally
         
         for agent in "${required_agents[@]}"; do
           if [ -f "Agents/${agent}.md" ]; then

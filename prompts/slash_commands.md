@@ -28,8 +28,11 @@ updated: 2025-08-19
 - Execute the planned sprint
 - Complete autonomously until 100% of the tasks complete
 
-### 3. `/validate`
-**Stage 3: Sprint Validation**
+### 3. `/validate` (deprecated - Stage 3 now uses `/execute`)
+**Stage 3: Sprint Validation** 
+- NOTE: Stage 3 continues using `/execute` command from Stage 2
+- Validates all automated tests passed (frontend + backend)
+- Prepares for human UI/UX review
 - Check all sprint tickets against Definition of Done:
   `/home/hd/Desktop/LAB/Dev-Agency/docs/guides/standards/Definition of Done.md`
 - If any tickets are NOT done, COMPLETE them to meet the definition
