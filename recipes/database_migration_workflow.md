@@ -225,6 +225,17 @@ CREATE TABLE orders (id, tenant_id, user_id, amount, status);
 - Schema version management system
 - Data integrity validation procedures
 
+**Save Migration Artifacts:**
+```bash
+# Save migration plan and scripts
+Write /Project_Management/TEMP/migrations/[TICKET-ID]_migration_plan.md
+# Include: Schema changes, data transformations, rollback procedures
+
+# Save migration progress reports
+Write /Project_Management/TEMP/migrations/[TICKET-ID]_migration_report.md
+# Include: Steps completed, data migrated, issues encountered, validation results
+```
+
 ---
 
 ### Phase 3: Validation and Documentation (Parallel)

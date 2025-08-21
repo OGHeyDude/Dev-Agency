@@ -87,6 +87,62 @@ Must include:
 - **Type 2: Design Decisions** → Mark BLOCKED, create `/Project_Management/Decision_Requests/[TICKET]_decision.md`
 - **External Dependencies:** Document and escalate
 
+## STAD Folder Organization Rules
+
+### Source Code Structure
+```
+/src/
+  /[module]/
+    index.ts              # Module entry point
+    types.ts              # Type definitions
+    /utils/               # Utility functions
+    /__tests__/           # Tests (Tester Agent handles)
+    /archive/             # Module-specific archive
+```
+
+### Documentation Structure
+```
+/docs/
+  /features/              # Feature documentation
+  /api/                   # API documentation
+  /guides/                # User guides
+  /development/           # Development docs
+```
+
+### Project Management
+```
+/Project_Management/
+  /Specs/                 # Ticket specifications
+  /Sprint_Execution/      # Sprint artifacts
+    /Sprint_[N]/
+      /agent_handoffs/    # Agent collaboration
+      /work_reports/      # Work documentation
+  /Archive/               # Project-level archive
+```
+
+## Archive Policy (MANDATORY)
+
+### Never Delete - Always Archive
+- **NEVER** use `rm`, `delete`, or `unlink` commands
+- **ALWAYS** move obsolete files to `/Archive/` or `/[module]/archive/`
+- **RENAME** as: `[filename]_archived_[YYYYMMDD]_[reason].[ext]`
+- **DOCUMENT** reason for archiving in the filename
+
+### Archive Examples
+```bash
+# Instead of deleting old implementation
+mv src/oldFeature.ts /Archive/oldFeature_archived_20250820_refactored.ts
+
+# Module-specific archive
+mv src/auth/legacy.ts src/auth/archive/legacy_archived_20250820_replaced_with_jwt.ts
+```
+
+### When to Archive
+- Refactoring replaces old code
+- Feature deprecation
+- Breaking changes require new implementation
+- Legacy code cleanup
+
 ## MCP Tools Integration
 
 ### Available MCP Tools

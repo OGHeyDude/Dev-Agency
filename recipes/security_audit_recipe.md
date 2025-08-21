@@ -76,6 +76,13 @@ Read package-lock.json  # Exact versions
 - Risk assessment for each finding
 - Remediation recommendations
 
+**Save Report:**
+```bash
+# Save security audit report
+Write /Project_Management/Sprint_Validation/Sprint_[N]/security_reports/[TICKET-ID]_security_audit.md
+# Include: Vulnerabilities found, severity levels, recommended fixes
+```
+
 ### Step 3: Security Fixes
 **Agent:** `/agent:coder`  
 **Context Required:**
@@ -130,6 +137,13 @@ Read package-lock.json  # Exact versions
 - Remaining acceptable risks
 - Security improvement recommendations
 - Sign-off ready status
+
+**Save Final Report:**
+```bash
+# Save final security validation report
+Write /Project_Management/Sprint_Validation/Sprint_[N]/security_reports/[TICKET-ID]_security_validation.md
+# Include: All fixes verified, remaining risks, compliance status
+```
 
 ### Step 6: Security Documentation
 **Agent:** `/agent:documenter`  

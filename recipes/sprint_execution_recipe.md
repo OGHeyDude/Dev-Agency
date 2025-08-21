@@ -150,6 +150,10 @@ cp tools/boundary-enforcement/pre-commit-boundary-check .git/hooks/pre-commit
 
 # 4. Create feature branch with proper naming
 git checkout -b feature/$TICKET_ID
+
+# 5. Create implementation report after completion
+Write /Project_Management/Sprint_Execution/Sprint_[N]/implementation_reports/[TICKET-ID]_implementation.md
+# Include: Approach taken, challenges faced, solutions implemented
 ```
 
 **For each ticket, apply appropriate recipe:**
@@ -291,6 +295,14 @@ mcp__memory__create_entities([
         observations: ["Solution details", "Design decisions"]
     }
 ])
+
+# Save work report
+Write /Project_Management/Sprint_Execution/Sprint_[N]/work_reports/[TICKET-ID]_work_report.md
+# Include: Changes made, decisions, blockers encountered, time spent
+
+# Create agent handoff if needed for next ticket
+Write /Project_Management/Sprint_Execution/Sprint_[N]/agent_handoffs/[TICKET-ID]_to_[NEXT-TICKET]_handoff.md
+# Include: Context, shared code, dependencies, gotchas
 ```
 
 ### Phase 7: Commit Workflow
@@ -408,6 +420,9 @@ Status: ✅ DONE
 - ✅ Memory graph updated with changes
 - ✅ Clean commit history
 - ✅ Sprint velocity tracked
+- ✅ All work reports saved to `/Project_Management/Sprint_Execution/Sprint_[N]/work_reports/`
+- ✅ All handoffs saved to `/Project_Management/Sprint_Execution/Sprint_[N]/agent_handoffs/`
+- ✅ Implementation reports in `/Project_Management/Sprint_Execution/Sprint_[N]/implementation_reports/`
 
 ## Common Issues and Solutions
 

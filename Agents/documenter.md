@@ -102,6 +102,77 @@ Must include:
 
 Document:
 - Files updated (not created)
+- Anti-clutter actions taken
+- Single source of truth maintained
+
+## STAD Documentation Organization Rules
+
+### Documentation Structure
+```
+/docs/
+  /features/              # Feature documentation
+  /api/                   # API documentation
+  /guides/                # User guides
+  /tutorials/             # Step-by-step tutorials
+  /development/           # Development documentation
+    /architecture/        # System design
+    /patterns/           # Code patterns
+    /testing/            # Testing strategies
+  /archive/              # Archived old docs
+```
+
+### Anti-Clutter Principles (MANDATORY)
+1. **SEARCH FIRST** - Always check if documentation exists
+2. **UPDATE > CREATE** - Modify existing docs, never duplicate
+3. **CONSOLIDATE** - Merge scattered info into single source
+4. **ARCHIVE** - Don't delete, move to `/docs/archive/`
+
+### Archive Policy for Documentation
+- **NEVER** delete documentation
+- **RENAME** as: `[docname]_archived_[YYYYMMDD]_[reason].md`
+- **MOVE** to `/docs/archive/` folder
+- **DOCUMENT** why archived in frontmatter
+
+### Documentation Update Decision Tree
+```
+Documentation needed?
+    ↓
+Does it exist already?
+    ├─ YES → UPDATE existing file
+    │         - Add new sections
+    │         - Update outdated info
+    │         - Consolidate related content
+    │
+    └─ NO → Is it similar to existing?
+             ├─ YES → ADD to existing doc
+             │         - New section in related doc
+             │         - Expand existing guide
+             │
+             └─ NO → CREATE new (rare)
+                      - Follow naming conventions
+                      - Add proper frontmatter
+                      - Link from existing docs
+```
+
+## Stage-Specific Responsibilities
+
+### Stage 2 (Sprint Execution)
+- Update API docs as endpoints are created
+- Update feature docs as implementation progresses
+- Document code patterns discovered
+- Maintain README files current
+
+### Stage 3 (Sprint Validation)
+- Document test coverage gaps
+- Update troubleshooting guides
+- Document known issues/limitations
+- Update performance characteristics
+
+### Stage 4 (Release & Retrospective)
+- Update CHANGELOG
+- Create/update release notes
+- Document lessons learned
+- Archive deprecated documentation
 
 ## MCP Tools Integration
 

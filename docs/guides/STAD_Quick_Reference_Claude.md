@@ -18,14 +18,14 @@ version: 1.0
 
 ## 🎯 STAD in 30 Seconds
 
-**5 Stages, 9 Commands, Zero Intervention in Stage 2**
+**5 Stages, 9 Commands, Zero Intervention in Stages 2-3**
 
 ```
 Stage 0: Human plans epics
 Stage 1: /sprint-plan - Write ALL specs, make ALL decisions
 Stage 2: /execute - Implement from specs (NO design decisions)
-Stage 3: /validate - Test everything, fix all issues
-Stage 4: /sprint-approved - Release & learn
+Stage 3: /execute - Validate & auto-fix until 100% DONE
+Stage 4: /sprint-approved - Human review, release & learn
 ```
 
 ---
@@ -75,19 +75,26 @@ Stage 4: /sprint-approved - Release & learn
 - `/Project_Management/Sprint_Execution/Sprint_[N]/work_reports/[agent]_[TICKET]_report.md`
 - `/Project_Management/Sprint_Execution/Sprint_[N]/agent_handoffs/[from]_to_[to]_[TICKET].md`
 
-### Stage 3: Sprint Validation
+### Stage 3: Sprint Validation (Autonomous)
 **Command:** `/execute` (continues from Stage 2)  
 **Recipe:** Embedded in sprint_execution_recipe.md
 
-**MUST DO:**
+**MUST DO (Zero-Intervention with Process):**
 1. Validate ALL automated tests passed:
    - Frontend: Component, integration, UI logic tests
    - Backend: API, database, service tests
 2. Check coverage (>85% both frontend & backend)
 3. Validate against acceptance criteria
-4. Human performs UI/UX review (visual, interaction)
-5. Fix any bugs found (NO WORKAROUNDS)
-6. Update documentation
+4. If ANY issues found, follow process:
+   - **Bugs:** Use bug_fix_recipe.md + debug agent
+   - **Design Questions:** Mark BLOCKED, escalate to human
+   - **Complex Issues:** Architect + debug agents collaborate
+   - **NO WORKAROUNDS** - only proper fixes
+   - Re-validate until passing
+5. Update documentation
+6. Mark tickets as DONE only when fully validated
+
+**Human Involvement:** Only after ALL tickets are 100% DONE
 
 **OUTPUT REQUIRED:**
 - All automated tests validated
@@ -151,26 +158,39 @@ Stage 4: /sprint-approved - Release & learn
 
 ---
 
-## 🚧 Blocker Decision Tree
+## 🚧 Blocker Decision Tree (Stage 2-3)
 
 ```
 Encounter Issue
     ↓
-Is it a bug/tool failure?
-    ├─ YES → Type 1: FIX IT (no workarounds)
-    │         - Debug with git bisect
-    │         - Fix root cause
+Is it a bug/test failure?
+    ├─ YES → Type 1: FIX IT PROPERLY
+    │         - Follow bug_fix_recipe.md
+    │         - Use debug agent for complex issues
+    │         - Fix root cause (NO WORKAROUNDS)
     │         - Add regression test
     │         - Document in work report
+    │         - Re-validate
     │
-    └─ NO → Is it a design decision?
+    └─ NO → Is it a design/architecture decision?
              ├─ YES → Type 2: BLOCKED
+             │         - Examples:
+             │           • Which library to use?
+             │           • How to handle edge case not in spec?
+             │           • API design choice needed?
              │         - Set status: BLOCKED
-             │         - Document what's needed
+             │         - Document decision needed
              │         - Create handoff
              │         - Wait for human decision
              │
-             └─ NO → Continue working
+             └─ NO → Is it an integration issue?
+                      ├─ YES → Type 3: COLLABORATE
+                      │         - Architect agent for analysis
+                      │         - Debug agent for root cause
+                      │         - Fix per patterns
+                      │         - Re-validate
+                      │
+                      └─ NO → Continue working
 ```
 
 **NEVER:**
@@ -235,14 +255,15 @@ Is it a bug/tool failure?
 
 1. **Stage Gates are MANDATORY** - Cannot skip stages
 2. **Specs before Code** - No implementation without spec
-3. **Decisions in Stage 1 ONLY** - Stage 2 is execution only
-4. **Fix Bugs Properly** - No workarounds ever
-5. **Archive Don't Delete** - Move to /Archive/ with reason
-6. **Semantic Commits Always** - Include Sprint & Ticket metadata
-7. **Handoffs Required** - Document context for next agent
-8. **Test Coverage >85%** - Non-negotiable
-9. **Update PROJECT_PLAN.md** - Real-time status updates
-10. **Memory Sync After Changes** - Keep knowledge graph current
+3. **Decisions in Stage 1 ONLY** - Stages 2-3 are pure execution
+4. **Fix Bugs Properly** - No workarounds, fix and re-validate
+5. **100% Complete Before Human Review** - All tickets DONE first
+6. **Archive Don't Delete** - Move to /Archive/ with reason
+7. **Semantic Commits Always** - Include Sprint & Ticket metadata
+8. **Handoffs Required** - Document context for next agent
+9. **Test Coverage >85%** - Non-negotiable
+10. **Update PROJECT_PLAN.md** - Real-time status updates
+11. **Memory Sync After Changes** - Keep knowledge graph current
 
 ---
 

@@ -158,6 +158,17 @@ graph TD
 
 **Output**: Performance validation report with regression test results
 
+**Save Reports:**
+```bash
+# Save performance baseline report
+Write /Project_Management/Sprint_Validation/Sprint_[N]/performance_reports/[TICKET-ID]_performance_baseline.md
+# Include: Initial metrics, bottlenecks identified, optimization targets
+
+# Save final performance report
+Write /Project_Management/Sprint_Validation/Sprint_[N]/performance_reports/[TICKET-ID]_performance_final.md
+# Include: Before/after metrics, improvements achieved, remaining issues
+```
+
 ## Parallel Execution Opportunities
 
 ### Optimization Benefits

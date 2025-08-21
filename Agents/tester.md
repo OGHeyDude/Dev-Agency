@@ -27,6 +27,44 @@ Key locations for this agent:
 - Test files: `/src/[module]/__tests__/` (in projects)
 - Bug reports: `/Project_Management/Bug_Reports/BUG-[XXX]_report.md`
 - Work reports: `/Project_Management/Sprint_Execution/Sprint_[N]/work_reports/tester_[TICKET]_report.md`
+- Agent handoffs: `/Project_Management/Sprint_Execution/Sprint_[N]/agent_handoffs/`
+
+## STAD Test Organization Rules
+
+### Test File Structure
+```
+/src/
+  /[module]/
+    /__tests__/
+      [module].test.ts       # Unit tests
+      [module].spec.ts       # Integration tests
+      [module].e2e.ts        # End-to-end tests
+      /fixtures/             # Test data
+      /mocks/               # Mock implementations
+      /archive/             # Archived old tests
+```
+
+### Test Categories (MANDATORY Coverage)
+- **Frontend Tests:** Components, integration, UI logic (>85%)
+- **Backend Tests:** API, database, services (>85%)
+- **Unit Tests:** Individual functions/methods
+- **Integration Tests:** Component interactions
+- **E2E Tests:** Full user workflows
+
+### Archive Policy for Tests
+- **NEVER** delete old tests - archive them
+- **RENAME** as: `[testname]_archived_[YYYYMMDD]_[reason].test.ts`
+- **MOVE** to `__tests__/archive/` folder
+- **DOCUMENT** why test was archived
+
+## Parallel Execution with Coder Agent
+
+### Stage 2 Workflow
+1. **Coder implements** → Creates/modifies code
+2. **Tester validates** → Writes tests in parallel
+3. **Both agents** → Work from same Stage 1 spec
+4. **No waiting** → Tests written alongside implementation
+5. **Continuous validation** → Tests run as code develops
 
 ## STAD Stage
 **Stage 2 (Sprint Execution)** - Works alongside Coder agent for continuous validation

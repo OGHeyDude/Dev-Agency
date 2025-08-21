@@ -80,6 +80,18 @@ For each change, create an ADR following this template:
 ### Step 3: Documentation Standardization
 **Agent:** `/agent:documenter`  
 **Context Preparation:**
+
+**Working Files Location:**
+```bash
+# Create working directory for draft documentation
+mkdir -p /Project_Management/TEMP/docs_draft/
+
+# Save draft documents before review
+Write /Project_Management/TEMP/docs_draft/[document_name]_draft.md
+
+# Save review versions
+Write /Project_Management/TEMP/review/[document_name]_review.md
+```
 ```javascript
 // Feature documentation template
 const FEATURE_DOC_TEMPLATE = `
@@ -252,6 +264,10 @@ done
 
 # Verify Memory Tool sync
 /sync-memory --status
+
+# Save documentation audit report
+Write /Project_Management/TEMP/docs_audit_report.md
+# Include: Files audited, changes made, issues found, compliance status
 ```
 
 ## Success Metrics

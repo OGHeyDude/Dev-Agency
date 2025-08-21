@@ -436,39 +436,159 @@ graph TD
     AGENT-004 -.-> AGENT-007
 ```
 
-### Phase 6: Context Preparation for Agents
+### Phase 6: Agent Planning & Context Preparation
 **Agent:** Main Claude  
-**Complexity**: Medium
+**Complexity**: High
 
-**For each ticket, prepare agent context package:**
+#### 6A: Create Agent Execution Matrix
+**For each ticket, map the complete agent workflow:**
 ```markdown
-## Agent Context Package: [TICKET-ID]
+## Agent Execution Matrix
 
-### Required Reading
-- Spec: /specs/[TICKET-ID]_spec.md
-- Related Code: [list of files]
-- Documentation: [list of docs]
-- Examples: [similar implementations]
-
-### Agent Assignments
-- Research: Main Claude
-- Design: /agent:architect
-- Implementation: /agent:coder or /agent:[specialist]
-- Testing: /agent:tester
-- Documentation: /agent:documenter
-
-### Pre-gathered Context
-```
-[Include relevant code snippets]
-[Include configuration examples]
-[Include API schemas]
+| Ticket | Phase | Agent | Context Required | Output | Handoff To | Can Parallel? |
+|--------|-------|-------|------------------|--------|------------|---------------|
+| TICKET-001 | Research | Main Claude | Spec, existing code | research_findings.md | architect | Yes |
+| TICKET-001 | Design | architect | research_findings.md | technical_plan.md | coder | No |
+| TICKET-001 | Build | coder | technical_plan.md | implementation | tester | No |
+| TICKET-001 | Test | tester | implementation | test_results.md | documenter | Yes |
+| TICKET-001 | Document | documenter | all outputs | docs updated | Main Claude | Yes |
 ```
 
-### Success Criteria from Spec
-[Copy acceptance criteria]
+#### 6B: Define Parallel Execution Rules
+```markdown
+## Parallel Execution Rules
 
-### Known Constraints
-[List any limitations or requirements]
+### Resource Locks Required:
+- **File Locks:** One agent per file (use mutex pattern)
+- **Test Suite:** Sequential only (no parallel test runs)
+- **Database:** Read-many, write-one
+- **Config Files:** Read-only during execution
+
+### Safe Parallel Groups:
+- Group A: Different module files (e.g., TICKET-002 on /api, TICKET-003 on /ui)
+- Group B: Documentation can run alongside testing
+- Group C: Research phase for multiple tickets
+
+### Conflict Avoidance:
+- Never: Two agents modifying same file
+- Never: Multiple agents running migrations
+- Always: Check resource locks before starting
+```
+
+#### 6C: Prepare Detailed Context Packages
+**For each ticket, prepare comprehensive context:**
+```markdown
+## Detailed Context Package: [TICKET-ID]
+
+### Phase 1: Research Context
+**Files to Read:**
+- Primary: /specs/[TICKET-ID]_spec.md
+- Current Implementation: [specific files with line numbers]
+- Related Tests: [test files]
+- Documentation: [relevant docs]
+
+**Code Snippets:** 
+```typescript
+// Current implementation that needs modification
+// Lines 45-67 of /src/module/feature.ts
+function existingFeature() {
+  // actual code here
+}
+```
+
+**Questions to Answer:**
+- How is this currently implemented?
+- What patterns are used elsewhere?
+- What are the constraints?
+
+### Phase 2: Design Context
+**From Research Phase:**
+- research_findings.md
+- Identified patterns
+- Constraints discovered
+
+**Architecture Decisions Needed:**
+- [ ] Database schema changes?
+- [ ] API contract modifications?
+- [ ] Breaking changes?
+
+### Phase 3: Implementation Context
+**From Design Phase:**
+- technical_plan.md
+- Architecture decisions
+- Interface definitions
+
+**Development Environment:**
+```bash
+# Environment variables needed
+API_KEY=xxx
+DATABASE_URL=xxx
+
+# Commands to run
+npm install
+npm run dev
+```
+
+**Success Criteria:**
+[Copy from spec acceptance criteria]
+
+### Phase 4: Testing Context
+**From Implementation:**
+- Files modified
+- New functions/classes
+- Edge cases to test
+
+**Test Requirements:**
+- Unit test coverage: >85%
+- Integration tests required
+- Performance benchmarks
+
+### Phase 5: Documentation Context
+**Updates Required:**
+- API docs: [if API changed]
+- User guide: [if user-facing]
+- README: [if setup changed]
+- Changelog: [always]
+```
+
+#### 6D: Create Agent Handoff Templates
+```markdown
+## Agent Handoff: [FROM-AGENT] → [TO-AGENT]
+
+**Ticket:** [TICKET-ID]  
+**Phase Completed:** [Research/Design/Build/Test]  
+**Date/Time:** [timestamp]
+
+### Work Completed
+- [Bullet list of what was done]
+- [Files created/modified with paths]
+- [Decisions made]
+
+### Key Findings
+- [Important discoveries]
+- [Patterns identified]
+- [Constraints found]
+
+### Files Modified
+```bash
+# List all files with operation
+M src/module/feature.ts
+A src/module/feature.test.ts
+D src/deprecated/old-feature.ts
+```
+
+### Context for Next Agent
+- [Critical information needed]
+- [Where to find test data]
+- [Environment setup required]
+
+### Warnings/Blockers
+- ⚠️ [Potential issues]
+- 🚫 [Blockers that need resolution]
+- 💡 [Suggestions for approach]
+
+### Handoff Location
+`/Project_Management/Sprint_Execution/Sprint_[N]/agent_handoffs/[TICKET]_[from]_to_[to]_handoff.md`
 ```
 
 ### Phase 7: Sprint Plan Generation
@@ -492,25 +612,39 @@ graph TD
 | 1 | ... | ... | ... | TODO | ✅ | None |
 | 2 | ... | ... | ... | TODO | ✅ | TICKET-001 |
 
+## Agent Execution Matrix
+
+| Ticket | Phase | Agent | Output | Parallel? |
+|--------|-------|-------|--------|-----------|
+| TICKET-001 | Research | Main | research.md | Yes |
+| TICKET-001 | Design | architect | plan.md | No |
+| TICKET-001 | Build | coder | code | No |
+| TICKET-001 | Test | tester | results.md | Yes |
+
 ## Documentation Roadmap
 
 | Ticket | Read | Update | Create |
 |--------|------|--------|--------|
 | ... | ... | ... | ... |
 
-## Work Sequence
+## Work Sequence & Parallelization
 
 ### Week 1
-1. **Day 1-2:** SECURITY-001 (Critical fix)
-2. **Day 3-4:** BUILD-001 (Unblock development)
-3. **Day 5:** AGENT-010 (Complete partial work)
+| Day | Morning (Parallel) | Afternoon (Parallel) | Agents |
+|-----|-------------------|---------------------|---------|
+| 1-2 | TICKET-001 (Research) + TICKET-002 (Research) | TICKET-001 (Design) | 3 |
+| 3-4 | TICKET-001 (Build) + TICKET-003 (Research) | Testing + Docs | 4 |
+| 5 | TICKET-002 (Build) + TICKET-004 (Research) | Integration | 3 |
 
 ### Week 2
-4. **Day 6-7:** [Continue sequence]
+| Day | Tasks | Agents |
+|-----|-------|---------|
+| 6-7 | Continue implementation + validation | 5 max |
 
-## Parallel Work Opportunities
-- AGENT-004 and AGENT-007 can proceed in parallel
-- Documentation updates can happen alongside testing
+## Parallel Execution Rules
+- **Safe:** Different files/modules
+- **Sequential:** Same file, database migrations, test suite
+- **Max Agents:** 5 concurrent
 
 ## Risk Management
 
@@ -526,7 +660,12 @@ graph TD
 - [ ] Documentation 100% current
 
 ## Agent Context Packages
-All context packages prepared in: `/sprint-[N]-context/`
+Detailed context packages prepared in: `/Project_Management/Sprint_Execution/Sprint_[N]/agent_context/`
+Including: Required files, code snippets, environment setup, success criteria
+
+## Agent Handoffs
+Handoff documents saved to: `/Project_Management/Sprint_Execution/Sprint_[N]/agent_handoffs/`
+Format: `[TICKET]_[from-agent]_to_[to-agent]_handoff.md`
 
 ## Notes
 - [Any special considerations]
